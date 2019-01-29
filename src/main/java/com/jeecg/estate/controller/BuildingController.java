@@ -1,5 +1,7 @@
 package com.jeecg.estate.controller;
 import com.jeecg.estate.entity.BuildingEntity;
+import com.jeecg.estate.entity.CommunityEntity;
+import com.jeecg.estate.entity.ManagerareaEntity;
 import com.jeecg.estate.service.BuildingServiceI;
 
 import java.util.ArrayList;
@@ -69,8 +71,17 @@ public class BuildingController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(params = "list")
-	public ModelAndView list(HttpServletRequest request) {
-		return new ModelAndView("com/jeecg/estate/buildingList");
+	public ModelAndView list(HttpServletRequest request, String commId) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("com/jeecg/estate/buildingList");
+		mav.addObject("commId", commId);
+		CommunityEntity comm = systemService.get(CommunityEntity.class, commId);
+		String managerId = comm.getFatherId();
+		ManagerareaEntity mana = systemService.get(ManagerareaEntity.class, managerId);
+		String companyId = mana.getFatherId();
+		mav.addObject("managerId", managerId);
+		mav.addObject("companyId", companyId);
+		return mav;
 	}
 
 	/**
@@ -83,13 +94,13 @@ public class BuildingController extends BaseController {
 	 */
 
 	@RequestMapping(params = "datagrid")
-	public void datagrid(BuildingEntity building,HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
+	public void datagrid(BuildingEntity building,HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, String commId) {
 		CriteriaQuery cq = new CriteriaQuery(BuildingEntity.class, dataGrid);
 		//查询条件组装器
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, building, request.getParameterMap());
 		try{
 		//自定义追加查询条件
-		
+			cq.eq("commId", commId);
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}
@@ -208,12 +219,19 @@ public class BuildingController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(params = "goAdd")
-	public ModelAndView goAdd(BuildingEntity building, HttpServletRequest req) {
+	public ModelAndView goAdd(BuildingEntity building, HttpServletRequest req, String commId,String managerId,String companyId) {
 		if (StringUtil.isNotEmpty(building.getId())) {
 			building = buildingService.getEntity(BuildingEntity.class, building.getId());
 			req.setAttribute("building", building);
 		}
-		return new ModelAndView("com/jeecg/estate/building-add");
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("com/jeecg/estate/building-add");
+		Map<String,String> m = new HashMap<String,String>();
+		m.put("commId", commId);
+		m.put("managerId", managerId);
+		m.put("companyId", companyId);
+		mav.addObject("idMap", m);
+		return mav;
 	}
 	/**
 	 * 楼宇表编辑页面跳转

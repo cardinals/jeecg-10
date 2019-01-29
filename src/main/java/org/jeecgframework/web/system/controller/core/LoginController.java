@@ -229,7 +229,9 @@ public class LoginController extends BaseController{
 			if (roles.length() > 0) {
 				roles = roles.substring(0, roles.length() - 1);
 			}
-			
+			Cookie cookie_user = new Cookie("userN", user.getUserName().length()>5?user.getUserName().substring(0, 5)+"...":user.getUserName());
+			cookie_user.setMaxAge(3000);
+			response.addCookie(cookie_user);
             modelMap.put("roleName", roles.length()>3?roles.substring(0,3)+"...":roles);
             modelMap.put("userName", user.getUserName().length()>5?user.getUserName().substring(0, 5)+"...":user.getUserName());
             modelMap.put("portrait", user.getPortrait());

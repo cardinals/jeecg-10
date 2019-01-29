@@ -81,6 +81,16 @@
 		<div class="bt-item col-md-6 col-sm-6">
 			<div class="row">
 				<div class="col-md-3 col-sm-3 col-xs-3 bt-label">
+					楼层数：
+				</div>
+				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
+					<input name="buildFloor" type="text" class="form-control input-sm" maxlength="16"  ignore="ignore"  />
+				</div>
+			</div>
+		</div>
+		<div class="bt-item col-md-6 col-sm-6">
+			<div class="row">
+				<div class="col-md-3 col-sm-3 col-xs-3 bt-label">
 					备注：
 				</div>
 				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
@@ -94,7 +104,8 @@
 					所属小区id：
 				</div>
 				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
-					<input name="commId" type="text" class="form-control input-sm" maxlength="36"  datatype="*"  ignore="checked"  />
+					<input id="some1" type="text" class="form-control input-sm" maxlength="36"  datatype="*"  ignore="checked"  value="${idMap.commId}" disabled="disabled"/>
+					<input id="commId" name="commId" type="text" class="form-control input-sm" maxlength="36" ignore="ignore" value="${idMap.commId}" style="display:none;"/>
 				</div>
 			</div>
 		</div>
@@ -104,7 +115,8 @@
 					所属管区id：
 				</div>
 				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
-					<input name="manaId" type="text" class="form-control input-sm" maxlength="36"  ignore="ignore"  />
+					<input id="some2" type="text" class="form-control input-sm" maxlength="36"  ignore="ignore"  value="${idMap.managerId}" disabled="disabled"/>
+					<input id="manaId" name="manaId" type="text" class="form-control input-sm" maxlength="36" ignore="ignore" value="${idMap.managerId}" style="display:none;"/>
 				</div>
 			</div>
 		</div>
@@ -114,7 +126,8 @@
 					所属公司id：
 				</div>
 				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
-					<input name="comId" type="text" class="form-control input-sm" maxlength="36"  ignore="ignore"  />
+					<input id="some3" type="text" class="form-control input-sm" maxlength="36"  ignore="ignore"  value="${idMap.companyId}" disabled="disabled"/>
+					<input id="comId" name="comId" type="text" class="form-control input-sm" maxlength="36" ignore="ignore" value="${idMap.companyId}" style="display:none;"/>
 				</div>
 			</div>
 		</div>
@@ -124,7 +137,7 @@
 					创建人：
 				</div>
 				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
-					<input name="createBy" type="text" class="form-control input-sm" maxlength="32"  ignore="ignore"  />
+					<input id="createBy" name="createBy" type="text" class="form-control input-sm" maxlength="32"  ignore="ignore"  value="${userN}"/>
 				</div>
 			</div>
 		</div>
@@ -134,7 +147,8 @@
 					创建时间：
 				</div>
 				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
-					<input name="createDate" type="text" class="form-control input-sm" maxlength="32"  ignore="ignore"  />
+					<input id="riqi" type="text" class="form-control input-sm" maxlength="32"  ignore="ignore" style="display:none;"/>
+					<input id="createDate" name="createDate" type="text" class="form-control input-sm" maxlength="32" ignore="ignore" value=""/>
 				</div>
 			</div>
 		</div>
@@ -153,7 +167,7 @@ $(document).ready(function() {
 		radioClass : 'iradio_square-green',
 		increaseArea : '20%'
 	});
-	
+	alert(document.getElementById("createBy").value);
 	//表单提交
 	$("#formobj").Validform({
 		tiptype:function(msg,o,cssctl){
@@ -209,6 +223,15 @@ $(document).ready(function() {
 	});
 		
 });
+function getDate(){
+	//debugger;
+	var today = new Date(); 
+	var date = ""; 
+	date = (today.getFullYear()) +"-" + (today.getMonth() + 1 ) + "-" + today.getDate(); 
+	return date;
+	}
+//自动添加日期
+document.getElementById("createDate").value=getDate();
 </script>
 </body>
 </html>

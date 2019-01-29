@@ -50,6 +50,19 @@ public class BuildingEntity implements java.io.Serializable {
 	/**楼宇朝向*/
 	@Excel(name="楼宇朝向",width=15)
 	private java.lang.String buildToward;
+	/**楼层数*/
+	@Excel(name="楼层数",width=15)
+	private Integer buildFloor;
+	
+	@Column(name ="BUILD_FLOOR",nullable=true,length=32)
+	public Integer getBuildFloor() {
+		return buildFloor;
+	}
+
+	public void setBuildFloor(Integer buildFloor) {
+		this.buildFloor = buildFloor;
+	}
+
 	/**备注*/
 	@Excel(name="备注",width=15)
 	private java.lang.String note;

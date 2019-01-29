@@ -16,6 +16,7 @@
    <t:dgCol title="创建时间"  field="createDate"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="操作" field="opt" width="100"></t:dgCol>
    <t:dgDelOpt title="删除" url="communityController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
+   <t:dgDefOpt title="查看楼宇" url="buildingController.do?list&commId={id}" urlclass="ace_button" urlfont="fa-trash-o"/>
    <t:dgToolBar title="录入" icon="icon-add" url="communityController.do?goAdd&fatherId=${fatherId}" funname="add"  width="768"></t:dgToolBar>
    <t:dgToolBar title="编辑" icon="icon-edit" url="communityController.do?goUpdate" funname="update"  width="768"></t:dgToolBar>
    <t:dgToolBar title="批量删除"  icon="icon-remove" url="communityController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
