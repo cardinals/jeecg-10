@@ -137,8 +137,9 @@
 					创建人：
 				</div>
 				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
-					<input id="createBy" name="createBy" type="text" class="form-control input-sm" maxlength="32"  ignore="ignore"  value="${userN}"/>
+					<input id="createBy" name="createBy" type="text" class="form-control input-sm" maxlength="32"  ignore="ignore"  value="${cookie.userN.value}"/>
 				</div>
+				<!-- 47.74.230.6 -->
 			</div>
 		</div>
 		<div class="bt-item col-md-6 col-sm-6">
@@ -148,7 +149,7 @@
 				</div>
 				<div class="col-md-9 col-sm-9 col-xs-9 bt-content">
 					<input id="riqi" type="text" class="form-control input-sm" maxlength="32"  ignore="ignore" style="display:none;"/>
-					<input id="createDate" name="createDate" type="text" class="form-control input-sm" maxlength="32" ignore="ignore" value=""/>
+					<input id="createDate" name="createDate" type="date" class="form-control input-sm" maxlength="32" ignore="ignore" value=""/>
 				</div>
 			</div>
 		</div>
@@ -167,7 +168,7 @@ $(document).ready(function() {
 		radioClass : 'iradio_square-green',
 		increaseArea : '20%'
 	});
-	alert(document.getElementById("createBy").value);
+	//alert(document.getElementById("createBy").value);
 	//表单提交
 	$("#formobj").Validform({
 		tiptype:function(msg,o,cssctl){
@@ -231,7 +232,7 @@ function getDate(){
 	return date;
 	}
 //自动添加日期
-document.getElementById("createDate").value=getDate();
+document.getElementById("createDate").value=new Date().format("yyyy-MM-dd");
 </script>
 </body>
 </html>
