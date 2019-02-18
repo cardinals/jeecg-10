@@ -70,10 +70,6 @@ public class CgAutoListConstant {
 	public static final String FIELD_DICTTABLE = "field_dictTable";
 	/** 字典code */
 	public static final String FIELD_DICTFIELD = "field_dictField";
-
-	/** 字典Text */
-	public static final String FIELD_DICTTEXT = "field_dictText";
-
 	/** 字典数据 */
 	public static final String FIELD_DICTLIST = "field_dictlist";
 	
@@ -169,10 +165,4 @@ public class CgAutoListConstant {
 
 	public static final String BASEPATH = "basePath";
 	
-	
-	//===============Online开发权限{针对sql敏感操作}=================
-	/** 1： 有在线开发权限 */
-	public static final String SYS_DEV_FLAG_1 = "1";
-	/** 0： 无在线开发权限 */
-	public static final String SYS_DEV_FLAG_0 = "0";
 }

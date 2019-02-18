@@ -32,7 +32,7 @@ import org.jeecgframework.core.util.FileUtils;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
-import org.jeecgframework.core.util.oConvertUtils;
+import org.jeecgframework.p3.core.util.oConvertUtils;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
@@ -110,12 +110,7 @@ public class CgformTemplateController extends BaseController {
 		List<CgformTemplateEntity> dataList=dataGrid.getResults();
 		if(dataList!=null&&dataList.size()>0){
 			for(CgformTemplateEntity entity:dataList){
-				//entity.setTemplatePic("cgformTemplateController.do?showPic&code="+entity.getTemplateCode()+"&path="+entity.getTemplatePic());
-				if(oConvertUtils.isNotEmpty(entity.getTemplatePic())){
-					entity.setTemplatePic("img-online/server/"+entity.getTemplateCode()+"/images/"+entity.getTemplatePic());
-				}else{
-					entity.setTemplatePic("img-online/server/default/images/default.jpg");
-				}
+				entity.setTemplatePic("cgformTemplateController.do?showPic&code="+entity.getTemplateCode()+"&path="+entity.getTemplatePic());
 			}
 		}
 		TagUtil.datagrid(response, dataGrid);
@@ -501,68 +496,62 @@ public class CgformTemplateController extends BaseController {
 		j.setSuccess(true);
 		return j;
 	}
-//	/**
-//	 * 查看图片
-//	 * @param request
-//	 * @param code
-//	 * @param path
-//	 * @param response
-//	 */
-//	@JAuth
-//	@RequestMapping(params = "showPic")
-//	public void showPic(HttpServletRequest request,String code, String path,HttpServletResponse response){
-//		System.out.println("----showPic---");
-//		String defaultPath="default.jpg";
-//		String defaultCode="default/images/";
-//		//无图片情况
 
-//		if(oConvertUtils.isEmpty(path)){
-//			path=defaultPath;
-//			code=defaultCode;
-//		}else{
-//			//临时图片
-//			if(oConvertUtils.isEmpty(code)){
-//				code="temp/";
-//			}else{
-//				code+="/images/";
-//			}
-//		}
+	/**
+	 * 查看图片
+	 * @param request
+	 * @param code
+	 * @param path
+	 * @param response
+	 */
+	@RequestMapping(params = "showPic")
+	public void showPic(HttpServletRequest request,String code, String path,HttpServletResponse response){
+		String defaultPath="default.jpg";
+		String defaultCode="default/images/";
+		//无图片情况
 
-//		FileInputStream fis = null;
-//		OutputStream out = null;
-//		response.setContentType("image/" + FileUtils.getExtend(path));
-//		//TODO 缓存设置有效时间为一小时，IE有效，chrome无效
-//        response.setHeader("Cache-Control", "max-age=3600, must-revalidate");
-//        
-//		try {
-//			out = response.getOutputStream();
-//			File file = new File(getUploadBasePath(request),code+path);
-//			if(!file.exists()||file.isDirectory()){
-//				file=new File(getUploadBasePath(request),defaultCode+defaultPath);
-//			}
-//			fis = new FileInputStream(file);
-//			byte[] b = new byte[fis.available()];
-//			fis.read(b);
-//			out.write(b);
+		if(oConvertUtils.isEmpty(path)){
+			path=defaultPath;
+			code=defaultCode;
+		}else{
+			//临时图片
+			if(oConvertUtils.isEmpty(code)){
+				code="temp/";
+			}else{
+				code+="/images/";
+			}
+		}
 
-//			//out.flush();
+		FileInputStream fis = null;
+		OutputStream out = null;
+		response.setContentType("image/" + FileUtils.getExtend(path));
+		try {
+			out = response.getOutputStream();
+			File file = new File(getUploadBasePath(request),code+path);
+			if(!file.exists()||file.isDirectory()){
+				file=new File(getUploadBasePath(request),defaultCode+defaultPath);
+			}
+			fis = new FileInputStream(file);
+			byte[] b = new byte[fis.available()];
+			fis.read(b);
+			out.write(b);
 
-//		} catch (Exception e) {
-//			logger.error(e.toString());
-////			e.printStackTrace();
-//		} finally {
-//			if (fis != null) {
-//				try {
-//					fis.close();
-//					out.close();
-//				} catch (IOException e) {
-//					logger.info(e.toString());
-//				}
-//			}
-//		}
-//	}
-	
-	
+			//out.flush();
+
+		} catch (Exception e) {
+			logger.error(e.toString());
+//			e.printStackTrace();
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+					out.close();
+				} catch (IOException e) {
+					logger.info(e.toString());
+				}
+			}
+		}
+	}
 	//获取上传根路径
 	private String getUploadBasePath(HttpServletRequest request){
 

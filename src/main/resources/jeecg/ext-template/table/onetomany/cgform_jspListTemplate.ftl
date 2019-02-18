@@ -3,17 +3,10 @@
 <#-- update--begin--author:zhangjiaqiang date:20170531 for:增加列表页面对于图片和文件的判断 -->
 <#include "../../ui/tdgCol.ftl"/>
 <#-- update--end--author:zhangjiaqiang date:20170531 for:增加列表页面对于图片和文件的判断 -->
-<#assign orderByCreateDate = false />
-<#list columns as po>
-	<#if po.fieldName=='createDate'>
-		<#assign orderByCreateDate = true />
-		<#break>
-	</#if>
-</#list>
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="${entityName?uncap_first}List" checkbox="true" fitColumns="true" title="${ftl_description}" <#if orderByCreateDate == true >sortName="createDate"<#else>sortName="id"</#if> actionUrl="${entityName?uncap_first}Controller.do?datagrid" idField="id" fit="true" queryMode="group">
+  <t:datagrid name="${entityName?uncap_first}List" checkbox="true" fitColumns="true" title="${ftl_description}" actionUrl="${entityName?uncap_first}Controller.do?datagrid" idField="id" fit="true" queryMode="group">
   <#-- update--begin--author:zhangjiaqiang date:20170531 for:增加图片和文件的列表判断 -->
   <@dgcol columns=columns/>
   <#-- update--begin--author:zhangjiaqiang date:20170531 for:增加图片和文件的列表判断 -->
@@ -36,6 +29,7 @@
   </t:datagrid>
   </div>
  </div>
+ <script src = "webpage/${bussiPackage?replace('.','/')}/${entityPackage}/${entityName?uncap_first}List.js"></script>		
  <script type="text/javascript">
  <#list buttons as btn>
  	<#if btn.buttonStyle =='button' && btn.optType=='action'>
@@ -67,9 +61,3 @@ function ExportXlsByT() {
 	JeecgExcelExport("${entityName?uncap_first}Controller.do?exportXlsByT","${entityName?uncap_first}List");
 }
  </script>
-<#if (cgformConfig.listJs.cgJsStr)?? && cgformConfig.listJs.cgJsStr!="">
- <script type="text/javascript">
- //JS增强
- ${cgformConfig.listJs.cgJsStr}
- </script>
-</#if>

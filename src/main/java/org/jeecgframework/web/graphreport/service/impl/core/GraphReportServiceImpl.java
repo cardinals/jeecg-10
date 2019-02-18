@@ -65,22 +65,17 @@ public class GraphReportServiceImpl extends CommonServiceImpl implements
 
 	
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> queryByCgReportSql(String sql, Map params,Map<String,Object> paramData,
+	public List<Map<String, Object>> queryByCgReportSql(String sql, Map params,
 			int page, int rows) {
 		sql = handleElInSQL(sql, params);
 		String querySql = getFullSql(sql,params);
-		log.debug("-------------动态报表功能--------querySql--" + querySql);
+		log.info("-------------动态报表功能--------querySql--" + querySql);
 		List<Map<String,Object>> result = null;
-
-		if(paramData!=null&&paramData.size()==0){
-			paramData = null;
-		}
 		if(page==-1 && rows==-1){
-			result = jdbcDao.findForListMap(querySql,paramData);
+			result = jdbcDao.findForJdbc(querySql);
 		}else{
-			result = jdbcDao.findForListMap(querySql, paramData, page, rows);
+			result = jdbcDao.findForJdbc(querySql, page, rows);
 		}
-
 		return result;
 	}
 	

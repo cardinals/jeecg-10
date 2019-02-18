@@ -13,8 +13,7 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -51,7 +50,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.util.Map;
 import org.jeecgframework.core.util.ExceptionUtil;
-<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
+
 <#-- restful 通用方法生成 -->
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -83,7 +82,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 <#-- swagger api end -->
-</#if>
+
 <#-- 列为文件类型的文件代码生成 -->
 <#assign fileFlag = false />
 <#list columns as filePo>
@@ -108,25 +107,24 @@ import java.util.HashMap;
  * @version V1.0   
  *
  */
- <#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
  <#-- update--begin--author:zhangjiaqiang date:20171031 for:API 注解 start -->
 @Api(value="${entityName}",description="${ftl_description}",tags="${entityName?uncap_first}Controller")
 <#-- update--end--author:zhangjiaqiang date:20171031 for:API 注解 start -->
-</#if>
 @Controller
 @RequestMapping("/${entityName?uncap_first}Controller")
 public class ${entityName}Controller extends BaseController {
-	private static final Logger logger = LoggerFactory.getLogger(${entityName}Controller.class);
+	/**
+	 * Logger for this class
+	 */
+	private static final Logger logger = Logger.getLogger(${entityName}Controller.class);
 
 	@Autowired
 	private ${entityName}ServiceI ${entityName?uncap_first}Service;
 	@Autowired
 	private SystemService systemService;
 	<#-- restful 通用方法生成 -->
-	<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
 	@Autowired
 	private Validator validator;
-	</#if>
 	<#-- restful 通用方法生成 -->
 	
 	<#-- 列为文件类型的文件代码生成 -->
@@ -164,6 +162,26 @@ public class ${entityName}Controller extends BaseController {
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, ${entityName?uncap_first}, request.getParameterMap());
 		try{
 		//自定义追加查询条件
+		<#list columns as po>
+		<#if po.isQuery =='Y' && po.queryMode =='group'>
+		String query_${po.fieldName}_begin = request.getParameter("${po.fieldName}_begin");
+		String query_${po.fieldName}_end = request.getParameter("${po.fieldName}_end");
+		if(StringUtil.isNotEmpty(query_${po.fieldName}_begin)){
+			<#if po.type == "java.util.Date">
+			cq.ge("${po.fieldName}", new SimpleDateFormat("yyyy-MM-dd").parse(query_${po.fieldName}_begin));
+			<#else>
+			cq.ge("${po.fieldName}", Integer.parseInt(query_${po.fieldName}_begin));
+			</#if>
+		}
+		if(StringUtil.isNotEmpty(query_${po.fieldName}_end)){
+			<#if po.type == "java.util.Date">
+			cq.le("${po.fieldName}", new SimpleDateFormat("yyyy-MM-dd").parse(query_${po.fieldName}_end));
+			<#else>
+			cq.le("${po.fieldName}", Integer.parseInt(query_${po.fieldName}_end));
+			</#if>
+		}
+		</#if>
+		</#list> 
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}
@@ -411,7 +429,7 @@ public class ${entityName}Controller extends BaseController {
 				j.setMsg("文件导入成功！");
 			} catch (Exception e) {
 				j.setMsg("文件导入失败！");
-				logger.error(e.getMessage());
+				logger.error(ExceptionUtil.getExceptionMessage(e));
 			}finally{
 				try {
 					file.getInputStream().close();
@@ -454,26 +472,17 @@ public class ${entityName}Controller extends BaseController {
 	</#if>
 	<#-- 列为文件类型的文件代码生成 -->
 	
-	<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
 	<#-- update--begin--author:zhangjiaqiang date:20171113 for:restful接口封装 -->
 	<#-- restful 通用方法生成 -->
-	<#-- update-begin-Author:LiShaoQing Date:20180828 for: TASK #3105 【代码生成器】代码生成rest接口 list获取改造 -->
-	@RequestMapping(value="/list/{pageNo}/{pageSize}", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	<#-- update--begin--author:zhangjiaqiang date:20171031 for:TASK #2397 【新功能】代码生成器模板修改，追加swagger-ui注解 -->
 	@ApiOperation(value="${ftl_description}列表信息",produces="application/json",httpMethod="GET")
 	<#-- update--end--author:zhangjiaqiang date:20171031 for:TASK #2397 【新功能】代码生成器模板修改，追加swagger-ui注解 -->
-	public ResponseMessage<List<${entityName}Entity>> list(@PathVariable("pageNo") int pageNo, @PathVariable("pageSize") int pageSize, HttpServletRequest request) {
-		if(pageSize > Globals.MAX_PAGESIZE){
-			return Result.error("每页请求不能超过" + Globals.MAX_PAGESIZE + "条");
-		}
-		CriteriaQuery query = new CriteriaQuery(${entityName}Entity.class);
-		query.setCurPage(pageNo<=0?1:pageNo);
-		query.setPageSize(pageSize<1?1:pageSize);
-		List<${entityName}Entity> list${entityName}s = this.${entityName?uncap_first}Service.getListByCriteriaQuery(query,true);
+	public ResponseMessage<List<${entityName}Entity>> list() {
+		List<${entityName}Entity> list${entityName}s=${entityName?uncap_first}Service.getList(${entityName}Entity.class);
 		return Result.success(list${entityName}s);
 	}
-	<#-- update-end-Author:LiShaoQing Date:20180828 for: TASK #3105 【代码生成器】代码生成rest接口 list获取改造 -->
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
@@ -540,7 +549,7 @@ public class ${entityName}Controller extends BaseController {
 	@ApiOperation(value="删除${ftl_description}")
 	<#-- update--begin--author:zhangjiaqiang date:20171031 for:TASK #2397 【新功能】代码生成器模板修改，追加swagger-ui注解 -->
 	public ResponseMessage<?> delete(@ApiParam(name="id",value="ID",required=true)@PathVariable("id") String id) {
-		logger.info("delete[{}]" , id);
+		logger.info("delete[{}]" + id);
 		// 验证
 		if (StringUtils.isEmpty(id)) {
 			return Result.error("ID不能为空");
@@ -556,5 +565,4 @@ public class ${entityName}Controller extends BaseController {
 	}
 	<#-- restful 通用方法生成 -->
 	<#-- update--end--author:zhangjiaqiang date:20171113 for:restful接口封装 -->
-	</#if>
 }

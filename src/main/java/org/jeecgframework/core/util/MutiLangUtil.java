@@ -111,7 +111,7 @@ public class MutiLangUtil {
 	 * @return 如果存在则返回true，否则false
 	 */
 	public static boolean existLangKey(String lang_key){
-		String langContext = ResourceUtil.getMutiLan(lang_key + "_" + "zh-cn");
+		String langContext = ResourceUtil.mutiLangMap.get(lang_key + "_" + "zh-cn");
 		if(oConvertUtils.isNotEmpty(langContext))
 		{
 			return true;
@@ -127,7 +127,7 @@ public class MutiLangUtil {
 	 * @return 如果存在则返回true，否则false
 	 */
 	public static boolean existLangKey(String lang_key,String langCode){	
-		String langContext = ResourceUtil.getMutiLan(lang_key + "_" + langCode);
+		String langContext = ResourceUtil.mutiLangMap.get(lang_key + "_" + langCode);
 		if(oConvertUtils.isNotEmpty(langContext))
 		{
 			return true;
@@ -136,13 +136,13 @@ public class MutiLangUtil {
 	}
 	
 	public static String doMutiLang(String title, String langArg){
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//		long start = System.currentTimeMillis();
-//		logger.info("================================ doMutiLang 开始时间:"+sdf.format(new Date())+"==============================");
+		/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");*/
+		/*long start = System.currentTimeMillis();
+		logger.info("================================ doMutiLang 开始时间:"+sdf.format(new Date())+"==============================");*/
 		String context = getLang(title, langArg);
-//		long end = System.currentTimeMillis();
-//		logger.info("=============================== doMutiLang 结束时间:"+sdf.format(new Date())+"==============================");
-//		logger.info("================================ doMutiLang 耗时:"+(end-start)+"ms==============================");
+		/*long end = System.currentTimeMillis();
+		logger.info("=============================== doMutiLang 结束时间:"+sdf.format(new Date())+"==============================");
+		logger.info("================================ doMutiLang 耗时:"+(end-start)+"ms==============================");*/
 		return context;
 	}
 	/**
@@ -184,9 +184,9 @@ public class MutiLangUtil {
 			language = (String)request.getSession().getAttribute("lang");
 		}
 		
-		String langContext = ResourceUtil.getMutiLan(langKey + "_" + language);
+		String langContext = ResourceUtil.mutiLangMap.get(langKey + "_" + language);
 		if(StringUtil.isEmpty(langContext)){
-			langContext = ResourceUtil.getMutiLan("common.notfind.langkey" + "_" + language);
+			langContext = ResourceUtil.mutiLangMap.get("common.notfind.langkey" + "_" + language);
 			if("null".equals(langContext)||langContext==null ||langKey.startsWith("?")){
 				langContext = "";
 			}

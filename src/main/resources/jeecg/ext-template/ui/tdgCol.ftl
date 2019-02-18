@@ -23,11 +23,7 @@
  queryMode="group" <#rt/>
  </#if><#rt/>
  <#if po.dictTable?if_exists?html!=""><#rt/>
- <#-- update--begin--author:gj_shaojc date:20180313 for:TASK #2526 【问题确认】[Online开发] 3.7.2,popup,当字典Text为多个值时,查询条件的input框值为undefined -->
- <#-- update--begin--author:zhoujf date:20180413 for:TASK #2641 【popup重构问题】popup查询条件多字段回填问题-->
- dictionary="${po.dictTable},${po.dictField?replace(',', '@')},${po.dictText?replace(',', '@')}" <#rt/>
- <#-- update--end--author:zhoujf date:20180413 for:TASK #2641 【popup重构问题】popup查询条件多字段回填问题-->
-<#-- update--begin--author:gj_shaojc date:20180313 for:TASK #2526 【问题确认】[Online开发] 3.7.2,popup,当字典Text为多个值时,查询条件的input框值为undefined -->
+ dictionary="${po.dictTable},${po.dictField},${po.dictText}" <#rt/>
 <#if po.showType=='popup'><#rt/>
  popup="true" <#rt/>
 </#if><#rt/>

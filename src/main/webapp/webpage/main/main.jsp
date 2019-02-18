@@ -165,11 +165,11 @@ a:hover {
                         <t:mutiLang langKey="common.change.password"/>
                     </div>
 					<div class="menu-sep"></div>
-                    <div onclick="createdetailwindow('<t:mutiLang langKey="common.ssms.getSysInfos"/>','tSSmsController.do?goMySmsList',800,400)">
+                    <div onclick="openwindow('<t:mutiLang langKey="common.ssms.getSysInfos"/>','tSSmsController.do?getSysInfos')">
                         <t:mutiLang langKey="common.ssms.getSysInfos"/>
                     </div>
                     <div class="menu-sep"></div>
-                    <div onclick="add('<t:mutiLang langKey="common.change.style"/>','userController.do?changestyle','',550,250)">
+                    <div onclick="add('<t:mutiLang langKey="common.change.style"/>','userController.do?changestyle','',550,200)">
                         <t:mutiLang langKey="common.my.style"/>
                     </div>
                     

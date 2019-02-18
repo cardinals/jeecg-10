@@ -66,11 +66,9 @@ public class ColumnMeta {
 				}
 	        }else{
 	            if (colunmType.contains("date") || colunmType.contains("blob") || colunmType.contains("text")) {
-
-	            	return colunmType.equals(meta.getColunmType()) && columnName.equals(meta.getColumnName())
+		        	  return columnName.equals(meta.getColumnName())
 		  	        &&isNullable.equals(meta.isNullable)
 		  	        &&isEquals(comment,meta.getComment())&&isEquals(fieldDefault,meta.getFieldDefault());
-
 				}else {
 					 return colunmType.equals(meta.getColunmType())
 				        &&isNullable.equals(meta.isNullable)&&columnSize==meta.getColumnSize()

@@ -77,7 +77,15 @@ public class ManagerareaController extends BaseController {
 		return mav;
 		//return new ModelAndView("com/jeecg/estate/managerareaList");
 	}
-
+	/**
+	 * 返回上一层
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(params = "goLastOne")
+	public ModelAndView goLastOne(HttpServletRequest request) {
+		return new ModelAndView("com/jeecg/estate/companyList");
+	}
 	/**
 	 * easyui AJAX请求数据
 	 * 

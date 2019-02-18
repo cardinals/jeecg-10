@@ -17,6 +17,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 /**
  * JSON和JAVA的POJO的相互转换
  * @author  张代浩

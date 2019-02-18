@@ -234,6 +234,18 @@ public class BuildingController extends BaseController {
 		return mav;
 	}
 	/**
+	 * 返回上一层
+	 */
+	@RequestMapping(params="goLastOne")
+	public ModelAndView goLastOne(HttpServletRequest request,HttpServletResponse response,String commId) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("com/jeecg/estate/communityList");
+		List<CommunityEntity> comm = systemService.findByPropertyisOrder(CommunityEntity.class, "id", commId, true);
+		String fatherId = comm.get(0).getFatherId();
+		mav.addObject("fatherId", fatherId);
+		return mav;
+	}
+	/**
 	 * 楼宇表编辑页面跳转
 	 * 
 	 * @return

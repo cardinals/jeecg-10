@@ -35,8 +35,6 @@ public class TreeSelectTag extends TagSupport {
 	
 	private String code;
 	
-	private String formStyle;//表单风格 ace default
-	
 	@Autowired
 	private SystemService systemService;
 	
@@ -74,9 +72,7 @@ public class TreeSelectTag extends TagSupport {
 	 * @param resultSb
 	 */
 	private void textInput(StringBuffer resultSb) {
-
-		resultSb.append("<input type=\"text\" ");
-
+		resultSb.append("<input type=\"text\" style=\"width: 150px\" ");
 		if(StringUtil.isNotEmpty(inputClass)){
 			resultSb.append("class=\""+inputClass+"\"  ");
 		}else{
@@ -190,16 +186,8 @@ public class TreeSelectTag extends TagSupport {
 			resultSb.append("var deptObj = $(\"#" + field + "Text\");  ");
 			resultSb.append("var deptOffset = $(\"#"+field+"Text\").offset();");
 		}
-
-		if("ace".equals(formStyle)){
-			resultSb.append(" $(\"#show"+StringUtil.firstUpperCase(field)+"TreeContent\").css({top:(deptObj[0].offsetTop + deptObj.outerHeight()) + \"px\"}).slideDown(\"fast\");  ");
-			resultSb.append("$('#show"+StringUtil.firstUpperCase(field)+"Tree').css({width:deptObj.outerWidth() - 2 + \"px\"});  ");
-		}else{
-			resultSb.append(" $(\"#show"+StringUtil.firstUpperCase(field)+"TreeContent\").css({left:deptOffset.left + 'px', top:deptOffset.top + deptObj.outerHeight() + 'px'}).slideDown(\"fast\");  ");
-			resultSb.append("$('#show"+StringUtil.firstUpperCase(field)+"Tree').css({width:deptObj.outerWidth() - 12 + \"px\"});  ");
-		}
-
-		
+		resultSb.append(" $(\"#show"+StringUtil.firstUpperCase(field)+"TreeContent\").css({left:deptOffset.left + \"px\", top:deptOffset.top + deptObj.outerHeight() + \"px\"}).slideDown(\"fast\");  ");
+		resultSb.append("$('#show"+StringUtil.firstUpperCase(field)+"Tree').css({width:deptObj.outerWidth() - 12 + \"px\"});  ");
 		resultSb.append(" var zTree = $.fn.zTree.getZTreeObj(\"show"+StringUtil.firstUpperCase(field)+"Tree\"); ");
 		if(StringUtil.isNotEmpty(id)){
 			resultSb.append("var idVal =  $(\"#"+id+"\").val();");
@@ -224,27 +212,8 @@ public class TreeSelectTag extends TagSupport {
 	}
 
 	private void getCheckFunction(StringBuffer resultSb) {
-
 		resultSb.append("function " + field + "OnCheck(e, treeId, treeNode) {");
-		resultSb.append(" var myTree = $.fn.zTree.getZTreeObj(\"show"+StringUtil.firstUpperCase(field)+"Tree\"); ");
-		resultSb.append("var nodes = myTree.getCheckedNodes(true);var tempId='',tempText='';");
-
-		resultSb.append("if(nodes && nodes.length>0){for(var i = 0;i<nodes.length;i++){tempId+=nodes[i].id+',';tempText+=nodes[i].text+',';}}");    
-
-		resultSb.append("if(tempId ==''){");
-		if(StringUtil.isEmpty(id)){
-			resultSb.append("$('#"+field+"').val(''); }else{$('#"+field+"').val(tempId.substring(0,tempId.length - 1));}");
-		}else{
-			resultSb.append("$('#"+id+"').val(''); }else{$('#"+id+"').val(tempId.substring(0,tempId.length - 1));}");
-		}   
-		resultSb.append("if(tempText ==''){");
-		if(StringUtil.isEmpty(id)){
-			resultSb.append("$('#"+field+"Text').val(''); }else{$('#"+field+"Text').val(tempText.substring(0,tempText.length - 1));}");
-		}else{
-			resultSb.append("$('#"+id+"Text').val(''); }else{$('#"+id+"Text').val(tempText.substring(0,tempText.length - 1));}");
-		}   
-		
-		/*if(StringUtil.isNotEmpty(id)){
+		if(StringUtil.isNotEmpty(id)){
 			resultSb.append("var idVal = $(\"#"+id+"\").val();");
 			resultSb.append(" var textVal = $(\"#"+id+"Text\").val();");
 		}else{
@@ -302,8 +271,7 @@ public class TreeSelectTag extends TagSupport {
 			resultSb.append("$(\"#"+field+"Text\").val(textVal);");
 			resultSb.append(" $(\"#"+field+"\").val(idVal);");
 		}
-		resultSb.append("}");*/
-
+		resultSb.append("}");
 		resultSb.append(" e.stopPropagation();");
 		resultSb.append("}");
 	}
@@ -320,10 +288,6 @@ public class TreeSelectTag extends TagSupport {
 		resultSb.append("var "+field+"Setting = {");
 		resultSb.append("check: {");
 		resultSb.append("enable: true");
-
-		resultSb.append(",chkStyle:'checkbox',chkboxType: { 'Y': '', 'N': '' }");
-
-		 
 		resultSb.append("},");
 		resultSb.append("view: {dblClickExpand: false},");
 		resultSb.append("data: {simpleData: { enable: true }, key:{name:'text' }},");
@@ -440,13 +404,7 @@ public class TreeSelectTag extends TagSupport {
 	public void setCode(String code) {
 		this.code = code;
 	}
-
-	public String getFormStyle() {
-		return formStyle;
-	}
-
-	public void setFormStyle(String formStyle) {
-		this.formStyle = formStyle;
-	}
+	
+	
 
 }

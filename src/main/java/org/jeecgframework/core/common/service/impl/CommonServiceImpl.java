@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.jeecgframework.core.common.dao.ICommonDao;
@@ -17,6 +18,7 @@ import org.jeecgframework.core.common.hibernate.qbc.PageList;
 import org.jeecgframework.core.common.model.common.DBTable;
 import org.jeecgframework.core.common.model.common.UploadFile;
 import org.jeecgframework.core.common.model.json.ComboTree;
+import org.jeecgframework.core.common.model.json.DataGridReturn;
 import org.jeecgframework.core.common.model.json.ImportFile;
 import org.jeecgframework.core.common.model.json.TreeGrid;
 import org.jeecgframework.core.common.service.CommonService;
@@ -24,7 +26,6 @@ import org.jeecgframework.tag.vo.datatable.DataTableReturn;
 import org.jeecgframework.tag.vo.easyui.Autocomplete;
 import org.jeecgframework.tag.vo.easyui.ComboTreeModel;
 import org.jeecgframework.tag.vo.easyui.TreeGridModel;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,12 +39,10 @@ public class CommonServiceImpl implements CommonService {
 	 * 
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public List<DBTable> getAllDbTableName() {
 		return commonDao.getAllDbTableName();
 	}
 
-	@Transactional(readOnly = true)  
 	public Integer getAllDbTableSize() {
 		return commonDao.getAllDbTableSize();
 	}
@@ -83,7 +82,6 @@ public class CommonServiceImpl implements CommonService {
 	/**
 	 * 根据实体名获取对象
 	 */
-	@Transactional(readOnly = true)  
 	public <T> T get(Class<T> class1, Serializable id) {
 		return commonDao.get(class1, id);
 	}
@@ -96,7 +94,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param size
 	 * @return
 	 */
-    @Transactional(readOnly = true)
 	public <T> List<T> getList(Class clas) {
 		return commonDao.loadAll(clas);
 	}
@@ -104,7 +101,6 @@ public class CommonServiceImpl implements CommonService {
 	/**
 	 * 根据实体名获取对象
 	 */
-    @Transactional(readOnly = true)
 	public <T> T getEntity(Class entityName, Serializable id) {
 		return commonDao.getEntity(entityName, id);
 	}
@@ -118,7 +114,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param value
 	 * @return
 	 */
-    @Transactional(readOnly = true)
 	public <T> T findUniqueByProperty(Class<T> entityClass,
 			String propertyName, Object value) {
 		return commonDao.findUniqueByProperty(entityClass, propertyName, value);
@@ -127,7 +122,6 @@ public class CommonServiceImpl implements CommonService {
 	/**
 	 * 按属性查找对象列表.
 	 */
-    @Transactional(readOnly = true)
 	public <T> List<T> findByProperty(Class<T> entityClass,
 			String propertyName, Object value) {
 
@@ -141,12 +135,10 @@ public class CommonServiceImpl implements CommonService {
 	 * @param entityClass
 	 * @return
 	 */
-    @Transactional(readOnly = true)
 	public <T> List<T> loadAll(final Class<T> entityClass) {
 		return commonDao.loadAll(entityClass);
 	}
 
-    @Transactional(readOnly = true)
 	public <T> T singleResult(String hql) {
 		return commonDao.singleResult(hql);
 	}
@@ -179,7 +171,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param query
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public <T> List<T> findByQueryString(String hql) {
 		return commonDao.findByQueryString(hql);
 	}
@@ -201,7 +192,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param query
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public <T> List<T> findListbySql(String query) {
 		return commonDao.findListbySql(query);
 	}
@@ -213,7 +203,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param clas
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public <T> List<T> findByPropertyisOrder(Class<T> entityClass,
 			String propertyName, Object value, boolean isAsc) {
 		return commonDao.findByPropertyisOrder(entityClass, propertyName,
@@ -228,7 +217,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param isOffset
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public PageList getPageList(final CriteriaQuery cq, final boolean isOffset) {
 		return commonDao.getPageList(cq, isOffset);
 	}
@@ -240,7 +228,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param isOffset
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public DataTableReturn getDataTableReturn(final CriteriaQuery cq,
 			final boolean isOffset) {
 		return commonDao.getDataTableReturn(cq, isOffset);
@@ -254,7 +241,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @return
 	 */
 
-	@Transactional(readOnly = true)
 	public void getDataGridReturn(final CriteriaQuery cq,
 			final boolean isOffset) {
 		commonDao.getDataGridReturn(cq, isOffset);
@@ -269,7 +255,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param isOffset
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public PageList getPageList(final HqlQuery hqlQuery,
 			final boolean needParameter) {
 		return commonDao.getPageList(hqlQuery, needParameter);
@@ -283,7 +268,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param isOffset
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public PageList getPageListBySql(final HqlQuery hqlQuery,
 			final boolean isToEntity) {
 		return commonDao.getPageListBySql(hqlQuery, isToEntity);
@@ -295,7 +279,6 @@ public class CommonServiceImpl implements CommonService {
 		return commonDao.getSession();
 	}
 
-	@Transactional(readOnly = true)
 	public List findByExample(final String entityName,
 			final Object exampleEntity) {
 		return commonDao.findByExample(entityName, exampleEntity);
@@ -308,7 +291,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param cq
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public <T> List<T> getListByCriteriaQuery(final CriteriaQuery cq,
 			Boolean ispage) {
 		return commonDao.getListByCriteriaQuery(cq, ispage);
@@ -323,7 +305,6 @@ public class CommonServiceImpl implements CommonService {
 		return commonDao.uploadFile(uploadFile);
 	}
 
-	@Transactional(readOnly = true)
 	public HttpServletResponse viewOrDownloadFile(UploadFile uploadFile)
 
 	{
@@ -351,12 +332,10 @@ public class CommonServiceImpl implements CommonService {
 		commonDao.parserXml(fileName);
 	}
 
-	@Transactional(readOnly = true)
 	public List<ComboTree> comTree(List<TSDepart> all, ComboTree comboTree) {
 		return commonDao.comTree(all, comboTree);
 	}
 
-	@Transactional(readOnly = true)
 	public List<ComboTree> ComboTree(List all, ComboTreeModel comboTreeModel, List in, boolean recursive) {
         return commonDao.ComboTree(all, comboTreeModel, in, recursive);
 	}
@@ -364,8 +343,7 @@ public class CommonServiceImpl implements CommonService {
 	/**
 	 * 构建树形数据表
 	 */
-	@Transactional(readOnly = true)
-	public List<TreeGrid> treegrid(List<?> all, TreeGridModel treeGridModel) {
+	public List<TreeGrid> treegrid(List all, TreeGridModel treeGridModel) {
 		return commonDao.treegrid(all, treeGridModel);
 	}
 
@@ -375,7 +353,6 @@ public class CommonServiceImpl implements CommonService {
 	 * @param <T>
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public <T> List<T> getAutoList(Autocomplete autocomplete) {
 		StringBuffer sb = new StringBuffer("");
 		for (String searchField : autocomplete.getSearchField().split(",")) {
@@ -404,39 +381,37 @@ public class CommonServiceImpl implements CommonService {
 		return commonDao.executeSqlReturnKey(sql, param);
 	}
 	
-	@Transactional(readOnly = true)
 	public List<Map<String, Object>> findForJdbc(String sql, int page, int rows) {
 		return commonDao.findForJdbc(sql, page, rows);
 	}
 
-	@Transactional(readOnly = true)
+	
 	public List<Map<String, Object>> findForJdbc(String sql, Object... objs) {
 		return commonDao.findForJdbc(sql, objs);
 	}
 
-	@Transactional(readOnly = true)
+	
 	public List<Map<String, Object>> findForJdbcParam(String sql, int page,
 			int rows, Object... objs) {
 		return commonDao.findForJdbcParam(sql, page, rows, objs);
 	}
 
-	@Transactional(readOnly = true)
+	
 	public <T> List<T> findObjForJdbc(String sql, int page, int rows,
 			Class<T> clazz) {
 		return commonDao.findObjForJdbc(sql, page, rows, clazz);
 	}
 
-	@Transactional(readOnly = true)
+	
 	public Map<String, Object> findOneForJdbc(String sql, Object... objs) {
 		return commonDao.findOneForJdbc(sql, objs);
 	}
 
-	@Transactional(readOnly = true)
+	
 	public Long getCountForJdbc(String sql) {
 		return commonDao.getCountForJdbc(sql);
 	}
-	@Transactional(readOnly = true)
-	public Long getCountForJdbcParam(String sql, Object... objs) {
+	public Long getCountForJdbcParam(String sql, Object[] objs) {
 		return commonDao.getCountForJdbcParam(sql,objs);
 	}
 
@@ -452,18 +427,15 @@ public class CommonServiceImpl implements CommonService {
 	 * @param query
 	 * @return
 	 */
-	@Transactional(readOnly = true)
 	public <T> List<T> findHql(String hql, Object... param) {
 		return this.commonDao.findHql(hql, param);
 	}
 
-	@Transactional(readOnly = true)
 	public <T> List<T> pageList(DetachedCriteria dc, int firstResult,
 			int maxResult) {
 		return this.commonDao.pageList(dc, firstResult, maxResult);
 	}
 
-	@Transactional(readOnly = true)
 	public <T> List<T> findByDetached(DetachedCriteria dc) {
 		return this.commonDao.findByDetached(dc);
 	}

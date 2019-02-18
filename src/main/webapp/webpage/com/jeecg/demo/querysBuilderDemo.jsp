@@ -6,15 +6,11 @@
 ul {
     list-style-type: none;
     list-style-image: none;
-    margin-bottom: 3px;
-}
-li {
-    margin-bottom: 3px;
 }
 .conditionType {
     display: block;
-    margin-bottom: 3px;
-    padding: 3px 0 3px;
+    margin-bottom: 6px;
+    padding: 6px 0 8px;
     width: 100%;
 }select {
     padding-right: 2px!important;
@@ -54,7 +50,7 @@ textarea, input[type=text], input[type=password], select {
 			<t:dgCol title="工资" field="salary" query="false"></t:dgCol>
 			<t:dgCol title="生日" field="birthday" formatter="yyyy/MM/dd" query="false"></t:dgCol>
 		</t:datagrid>
-		<div id="jeecgDemoListquerytb"  style="padding: 3px; height: 67px">
+		<div id="jeecgDemoListquerytb"  style="padding: 3px; height: 25px">
 			<div style="float: left;">
 		  		<ul id="dsUL">
 					<li id="anyAll" class="conditionType">

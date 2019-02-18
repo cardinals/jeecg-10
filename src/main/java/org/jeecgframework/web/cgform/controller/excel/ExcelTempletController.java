@@ -20,7 +20,6 @@ import org.jeecgframework.core.common.exception.BusinessException;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.DataBaseConstant;
-import org.jeecgframework.core.util.DBTypeUtil;
 import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.MutiLangUtil;
 import org.jeecgframework.core.util.StringUtil;
@@ -35,7 +34,6 @@ import org.jeecgframework.poi.handler.impl.ExcelDataHandlerDefaultImpl;
 import org.jeecgframework.poi.util.PoiPublicUtil;
 import org.jeecgframework.web.cgform.common.CgAutoListConstant;
 import org.jeecgframework.web.cgform.entity.config.CgFormFieldEntity;
-import org.jeecgframework.web.cgform.entity.config.CgFormHeadEntity;
 import org.jeecgframework.web.cgform.service.autolist.CgTableServiceI;
 import org.jeecgframework.web.cgform.service.autolist.ConfigServiceI;
 import org.jeecgframework.web.cgform.service.build.DataBaseService;
@@ -45,9 +43,6 @@ import org.jeecgframework.web.cgform.util.QueryParamUtil;
 import org.jeecgframework.web.system.pojo.base.DictEntity;
 import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
-import org.springframework.jdbc.support.incrementer.OracleSequenceMaxValueIncrementer;
-import org.springframework.jdbc.support.incrementer.PostgreSQLSequenceMaxValueIncrementer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,8 +75,6 @@ public class ExcelTempletController extends BaseController {
 	private CgTableServiceI cgTableService;
 	@Autowired
 	private SystemService systemService;
-	@Autowired
-	private AbstractRoutingDataSource dataSource;
 
 
 	/**
@@ -150,11 +143,9 @@ public class ExcelTempletController extends BaseController {
 			List<Map<String, Object>> nresult=new ArrayList<Map<String, Object>>();
 			if (StringUtil.isNotEmpty(id)){
 				for(Map map:result){
-
-					if(id.contains(map.get("id").toString())){
+					if(id.contains((String )map.get("id"))){
 						nresult.add(map);
 					}
-
 				}
 			}else {
 				nresult.addAll(result);
@@ -251,9 +242,7 @@ public class ExcelTempletController extends BaseController {
 
 							}
 						}
-						if(oConvertUtils.isNotEmpty(sb.toString())){
-							resultMap.put(b.getFieldName(), sb.toString().substring(0, sb.toString().length() - 1));
-						}
+						resultMap.put(b.getFieldName(), sb.toString().substring(0, sb.toString().length() - 1));
 					}
 
 				}
@@ -314,8 +303,7 @@ public class ExcelTempletController extends BaseController {
 						//--author：zhoujf---start------date:20170207--------for:online表单物理表查询数据异常处理
 						configId = configId.split("__")[0];
 
-//						String mainId = "";
-						Object mainId = "";
+						String mainId = "";
 						for (Map<String, Object> map : listDate) {
 							//标志是否为主表数据
 							boolean isMainData = false;
@@ -325,27 +313,21 @@ public class ExcelTempletController extends BaseController {
 								if (key.indexOf("$subTable$")==-1) {
 									if (key.indexOf("$mainTable$")!=-1 && StringUtils.isNotEmpty(map.get(key).toString())) {
 										isMainData = true;
-//										mainId = UUIDGenerator.generate();
-										mainId = getPkValue(configId);
+										mainId = UUIDGenerator.generate();
 									}
 									mainData.put(key.replace("$mainTable$", ""), map.get(key));
 								}
 							}
-
-//							map.put("$mainTable$id", mainId);//为子表准备
+							map.put("$mainTable$id", mainId);//为子表准备
 							if (isMainData) {
 
 								//处理字典项
 								dealDicForImport(mainData, lists);
 
 								mainData.put("id", mainId);//主表数据
-								dataBaseService.insertTable(configId, mainData);
-								mainId =  mainData.get("id");
+								dataBaseService.insertTable(configId, mainData);									
 							}
-							map.put("$mainTable$id", mainId);//为子表准备
-
 						}
-
 						//导入子表数据，如果有
 						for (String subConfigId: subTabList) {
 							Map<String, Object> subConfigs = configService.queryConfigs(subConfigId, jversion);
@@ -378,9 +360,7 @@ public class ExcelTempletController extends BaseController {
 									//处理字典项
 									dealDicForImport(subData, subLists);
 
-//									subData.put("id", UUIDGenerator.generate());
-									subData.put("id", getPkValue(subConfigId));
-
+									subData.put("id", UUIDGenerator.generate());
 									dataBaseService.insertTable(subConfigId, subData);
 								}
 							}
@@ -401,62 +381,6 @@ public class ExcelTempletController extends BaseController {
 		j.setMsg(message);
 		return j;
 	}
-
-	/**
-	 * 根据主键策略获取实际插入的主键值
-	 * @param tableName 表单名称
-	 * @return
-	 */
-	public Object getPkValue(String tableName) {
-		Object pkValue = null;
-		CgFormHeadEntity  cghead = cgFormFieldService.getCgFormHeadByTableName(tableName);
-		String dbType = DBTypeUtil.getDBType();
-		String pkType = cghead.getJformPkType();
-		String pkSequence = cghead.getJformPkSequence();
-		if(StringUtil.isNotEmpty(pkType)&&"UUID".equalsIgnoreCase(pkType)){
-			pkValue = UUIDGenerator.generate();
-		}else if(StringUtil.isNotEmpty(pkType)&&"NATIVE".equalsIgnoreCase(pkType)){
-			if(StringUtil.isNotEmpty(dbType)&&"oracle".equalsIgnoreCase(dbType)){
-				OracleSequenceMaxValueIncrementer incr = new OracleSequenceMaxValueIncrementer(dataSource, "HIBERNATE_SEQUENCE");
-				try{
-					pkValue = incr.nextLongValue();
-				}catch (Exception e) {
-					logger.error(e,e);
-				}
-			}else if(StringUtil.isNotEmpty(dbType)&&"postgres".equalsIgnoreCase(dbType)){
-				PostgreSQLSequenceMaxValueIncrementer incr = new PostgreSQLSequenceMaxValueIncrementer(dataSource, "HIBERNATE_SEQUENCE");
-				try{
-					pkValue = incr.nextLongValue();
-				}catch (Exception e) {
-					logger.error(e,e);
-				}
-			}else{
-				pkValue = null;
-			}
-		}else if(StringUtil.isNotEmpty(pkType)&&"SEQUENCE".equalsIgnoreCase(pkType)){
-			if(StringUtil.isNotEmpty(dbType)&&"oracle".equalsIgnoreCase(dbType)){
-				OracleSequenceMaxValueIncrementer incr = new OracleSequenceMaxValueIncrementer(dataSource, pkSequence);
-				try{
-					pkValue = incr.nextLongValue();
-				}catch (Exception e) {
-					logger.error(e,e);
-				}
-			}else if(StringUtil.isNotEmpty(dbType)&&"postgres".equalsIgnoreCase(dbType)){
-				PostgreSQLSequenceMaxValueIncrementer incr = new PostgreSQLSequenceMaxValueIncrementer(dataSource, pkSequence);
-				try{
-					pkValue = incr.nextLongValue();
-				}catch (Exception e) {
-					logger.error(e,e);
-				}
-			}else{
-				pkValue = null;
-			}
-		}else{
-			pkValue = UUIDGenerator.generate();
-		}
-		return pkValue;
-	}
-
 
 	/**
 	 * 返回模版文件的版本号

@@ -1,4 +1,7 @@
 package org.jeecgframework.web.system.controller.core;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -16,6 +19,8 @@ import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSNoticeAuthorityRole;
+import org.jeecgframework.web.system.pojo.base.TSNoticeReadUser;
+import org.jeecgframework.web.system.pojo.base.TSRoleUser;
 import org.jeecgframework.web.system.service.NoticeAuthorityRoleServiceI;
 import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,9 +97,48 @@ public class NoticeAuthorityRoleController extends BaseController {
 	public AjaxJson doDel(TSNoticeAuthorityRole noticeAuthorityRole, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
+		noticeAuthorityRole = systemService.getEntity(TSNoticeAuthorityRole.class, noticeAuthorityRole.getId());
 		message = "通知公告角色授权删除成功";
 		try{
-			noticeAuthorityRoleService.doDelTSNoticeAuthorityRole(noticeAuthorityRole);
+
+			final String noticeId = noticeAuthorityRole.getNoticeId();
+			final String roleId = noticeAuthorityRole.getRole().getId();
+			executor.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					String hql = "from TSRoleUser roleUser where roleUser.TSRole.id = '"+roleId+"'";
+					List<TSRoleUser> roleUserList = systemService.findHql(hql);
+					List<TSNoticeReadUser> deleteList = new ArrayList<TSNoticeReadUser>();
+					List<TSNoticeReadUser> updateList = new ArrayList<TSNoticeReadUser>();
+					for (TSRoleUser roleUser : roleUserList) {
+						String userId = roleUser.getTSUser().getId();
+						String noticeReadHql = "from TSNoticeReadUser where noticeId = '"+noticeId+"' and userId = '"+userId+"'";
+						List<TSNoticeReadUser> noticeReadList = systemService.findHql(noticeReadHql);
+						if(noticeReadList != null && noticeReadList.size() > 0){
+							for (TSNoticeReadUser readUser : noticeReadList) {
+								if(readUser.getIsRead() == 1){
+									readUser.setDelFlag(1);
+									updateList.add(readUser);
+								}else if(readUser.getIsRead() == 0){
+									deleteList.add(readUser);
+								}
+							}
+						}
+					}
+					for (TSNoticeReadUser tsNoticeReadUser : updateList) {
+						systemService.updateEntitie(tsNoticeReadUser);
+					}
+					for (TSNoticeReadUser readUser : deleteList) {
+						systemService.delete(readUser);
+					}
+					updateList.clear();
+					deleteList.clear();
+					roleUserList.clear();
+				}
+			});
+
+			noticeAuthorityRoleService.delete(noticeAuthorityRole);
 			systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -235,11 +279,43 @@ public class NoticeAuthorityRoleController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		message = "通知公告角色授权保存成功";
 		try{
-			this.noticeAuthorityRoleService.saveTSNoticeAuthorityRole(noticeAuthorityRole);
-			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
-		}catch(BusinessException e){
-			e.printStackTrace();
-			message = e.getMessage();
+			if(this.noticeAuthorityRoleService.checkAuthorityRole(noticeAuthorityRole.getNoticeId(), noticeAuthorityRole.getRole().getId())){
+				message = "该角色已授权，请勿重复操作。";
+			}else{
+				final String noticeId = noticeAuthorityRole.getNoticeId();
+				final String roleId = noticeAuthorityRole.getRole().getId();
+				executor.execute(new Runnable() {
+
+					@Override
+					public void run() {
+						String hql = "from TSRoleUser roleUser where roleUser.TSRole.id = '"+roleId+"'";
+						List<TSRoleUser> roleUserList = systemService.findHql(hql);
+						for (TSRoleUser roleUser : roleUserList) {
+							String userId = roleUser.getTSUser().getId();
+							String noticeReadHql = "from TSNoticeReadUser where noticeId = '"+noticeId+"' and userId = '"+userId+"'";
+							List<TSNoticeReadUser> noticeReadList = systemService.findHql(noticeReadHql);
+							if(noticeReadList == null || noticeReadList.isEmpty()){
+								//未授权过的消息，添加授权记录
+								TSNoticeReadUser noticeRead = new TSNoticeReadUser();
+								noticeRead.setNoticeId(noticeId);
+								noticeRead.setUserId(userId);
+								noticeRead.setCreateTime(new Date());
+								systemService.save(noticeRead);
+							}else if(noticeReadList.size() > 0){
+								for (TSNoticeReadUser readUser : noticeReadList) {
+									if(readUser.getDelFlag() == 1){
+										readUser.setDelFlag(0);
+										systemService.updateEntitie(readUser);
+									}
+								}
+							}
+						}
+						roleUserList.clear();
+					}
+				});
+				noticeAuthorityRoleService.save(noticeAuthorityRole);
+				systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			message = "通知公告角色授权保存失败";

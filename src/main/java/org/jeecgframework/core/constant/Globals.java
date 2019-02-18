@@ -83,8 +83,8 @@ public final class Globals {
 	 /**
 	  * 权限类型
 	  */
-	 public static final Short Function_TYPE_PAGE=0;//菜单：菜单类型
-	 public static final Short Function_TYPE_FROM=1;//菜单：权限类型(权限使用，不作为菜单首页加载)
+	 public static final Short Function_TYPE_PAGE=0;//页面（菜单：菜单类型）
+	 public static final Short Function_TYPE_FROM=1;//表单/或者弹出（菜单：访问类型）
 	 /**
 	  * 没有勾选的操作code
 	  */
@@ -135,10 +135,4 @@ public final class Globals {
 			 BUTTON_AUTHORITY_CHECK = true;
 		 }
 	 }
-
-	 /**
-	  * rest接口 list最大当前条数
-	  */
-	 public static Integer MAX_PAGESIZE = 2000;	//条数
-
 }

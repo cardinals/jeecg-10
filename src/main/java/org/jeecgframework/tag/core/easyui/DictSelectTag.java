@@ -123,15 +123,17 @@ public class DictSelectTag extends TagSupport {
 			}else {
 				sb.append("<select name=\"" + field + "\"");
 
-				//增加扩展属性
-				if (!StringUtils.isBlank(this.extendJson)) {
-
-					sb.append(this.getExtendJsonCommon(extendJson));
-
-				}
-
 				this.readonly(sb);
 
+				
+				//增加扩展属性
+				if (!StringUtils.isBlank(this.extendJson)) {
+					Gson gson = new Gson();
+					Map<String, String> mp = gson.fromJson(extendJson, Map.class);
+					for(Map.Entry<String, String> entry: mp.entrySet()) { 
+						sb.append(entry.getKey()+"=\"" + entry.getValue() + "\"");
+						} 
+				}
 				if (!StringUtils.isBlank(this.id)) {
 					sb.append(" id=\"" + id + "\"");
 				}
@@ -144,8 +146,8 @@ public class DictSelectTag extends TagSupport {
 				sb.append("</select>");
 			}
 		} else {
-			TSTypegroup typeGroup = ResourceUtil.getCacheTypeGroup(this.typeGroupCode.toLowerCase());
-			List<TSType> types = ResourceUtil.getCacheTypes(this.typeGroupCode.toLowerCase());
+			TSTypegroup typeGroup = ResourceUtil.allTypeGroups.get(this.typeGroupCode.toLowerCase());
+			List<TSType> types = ResourceUtil.allTypes.get(this.typeGroupCode.toLowerCase());
 			if (hasLabel) {
 				sb.append("<div class=\"" + divClass + "\">");
 				sb.append("<label class=\"" + labelClass + "\" >");
@@ -173,13 +175,17 @@ public class DictSelectTag extends TagSupport {
 				} else {
 					sb.append("<select name=\"" + field + "\"");
 
-					//增加扩展属性
-					if (!StringUtils.isBlank(this.extendJson)) {
-						sb.append(this.getExtendJsonCommon(extendJson));
-					}
-
 					this.readonly(sb);
 
+					
+					//增加扩展属性
+					if (!StringUtils.isBlank(this.extendJson)) {
+						Gson gson = new Gson();
+						Map<String, String> mp = gson.fromJson(extendJson, Map.class);
+						for(Map.Entry<String, String> entry: mp.entrySet()) { 
+							sb.append(" "+entry.getKey()+"=\"" + entry.getValue() + "\"");
+							} 
+					}
 					if (!StringUtils.isBlank(this.id)) {
 						sb.append(" id=\"" + id + "\"");
 					}
@@ -199,33 +205,6 @@ public class DictSelectTag extends TagSupport {
 
 		return sb;
 	}
-
-	private StringBuffer getExtendJsonCommon(String extendJson){
-		Gson gson = new Gson();
-		Map<String, String> mp = gson.fromJson(extendJson, Map.class);
-		StringBuffer sb=new StringBuffer();
-		sb.append(" ");
-		for(Map.Entry<String, String> entry: mp.entrySet()) { 
-			//判断select标签中是否含有style属性
-			if(entry.getKey().equals("style")){
-				//并且readonly属性不为空
-				if(StringUtils.isNotBlank(readonly) &&readonly.equals("readonly")){
-					//拼接Style属性
-					String entryValue = entry.getValue() + ";background-color:#eee;cursor:no-drop;";
-					//把拼接好的属性加入到sb字符串中
-					sb.append(entry.getKey()+"=\"" + entryValue + "\"");
-				}else{
-					//如果readonly属性为空，走原来的样式
-					sb.append(entry.getKey()+"=\"" + entry.getValue() + "\"");
-				}
-			}else{
-				//如果没有Style属性的话走原来的方法，readonly属性在下边readonly方法中已经默认添加了样式
-				sb.append(entry.getKey()+"=\"" + entry.getValue() + "\"");
-			}
-		}
-		return sb;
-	}
-
 	/**
 	 * 文本框方法
 	 * @param name
@@ -250,25 +229,31 @@ public class DictSelectTag extends TagSupport {
 	 * @param sb
 	 */
 	private void radio(String name, String code, StringBuffer sb) {
-
 		if (code.equals(this.defaultVal)) {
-			sb.append("<input type=\"radio\" name=\"" + field + "\" checked=\"checked\" value=\"" + code + "\"");
+			sb.append("<input type=\"radio\" name=\"" + field
+					+ "\" checked=\"checked\" value=\"" + code + "\"");
+			if (!StringUtils.isBlank(this.id)) {
+				sb.append(" id=\"" + id + "\"");
+			}
+
+			this.readonly(sb);
+
+
+			this.datatype(sb);
+			sb.append(" />");
 		} else {
-			sb.append("<input type=\"radio\" name=\"" + field + "\" value=\""+ code + "\"");
-		}
-		if (!StringUtils.isBlank(this.id)) {
-			sb.append(" id=\"" + id + "\"");
-		}
+			sb.append("<input type=\"radio\" name=\"" + field + "\" value=\""
+					+ code + "\"");
+			if (!StringUtils.isBlank(this.id)) {
+				sb.append(" id=\"" + id + "\"");
+			}
 
-		this.readonly(sb);
+			this.readonly(sb);
 
-		this.datatype(sb);
-		if (!StringUtils.isBlank(this.extendJson)) {
-			sb.append(this.getExtendJsonCommon(extendJson));
+			this.datatype(sb);
+			sb.append(" />");
 		}
-		sb.append(" />");
-		sb.append(MutiLangUtil.getLang(name)+"&nbsp;&nbsp;");
-
+		sb.append(MutiLangUtil.getLang(name));
 	}
 
 	/**
@@ -296,27 +281,30 @@ public class DictSelectTag extends TagSupport {
 			}
 			checked = false;
 		}
-
 		if(checked){
 			sb.append("<input type=\"checkbox\" name=\"" + field
 					+ "\" checked=\"checked\" value=\"" + code + "\"");
+			if (!StringUtils.isBlank(this.id)) {
+				sb.append(" id=\"" + id + "\"");
+			}
+
+			this.readonly(sb);
+
+			this.datatype(sb);
+			sb.append(" />");
 		} else {
 			sb.append("<input type=\"checkbox\" name=\"" + field
 					+ "\" value=\"" + code + "\"");
-		}
-		if (!StringUtils.isBlank(this.id)) {
-			sb.append(" id=\"" + id + "\"");
-		}
+			if (!StringUtils.isBlank(this.id)) {
+				sb.append(" id=\"" + id + "\"");
+			}
 
-		this.readonly(sb);
+			this.readonly(sb);
 
-		this.datatype(sb);
-		if (!StringUtils.isBlank(this.extendJson)) {
-			sb.append(" "+this.getExtendJsonCommon(extendJson));
+			this.datatype(sb);
+			sb.append(" />");
 		}
-		sb.append(" />");
-		sb.append(MutiLangUtil.getLang(name)+"&nbsp;&nbsp;");
-
+		sb.append(MutiLangUtil.getLang(name));
 	}
 
 	/**
@@ -329,21 +317,11 @@ public class DictSelectTag extends TagSupport {
 	 * @param sb
 	 */
 	private void select(String name, String code, StringBuffer sb) {
-
 		if (code.equals(this.defaultVal)) {
-			if(StringUtils.isNotBlank(readonly) &&readonly.equals("readonly")){
-				sb.append(" <option style=\"display: none;\"  value=\"" + code + "\" selected=\"selected\">");
-			}else{
-				sb.append(" <option  value=\"" + code + "\" selected=\"selected\">");
-			}
+			sb.append(" <option value=\"" + code + "\" selected=\"selected\">");
 		} else {
-			if(StringUtils.isNotBlank(readonly) &&readonly.equals("readonly")){
-				sb.append(" <option style=\"display: none;\" value=\"" + code + "\">");
-			}else{
-				sb.append(" <option  value=\"" + code + "\">");
-			}
+			sb.append(" <option value=\"" + code + "\">");
 		}
-
 		sb.append(MutiLangUtil.getLang(name));
 		sb.append(" </option>");
 	}
@@ -386,25 +364,20 @@ public class DictSelectTag extends TagSupport {
 	 * @return sb
 	 */
 	private StringBuffer readonly(StringBuffer sb){
-
-		if(StringUtils.isNotBlank(readonly) &&readonly.equals("readonly")){
+		if(!StringUtils.isBlank(readonly) &&readonly.equals("readonly")){
 			if ("radio".equals(type)) {
-				sb.append(" readonly=\"readonly\" style=\"background-color:#eee;cursor:no-drop;\" disabled=\"true\" ");
+				sb.append(" disable= \"disabled\" disabled=\"disabled\" ");
 			}
 			else if ("checkbox".equals(type)) {
-				sb.append(" readonly=\"readonly\" style=\"background-color:#eee;cursor:no-drop;\" disabled=\"true\" ");
+				sb.append(" disable= \"disabled\" disabled=\"disabled\" ");
 			}
 			else if ("text".equals(type)) {
-			
+				
 			} 
-			else if("list".equals(type)){
-					sb.append(" readonly=\"readonly\" style=\"background-color:#eee;cursor:no-drop;\" ");
-						
-			}else{
-				sb.append(" readonly=\"readonly\" style=\"background-color:#eee;cursor:no-drop;\" ");
+			else {
+				sb.append(" disable= \"disabled\" disabled=\"disabled\" ");
 			}
 		}
-
 		return sb;
 	}
 

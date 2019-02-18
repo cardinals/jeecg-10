@@ -305,7 +305,6 @@ public class CgformFtlController extends BaseController {
 
 		sb.append("<base href=\"${basePath}/\" />");
     	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/jquery/jquery-1.8.3.js\"></script>");
-    	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/jquery-plugs/i18n/jquery.i18n.properties.js\"></script>");
     	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/tools/dataformat.js\"></script>");
     	sb.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"${basePath}/plug-in/accordion/css/accordion.css\"></link>");
     	sb.append("<link id=\"easyuiTheme\" rel=\"stylesheet\" href=\"${basePath}/plug-in/easyui/themes/default/easyui.css\" type=\"text/css\"></link>");
@@ -318,14 +317,11 @@ public class CgformFtlController extends BaseController {
     	sb.append("<link rel=\"stylesheet\" href=\"${basePath}/plug-in/ace/css/font-awesome.css\" type=\"text/css\"></link>");
     	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/lhgDialog/lhgdialog.min.js\"></script>");
     	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/layer/layer.js\"></script>");
-    	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/tools/curdtools.js\"></script>");
+    	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/tools/curdtools_zh-cn.js\"></script>");
     	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/tools/easyuiextend.js\"></script>");
     	sb.append("<link id=\"easyuiTheme\" rel=\"stylesheet\" href=\"${basePath}/plug-in/easyui/themes/metrole/main.css\" type=\"text/css\"></link>");
     	sb.append("<link rel=\"stylesheet\" href=\"${basePath}/plug-in/uploadify/css/uploadify.css\" type=\"text/css\"></link>");
-
-    	//sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/uploadify/jquery.uploadify-3.1.js\"></script>");
-    	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/plupload/plupload.full.min.js\"></script>");
-
+    	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/uploadify/jquery.uploadify-3.1.js\"></script>");
     	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/tools/Map.js\"></script>");
     	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/Validform/js/Validform_v5.3.1_min_zh-cn.js\"></script>");
     	sb.append("<script type=\"text/javascript\" src=\"${basePath}/plug-in/Validform/js/Validform_Datatype_zh-cn.js\"></script>");
@@ -533,12 +529,8 @@ public class CgformFtlController extends BaseController {
 	// for：放弃jacob和poi上传word，改用ckeditor
 	@RequestMapping(params = "cgformFtl2")
 	public ModelAndView cgformFtl2(HttpServletRequest request) {
-
 		String formid = request.getParameter("formid");
-		CgFormHeadEntity po = systemService.getEntity(CgFormHeadEntity.class, formid);
 		request.setAttribute("formid", formid);
-		request.setAttribute("tableName", po.getTableName());
-
 		return new ModelAndView("jeecg/cgform/cgformftl/cgformFtlList2");
 	}
 

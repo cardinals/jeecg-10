@@ -89,7 +89,7 @@ public class DynamicDataSourceController extends BaseController {
 		CriteriaQuery cq = new CriteriaQuery(DynamicDataSourceEntity.class, dataGrid);
 		//查询条件组装器
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, dbSource, request.getParameterMap());
-		this.systemService.getDataGridReturn(cq, true);
+		this.dynamicDataSourceService.getDataGridReturn(cq, true);
 		TagUtil.datagrid(response, dataGrid);
 
 	}
@@ -107,7 +107,7 @@ public class DynamicDataSourceController extends BaseController {
 
 		message = MutiLangUtil.paramDelSuccess("common.datasource.manage");
 
-		systemService.delete(dbSource);
+		dynamicDataSourceService.delete(dbSource);
 		systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
 
 		j.setMsg(message);
@@ -127,13 +127,13 @@ public class DynamicDataSourceController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		if (StringUtil.isNotEmpty(dbSource.getId())) {
 			message = MutiLangUtil.paramUpdSuccess("common.datasource.manage");
-			DynamicDataSourceEntity t = systemService.get(DynamicDataSourceEntity.class, dbSource.getId());
+			DynamicDataSourceEntity t = dynamicDataSourceService.get(DynamicDataSourceEntity.class, dbSource.getId());
 			try {
 				MyBeanUtils.copyBeanNotNull2Bean(dbSource, t);
 
 				t.setDbPassword(PasswordUtil.encrypt(t.getDbPassword(), t.getDbUser(), PasswordUtil.getStaticSalt()));
 
-				systemService.saveOrUpdate(t);
+				dynamicDataSourceService.saveOrUpdate(t);
 				dynamicDataSourceService.refleshCache();
 				systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 			} catch (Exception e) {
@@ -149,7 +149,7 @@ public class DynamicDataSourceController extends BaseController {
 				e.printStackTrace();
 			}
 
-			systemService.save(dbSource);
+			dynamicDataSourceService.save(dbSource);
 			dynamicDataSourceService.refleshCache();
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}
@@ -165,7 +165,7 @@ public class DynamicDataSourceController extends BaseController {
 	@RequestMapping(params = "addorupdate")
 	public ModelAndView addorupdate(DynamicDataSourceEntity dbSource, HttpServletRequest req) {
 		if (StringUtil.isNotEmpty(dbSource.getId())) {
-			dbSource = systemService.getEntity(DynamicDataSourceEntity.class, dbSource.getId());
+			dbSource = dynamicDataSourceService.getEntity(DynamicDataSourceEntity.class, dbSource.getId());
 
 			try {
 				//String result = PasswordUtil.decrypt(d.getDbPassword(), d.getDbUser(), PasswordUtil.getStaticSalt());
@@ -191,7 +191,7 @@ public class DynamicDataSourceController extends BaseController {
     @RequestMapping(params = "getAll")
     @ResponseBody
     public List<ComboBox> getAll(){
-        List<DynamicDataSourceEntity> list= systemService.getList(DynamicDataSourceEntity.class);
+        List<DynamicDataSourceEntity> list= dynamicDataSourceService.getList(DynamicDataSourceEntity.class);
         List<ComboBox> comboBoxes=new ArrayList<ComboBox>();
         if(list!=null&&list.size()>0){
             for(DynamicDataSourceEntity entity:list){

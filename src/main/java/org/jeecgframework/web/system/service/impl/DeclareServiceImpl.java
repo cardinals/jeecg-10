@@ -16,10 +16,8 @@ public class DeclareServiceImpl extends CommonServiceImpl implements DeclareServ
 
 	public List<TSAttachment> getAttachmentsByCode(String businessKey,String description)
 	{
-
-		String hql="from TSAttachment t where t.businessKey= ? and t.description = ?";
-		return commonDao.findHql(hql,businessKey,description);
-
+		String hql="from TSAttachment t where t.businessKey='"+businessKey+"' and t.description='"+description+"'";
+		return commonDao.findByQueryString(hql);
 	}
 	
 }

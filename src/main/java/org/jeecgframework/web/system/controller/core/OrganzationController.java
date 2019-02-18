@@ -37,10 +37,8 @@ import org.jeecgframework.tag.vo.datatable.SortDirection;
 import org.jeecgframework.tag.vo.easyui.ComboTreeModel;
 import org.jeecgframework.tag.vo.easyui.TreeGridModel;
 import org.jeecgframework.web.system.pojo.base.TSDepart;
-import org.jeecgframework.web.system.pojo.base.TSRoleUser;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.pojo.base.TSUserOrg;
-import org.jeecgframework.web.system.pojo.base.TSUserPositionRelEntity;
 import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.web.system.service.UserService;
 import org.jeecgframework.web.system.util.OrgConstants;
@@ -241,38 +239,29 @@ public class OrganzationController extends BaseController {
 		public AjaxJson delUserOrg(@RequestParam(required=true)String userid,@RequestParam(required=true)String departid) {
 			AjaxJson ajaxJson = new AjaxJson();
 			try {
-
-				//查询角色用户关联记录
-				String queryRoleUserSql = "select ru.id from t_s_role_user ru WHERE ru.roleid in (SELECT tsr.id FROM t_s_role tsr WHERE depart_ag_id = (SELECT dag.id FROM t_s_depart_auth_group dag WHERE dag.dept_id = ?)) and ru.userid = ?";
-				List<Map<String,Object>> listMaps = this.systemService.findForJdbc(queryRoleUserSql, departid, userid);
-				if(listMaps != null && listMaps.size() > 0) {
-					for (Map<String, Object> map : listMaps) {
-						if(oConvertUtils.isNotEmpty(map.get("id").toString())) {
-							//删除角色用户关联记录
-							this.systemService.deleteEntityById(TSRoleUser.class, map.get("id").toString());
-						}
-					}
-				}
+				//判断授权部门角色是否赋值,有值则不可删除
+				String sql1 = "SELECT COUNT(0) FROM t_s_role_user ru WHERE ru.roleid in (SELECT tsr.id FROM t_s_role tsr WHERE depart_ag_id = (SELECT dag.id FROM t_s_depart_auth_group dag WHERE dag.dept_id = '"+departid+"')) and ru.userid = '"+userid+"'";
+				long roleUserCount = this.systemService.getCountForJdbc(sql1);
+				List<TSUserOrg> userOrgList = this.systemService.findByProperty(TSUserOrg.class, "tsUser.id", userid);
+				//判断分配职务是否赋值,有值则不可删除
 				//查找直接上级公司
 				String companyId = getCompanyId(departid);
 				if(StringUtils.isEmpty(companyId)){
 					companyId = "";
 				}
-				//查询用户职位关联记录
-				String userPositionSql = "select id from t_s_user_position_rel where user_id = ? and company_id = ?";
-				List<Map<String,Object>> userPositions = this.systemService.findForJdbc(userPositionSql, userid, companyId);
-				if(userPositions != null && userPositions.size() > 0) {
-					for (Map<String, Object> map : userPositions) {
-						if(oConvertUtils.isNotEmpty(map.get("id").toString())) {
-							//删除用户职位关联记录
-							this.systemService.deleteEntityById(TSUserPositionRelEntity.class, map.get("id").toString());
-						}
-					}
+				String sql2 = "select count(0) from t_s_user_position_rel where user_id = '"+userid+"' and company_id = '"+companyId+"'";
+				long duties = this.systemService.getCountForJdbc(sql2);
+				if(roleUserCount >= 1 || duties >= 1) {
+					ajaxJson.setSuccess(false);
+					ajaxJson.setMsg("当前用户拥有职务或部门角色，不可删除。");
+				}else if(userOrgList.size() == 1){
+					ajaxJson.setSuccess(false);
+					ajaxJson.setMsg("当前用户只包含有当前组织机构关系，不可删除，请切换用户的组织机构关系");
+				}else{
+					String sql = "delete from t_s_user_org where user_id = '"+userid+"' and org_id = '"+departid+"'";
+					this.systemService.executeSql(sql);
+					ajaxJson.setMsg("成功删除用户对应的组织机构关系");
 				}
-				String sql = "delete from t_s_user_org where user_id = ? and org_id = ?";
-				this.systemService.executeSql(sql,userid,departid);
-				ajaxJson.setMsg("成功删除用户对应的组织机构关系");
-
 			} catch (Exception e) {
 				e.printStackTrace();
 				LogUtil.log("删除用户对应的组织机构关系失败", ajaxJson.getMsg());
@@ -307,9 +296,7 @@ public class OrganzationController extends BaseController {
 		depart = systemService.getEntity(TSDepart.class, depart.getId());
         message = MutiLangUtil.paramDelSuccess("common.department");
         if (depart.getTSDeparts().size() == 0) {
-
-            Long userCount = systemService.getCountForJdbcParam("select count(1) from t_s_user_org where org_id = ?",depart.getId());
-
+            Long userCount = systemService.getCountForJdbc("select count(1) from t_s_user_org where org_id='" + depart.getId() + "'");
             if(userCount == 0) { // 组织机构下没有用户时，该组织机构才允许删除。
                 systemService.executeSql("delete from t_s_role_org where org_id=?", depart.getId());
                 systemService.delete(depart);
@@ -581,24 +568,7 @@ public class OrganzationController extends BaseController {
 		cq.in("status", userstate);
 		cq.add();
 		this.systemService.getDataGridReturn(cq, true);
-
-		Map<String,Map<String,Object>> extMap = new HashMap<String, Map<String,Object>>();
-		List<TSUser> tsUserList = dataGrid.getResults();
-		for(TSUser temp : tsUserList){
-			Map<String,Object> m = new HashMap<String, Object>();
-			String sql = "SELECT tscp.position_name FROM t_s_company_position tscp WHERE id in (SELECT tsupr.position_id FROM t_s_user_position_rel tsupr WHERE tsupr.user_id = ?)";
-			List<Map<String,Object>> listMaps = systemService.findForJdbc(sql, temp.getId());
-			if(listMaps != null && listMaps.size() > 0) {
-				String positionName = "";
-				for (Map<String, Object> map : listMaps) {
-					positionName += map.get("position_name").toString() + ",";
-				}
-				m.put("positionName", positionName);
-			}
-			extMap.put(temp.getId(), m);
-		}
-		TagUtil.datagrid(response, dataGrid, extMap);
-
+		TagUtil.datagrid(response, dataGrid);
 	}
 	//----
 
@@ -684,11 +654,9 @@ public class OrganzationController extends BaseController {
         TSDepart tsDepart = ResourceUtil.getSessionUser().getCurrentDepart();
 //        subCq.like("tsDepart.orgCode", tsDepart.getOrgCode()+"%");
 //        subCq.add();
-
-        String sql = "select uo.user_id from t_s_user_org  uo left join t_s_depart d on uo.org_id = d.id where d.org_code like concat(?,'%') " +
+        String sql = "select uo.user_id from t_s_user_org  uo left join t_s_depart d on uo.org_id = d.id where d.org_code like '"+tsDepart.getOrgCode()+"%' " +
         		     "and uo.user_id not in (select suo.user_id from t_s_user_org  suo  where suo.org_id = ? )";
-        List<Map<String, Object>> userIdMaps = this.systemService.findForJdbc(sql, tsDepart.getOrgCode(),orgId);
-
+        List<Map<String, Object>> userIdMaps = this.systemService.findForJdbc(sql, orgId);
         List<Object> userIds = new ArrayList<Object>();
         for(Map<String, Object> map :userIdMaps){
         	userIds.add(map.get("user_id"));
@@ -1127,7 +1095,7 @@ public class OrganzationController extends BaseController {
 			String id = request.getParameter("id");
 			String name = request.getParameter("name");
 			String level = request.getParameter("level");
-			logger.debug("------id----"+id+"----name----"+name+"----level-----"+level);
+			logger.info("------id----"+id+"----name----"+name+"----level-----"+level);
 		    //如果id不为空，则查询当前节点子节点
 			if(StringUtils.isNotEmpty(id)){
 				String hql = "from TSDepart t where t.TSPDepart.id = ? order by t.departOrder";
@@ -1138,14 +1106,10 @@ public class OrganzationController extends BaseController {
 				String userName = ResourceUtil.getSessionUser().getUserName();
 				StringBuffer hql = new StringBuffer(" from TSDepart t where 1=1 ");
 				//当其他用户登陆的时候查询用户关联的管理员组的组织机构
-
-				List<TSDepart> departList;
 				if(!"admin".equals(userName)) {
-					hql.append(" and id in (select deptId from TSDepartAuthGroupEntity where id in (select groupId from TSDepartAuthgManagerEntity where userId = ?))");
-					departList = this.systemService.findHql(hql.toString(),userName);
-				}else{
-					departList = this.systemService.findHql(hql.toString());
+					hql.append(" and id in (select deptId from TSDepartAuthGroupEntity where id in (select groupId from TSDepartAuthgManagerEntity where userId = '"+userName+"'))");
 				}
+				List<TSDepart> departList = this.systemService.findHql(hql.toString());
 
 				populateTree(departList,dataList);
 			}
@@ -1155,73 +1119,34 @@ public class OrganzationController extends BaseController {
 		}
 		return dataList;
 	}
-
-	@RequestMapping(params="getMyTreeDataAsync",method ={RequestMethod.GET, RequestMethod.POST})
-	@ResponseBody
-	public List<Map<String,Object>> getMyTreeDataAsync(HttpServletResponse response,HttpServletRequest request ){
-		CriteriaQuery cq = new CriteriaQuery(TSDepart.class);
-		List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
-		try{
-			String id = request.getParameter("id");
-			String userName = ResourceUtil.getSessionUser().getUserName();
-			if("admin".equals(userName)) {
-				if(oConvertUtils.isEmpty(id)){
-					//加载根节点
-					cq.isNull("TSPDepart");
-				}else{
-					//加载子节点
-					cq.eq("TSPDepart.id", id);
-				}
-			}else{
-				String sql = "select deptId from TSDepartAuthGroupEntity where id in (select groupId from TSDepartAuthgManagerEntity where userId = ?)";
-				List<String> deptIds = this.systemService.findHql(sql, userName);
-				if(deptIds!=null && deptIds.size()>0){
-					Object values[] = deptIds.toArray();
-					cq.in("id", values);
-					if(oConvertUtils.isEmpty(id)){
-						cq.isNull("TSPDepart");
-					}else{
-						//加载子节点
-						cq.eq("TSPDepart.id",id);
-					}
-				}else{
-					//如果非admin用户且无授权组织机构 那么 直接返回一个null
-					return null;
-				}
-			}
-			cq.addOrder("departOrder", SortDirection.asc);
-			cq.add();
-			List<TSDepart> departList =  this.systemService.getListByCriteriaQuery(cq, false);
-			populateTree(departList,dataList);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return dataList;
-	}
-
 	
 	private void populateTree(List<TSDepart> departList,List<Map<String,Object>> dataList){
 		Map<String,Object> map = null;
 		if(departList!=null&&departList.size()>0){
 			for(TSDepart depart :departList){
+				
 				map = new HashMap<String,Object>();
+				
+				if(depart.getFax().equals("4")){
+					map.put("open", false);
+				}else{
+					map.put("open", true);
+				}
 //				map.put("chkDisabled",false);
 //				map.put("click", true);
-				map.put("open", false);
+				
 				map.put("id", depart.getId());
 				map.put("name", depart.getDepartname());
 				map.put("orgType", depart.getOrgType());
 //				map.put("nocheck", false);
 //				map.put("struct","TREE");
 //				map.put("title","01title");
-//				map.put("level", "1");
+//			    map.put("level", "1");
 
 				if(!depart.getOrgCode().equals(OrgConstants.SUPPLIER_ORG_CODE)) {
-
 					//判断是否有子节点
-					String sql = "select count(*) from t_s_depart where parentdepartid = ?";
-					Long count = this.systemService.getCountForJdbcParam(sql, depart.getId());
-
+					String hql = "select count(*) from TSDepart t where t.TSPDepart.id = '"+depart.getId()+"' ";
+					 Long count = (Long)this.systemService.singleResult(hql);
 					 if(count>0){
 						 map.put("isParent", true);
 					 }else{

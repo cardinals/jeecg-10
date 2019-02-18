@@ -54,10 +54,8 @@ import org.jeecgframework.web.system.pojo.base.TSRoleFunction;
 import org.jeecgframework.web.system.pojo.base.TSRoleOrg;
 import org.jeecgframework.web.system.pojo.base.TSRoleUser;
 import org.jeecgframework.web.system.pojo.base.TSUser;
-import org.jeecgframework.web.system.service.CacheServiceI;
 import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.web.system.service.UserService;
-import org.jeecgframework.web.system.util.OrgConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -87,8 +85,6 @@ public class RoleController extends BaseController {
 	private static final Logger logger = Logger.getLogger(RoleController.class);
 	private UserService userService;
 	private SystemService systemService;
-	@Autowired
-	private CacheServiceI cacheService;
 
 
 	@Autowired
@@ -127,10 +123,8 @@ public class RoleController extends BaseController {
 	public void roleGrid(TSRole role, HttpServletRequest request,
 			HttpServletResponse response, DataGrid dataGrid) {
 		CriteriaQuery cq = new CriteriaQuery(TSRole.class, dataGrid);
-		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq,role);
-
-		cq.eq("roleType", OrgConstants.SYSTEM_ROLE_TYPE);//默认只查询系统角色
-
+		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq,
+				role);
 		cq.add();
 		this.systemService.getDataGridReturn(cq, true);
 		TagUtil.datagrid(response, dataGrid);
@@ -160,23 +154,6 @@ public class RoleController extends BaseController {
 	}
 
 	
-	/**
-	 * 清空登录用户权限缓存
-	 */
-	@RequestMapping(params = "refresh")
-	@ResponseBody
-	public AjaxJson refresh(HttpServletRequest request,HttpServletResponse response) {
-		AjaxJson ajaxJson = new AjaxJson();
-		try {
-			cacheService.clean("sysAuthCache");
-			logger.info("-----清空登录用户权限缓存成功--------[sysAuthCache]-----");
-			ajaxJson.setMsg("重置用户权限成功");
-		} catch (Exception e) {
-			ajaxJson.setMsg("重置用户权限失败");
-			e.printStackTrace();
-		}
-		return ajaxJson;
-	}
 
 	/**
 	 * 删除角色
@@ -265,16 +242,11 @@ public class RoleController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		if (StringUtil.isNotEmpty(role.getId())) {
 			message = "角色: " + role.getRoleName() + "被更新成功";
-
-			role.setRoleType(OrgConstants.SYSTEM_ROLE_TYPE);
-
 			userService.saveOrUpdate(role);
-			systemService.addLog(message, Globals.Log_Type_UPDATE,Globals.Log_Leavel_INFO);
+			systemService.addLog(message, Globals.Log_Type_UPDATE,
+					Globals.Log_Leavel_INFO);
 		} else {
 			message = "角色: " + role.getRoleName() + "被添加成功";
-
-			role.setRoleType(OrgConstants.SYSTEM_ROLE_TYPE);//默认系统角色
-
 			userService.save(role);
 			systemService.addLog(message, Globals.Log_Type_INSERT,
 					Globals.Log_Leavel_INFO);
@@ -827,7 +799,8 @@ public class RoleController extends BaseController {
 		cq.add();
 		List<TSOperation> operationList = this.systemService
 				.getListByCriteriaQuery(cq, false);
-		Set<String> operationCodes = systemService.getOperationCodesByRoleIdAndFunctionId(roleId, functionId);
+		Set<String> operationCodes = systemService
+				.getOperationCodesByRoleIdAndFunctionId(roleId, functionId);
 		request.setAttribute("operationList", operationList);
 		request.setAttribute("operationcodes", operationCodes);
 		request.setAttribute("functionId", functionId);
@@ -888,7 +861,8 @@ public class RoleController extends BaseController {
 		cq.add();
 		List<TSDataRule> dataRuleList = this.systemService
 				.getListByCriteriaQuery(cq, false);
-		Set<String> dataRulecodes = systemService.getDataRuleIdsByRoleIdAndFunctionId(roleId, functionId);
+		Set<String> dataRulecodes = systemService
+				.getOperationCodesByRoleIdAndruleDataId(roleId, functionId);
 		request.setAttribute("dataRuleList", dataRuleList);
 		request.setAttribute("dataRulecodes", dataRulecodes);
 		request.setAttribute("functionId", functionId);
@@ -962,11 +936,8 @@ public class RoleController extends BaseController {
         subCq.eq("TSRole.id", roleId);
         subCq.add();
         
+
         cq.add(Property.forName("id").notIn(subCq.getDetachedCriteria()));
-
-        cq.eq("deleteFlag", Globals.Delete_Normal);//删除状态，不删除
-        cq.eq("userType",Globals.USER_TYPE_SYSTEM);//系统用户
-
         cq.add();
 
         this.systemService.getDataGridReturn(cq, true);

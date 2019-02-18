@@ -7,17 +7,12 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 	<meta name="renderer" content="webkit|ie-comp|ie-stand">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<link rel="fineui-icon" href="images/favicon.ico">
 	<meta http-equiv="Cache-Control" content="no-siteapp" />
-	<meta name="keywords" content="JEECG 企业级快速开发平台">
-    <meta name="description" content="JEECG 企业级快速开发平台，她采用强大代码生成，在线开发能力">
-    <title><t:mutiLang langKey="jeect.platform"/></title>
-    <link href="plug-in/hplus/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <title>山铝物业管理系统</title>
 	<link rel="stylesheet" href="plug-in/themes/fineui/common/css/sccl.css">
 	<link rel="stylesheet" type="text/css" href="plug-in/themes/fineui/common/skin/qingxin/skin.css" id="layout-skin"/>
 	<link rel="stylesheet" href="plug-in/themes/fineui/common/iconfont/iconfont.css">
 	<link rel="stylesheet" href="plug-in/themes/fineui/smart-menu/smartMenu.css">
-	<t:base type="tools,jquery"></t:base>
 	<style>
 	.titlerow{
 		display:table; 
@@ -36,7 +31,6 @@
 		position: relative;
 		vertical-align: middle;
 	    padding: 0;
-	    line-height: 24px;
     }
     
     .searchbox{
@@ -124,13 +118,6 @@
 			color:#007465;
 			 background-color: #ddd;
 		}
-			
-	@media (max-width: 767px){
-		.hiddenty-xs {
-		    display: none!important;
-		}
-	}
-		
 		/*.ccrame{
 		 transition:all 1s ease-out 
 		
@@ -141,12 +128,13 @@
 	<div class="layout-admin">
 		<!-- top -->
 		<header class="layout-header">
-			<span class="header-logo"><img alt="image" width="190" height="68" src="plug-in/login/images/jeecg-aceplus.png" /></span>
+<!-- 			<span class="header-logo"><img alt="image" width="190" height="68" src="plug-in/login/images/logo_2.png" /></span>
+ -->			<span class="header-logo"><i class="fa fa-home" style="display: inline-block;font-size: 35px; line-height: 35px;"></i>山铝物业管理系统</span>
 			
-			<div class="titlerow" >
+			<div class="titlerow" style="display:none">
 				<div class="titlecell">
-					<input id="searchbox" name="functionName" placeholder="请输入搜索关键字" class="searchbox" style="padding-right: 23px;border:0">
-					<div class="iconssdiv" onclick="checkput()">
+					<input id="searchbox" placeholder="请输入搜索关键字" class="searchbox" style="padding-right: 23px;border:0">
+					<div class="iconssdiv">
 						<i class="iconfont icon-close ui-iconss" style="font-weight:700;font-size:14px;display:none"></i>
 						<i class="iconfont icon-sousuo ui-iconss"></i>
 					</div>
@@ -154,28 +142,27 @@
 			</div>
 			<ul class="header-bar">
 			
-			<li class="header-bar-nav personInfo hiddenty-xs" style="cursor:pointer;"> 
+			<%-- <li class="header-bar-nav personInfo" style="cursor:pointer;"> 
 				<i class="icon-font">&#xe751;</i>&nbsp;
 				<span>控制面板</span>
 				<i class="icon-font adminIcon" style="margin-right:5px;">&#xe607;</i>
 				<ul class="header-dropdown-menu" style="padding-right:4px">
 					<li>
-	                         <a href="javascript:createdetailwindow('<t:mutiLang langKey="common.ssms.getSysInfos"/>','tSSmsController.do?goMySmsList',800,400)" title="系统消息">系统消息</a>
+	                         <a href="javascript:openwindow('系统信息','tSSmsController.do?getSysInfos')" title="系统信息">系统信息</a>
 					</li>
 					<li >
 	                         <a href="javascript:window.open('http://yun.jeecg.org')" title="云应用中心">云应用中心</a>
 					</li>
 					<li><a href="javascript:clearLocalstorage()"><t:mutiLang langKey="common.clear.localstorage"/></a></li>
-					<li><a href="javascript:toSwagger()">SwaggerUI</a></li>
 				</ul>
-			</li> 
+			</li>  --%>
 			
 			
-			<li class="header-bar-nav hiddenty-xs"> 
-				<a href="javascript:add('首页风格','userController.do?changestyle','',550,270)" title="换肤">
+			<!-- <li class="header-bar-nav"> 
+				<a href="javascript:add('首页风格','userController.do?changestyle','',550,250)" title="换肤">
 					<i class="icon-font">&#xe615;</i>&nbsp;风格切换
 				</a>
-			</li> 
+			</li>  -->
 				
 				
 			<li class="header-bar-nav personInfo">
@@ -218,17 +205,16 @@
 		</aside>
 		
 		<!-- 切换左侧菜单栏 -->
-		<div id="toggleLeftMenu" class="layout-side-arrow" style="display:none">
+	<!-- 	<div class="layout-side-arrow">
 			<div class="layout-side-arrow-icon">
 				<i class="icon-font">&#xe60e;</i>
 			</div>
-		</div>
+		</div> -->
 		
 		<!-- 右侧home -->
 		<section class="layout-main">
 			<div class="layout-main-tab">
-				<button onclick="toggleLeftMenu(this);" class="tab-btn btn-left" title="折叠菜单"><i class="icon-font">&#xe60e;</i></button>
-				<!-- <button class="tab-btn btn-left" style="left:18px"><i class="icon-font">&#xe628;</i></button> -->
+				<button class="tab-btn btn-left"><i class="icon-font">&#xe628;</i></button>
                 <nav class="tab-nav">
                     <div class="tab-nav-content" id="tab-contents-div">
                     	<div id="tytabbottomsepar" class="f-tabstrip-header-inkbar"></div>
@@ -248,91 +234,16 @@
 		
 	</div>
 </div>
-	
+	<script type="text/javascript" src="plug-in/themes/fineui/common/lib/jquery-1.9.0.min.js"></script>
 	<script type="text/javascript" src="plug-in/themes/fineui/common/js/sccl.js"></script>
 	<script type="text/javascript" src="plug-in/themes/fineui/common/js/sccl-util.js"></script>
-	
+	<t:base type="tools"></t:base>
 	<script type="text/javascript" src="plug-in/themes/fineui/smart-menu/jquery-smartMenu.js"></script>
 	<script src="plug-in/jquery-plugs/storage/jquery.storageapi.min.js"></script>
-	<!-- 自动补全 -->
-	<link rel="stylesheet" href="plug-in/jquery/jquery-autocomplete/jquery.autocomplete.css" type="text/css"></link>
-	<script type="text/javascript" src="plug-in/jquery/jquery-autocomplete/jquery.autocomplete.min.js"></script>
-	
-	
-	<!-- 在线聊天 -->
-	<%@include file="/context/layui.jsp"%>
 	<script type="text/javascript">
-	function checkput(){
-		var name = $("#searchbox").val();
-    	$.ajax({
-         	type: "POST",
-            url: "loginController.do?getUrlpage",
-            dataType:"text",          
-            data: "urlname=" + name ,
-            success: function(urlname){
-            		var h=urlname;
-    				var options = {url:h,id:99,title:name};
-                	addFineuiTab(options); 			 
-            	 }
-             }); 
-	}
-	function getTremValueuserName() {
-		return $("#searchbox").val();
-	}
-	$("#searchbox").autocomplete("loginController.do?getAutocomplete", {
-        max: 8,
-        minChars: 1,
-        scroll:true,
-        width: 150,
-        scrollHeight: 180,
-        matchContains: true,
-        matchSubset:true,
-        autoFill: false,
-        extraParams: {
-            featureClass: "P",
-            style: "full",
-            maxRows: 10,
-            labelField: "functionName",//提示显示的字段
-            valueField: "functionName",//传递后台的字段
-            searchField: "functionName",//查询关键字字段
-            entityName: "TSFunction",//实体名称
-            trem: getTremValueuserName
-        },
-        parse: function(data) {
-            return jeecgAutoParse.call(this, data);
-        },
-        formatItem: function(row, i, max) {
-            return row['functionName'];
-        }
-    }).result(function(event, row, formatted) {
-        $("#searchbox").val(row['functionName']);
-    });
-	
-	//给输入框绑定按键事件
-	$("#searchbox").keydown(function() {
-        if(event.keyCode == "13") {
-        var name = $("#searchbox").val();
-        	$.ajax({
-             	type: "POST",
-                url: "loginController.do?getUrlpage",
-                dataType:"text",          
-                data: "urlname=" + name ,
-                success: function(urlname){
-                		var h=urlname;
-        				var options = {url:h,id:99,title:name};
-                    	addFineuiTab(options); 			 
-                	 }
-                 }); 
-        }
-	 })
-	
-	
 	function logout(){
 		location.href="loginController.do?logout";
 	}
-	function toSwagger(){
-    	window.open("swagger/index.html","_blank");
-    }
 	$(function(){
 		//刷新本页面
 		$("#activeTabToolRefresh").click(function(){
@@ -358,11 +269,6 @@
 			$(this).next("div").removeClass("ui-iconss-focus");
 		});
 		$("body").css("height",document.documentElement.clientHeight);
-		//fineui首页菜单样式bug-临时方案---
-		$(window).resize(function(){
-			$("body").css("height",document.documentElement.clientHeight);
-		});
-		
 	});
 	
 	$(".personInfo").hover(function(){
@@ -379,27 +285,7 @@
         //bootbox.alert( "浏览器缓存清除成功!");
         layer.msg("浏览器缓存清除成功!");
     }
-    //菜单折叠切换
-    function toggleLeftMenu(obj){
-    	if($('#toggleLeftMenu').hasClass("close")){
-    		$(obj).attr("title","折叠菜单").find("i").html("&#xe60e;");
-    	}else{
-    		$(obj).attr("title","展开菜单").find("i").html("&#xe501;");
-    	}
-		$('#toggleLeftMenu').click();
-	}
 	</script>
-	
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?098e6e84ab585bf0c2e6853604192b8b";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-
 </body>
 </html>
 

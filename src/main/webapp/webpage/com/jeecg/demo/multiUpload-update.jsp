@@ -24,11 +24,12 @@
 							</label>
 						</td>
 						<td class="value">
-							<div class="form jeecgDetail">
-								<t:upload name="testFile1" id="testFile1" queueID="filediv_testFile1" uploader="cgUploadController.do?saveFiles" extend="" formData="cgFormId,cgFormName,cgFormField_testFile1" outhtml="false"></t:upload> 
-							</div> 
-							<div class="form" id="filediv_testFile1"></div>
-							<table id="test_file_1_fileTable"></table>
+									<table id="test_file_1_fileTable"></table>
+										<table></table>
+										<div class="form jeecgDetail">
+									<t:upload name="testFile1" id="testFile1" queueID="filediv_testFile1" uploader="cgUploadController.do?saveFiles" extend="" formData="cgFormId,cgFormName,cgFormField_testFile1" outhtml="false"></t:upload> 
+								</div> 
+										<div class="form" id="filediv_testFile1"></div>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">测试文件1</label>
 						</td>
@@ -40,11 +41,12 @@
 							</label>
 						</td>
 						<td class="value">
-							<div class="form jeecgDetail">
-								<t:upload name="testFile2" id="testFile2" queueID="filediv_testFile2" uploader="cgUploadController.do?saveFiles" extend="" formData="cgFormId,cgFormName,cgFormField_testFile2" outhtml="false"></t:upload> 
-							</div> 
-							<div class="form" id="filediv_testFile2"></div>
-							<table id="test_file_2_fileTable"></table>
+									<table id="test_file_2_fileTable"></table>
+										<table></table>
+											<div class="form jeecgDetail">
+									<t:upload name="testFile2" id="testFile2" queueID="filediv_testFile2" uploader="cgUploadController.do?saveFiles" extend="" formData="cgFormId,cgFormName,cgFormField_testFile2" outhtml="false"></t:upload> 
+								</div> 
+										<div class="form" id="filediv_testFile2"></div>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">测试文件2</label>
 						</td>
@@ -56,11 +58,12 @@
 							</label>
 						</td>
 						<td class="value">
-							<div class="form jeecgDetail">
-								<t:upload name="testFile3" id="testFile3" queueID="filediv_testFile3" uploader="cgUploadController.do?saveFiles" extend="" formData="cgFormId,cgFormName,cgFormField_testFile3" outhtml="true"></t:upload> 
-							</div> 
-							<div class="form" id="filediv_testFile3"></div>
-							<table id="test_file_3_fileTable"></table>
+									<table id="test_file_3_fileTable"></table>
+										<table></table>
+										<div class="form jeecgDetail">
+									<t:upload name="testFile3" id="testFile3" queueID="filediv_testFile3" uploader="cgUploadController.do?saveFiles" extend="" formData="cgFormId,cgFormName,cgFormField_testFile3" outhtml="true"></t:upload> 
+								</div> 
+										<div class="form" id="filediv_testFile3"></div>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">测试文件3</label>
 						</td>

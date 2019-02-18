@@ -28,8 +28,6 @@ public class DataGridDelOptTag extends TagSupport {
 	private String urlclass;//按钮样式
 	private String urlfont;//按钮图标
 
-	private boolean inGroup;//操作列菜单一开始是否隐藏
-
 	
 	public int doStartTag() throws JspTagException {
 		return EVAL_PAGE;
@@ -39,9 +37,7 @@ public class DataGridDelOptTag extends TagSupport {
 		
 		Tag t = findAncestorWithClass(this, DataGridTag.class);
 		DataGridTag parent = (DataGridTag) t;
-
-		parent.setDelUrl(url, title, message, exp, funname,operationCode,urlStyle,urlclass,urlfont,inGroup);
-
+		parent.setDelUrl(url, title, message, exp, funname,operationCode,urlStyle,urlclass,urlfont);
 		return EVAL_PAGE;
 	}
 	public void setFunname(String funname) {
@@ -86,11 +82,5 @@ public class DataGridDelOptTag extends TagSupport {
 			this.urlfont = urlfont;
 		}
 
-		public boolean isInGroup() {
-			return inGroup;
-		}
-		public void setInGroup(boolean inGroup) {
-			this.inGroup = inGroup;
-		}
-
+		
 }

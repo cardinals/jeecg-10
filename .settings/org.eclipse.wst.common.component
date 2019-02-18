@@ -6,5 +6,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <property name="context-root" value="jeecg"/>
         <property name="java-output-path" value="/jeecg/target/classes"/>
+        <property name="component.exclusion.patterns" value="%regex[^plug-in.+(?:(?&lt;!(?:-|\.)min)\.js)],%regex[^plug-in/accordion.+(?:(?&lt;!(?:-|\.)min)\.css)],%regex[^plug-in/bootstrap.+(?:(?&lt;!(?:-|\.)min)\.css)],%regex[^plug-in/easyui/themes/black.+(?:(?&lt;!(?:-|\.)min)\.css)],%regex[^plug-in/easyui/themes/default.+(?:(?&lt;!(?:-|\.)min)\.css)],%regex[^plug-in/Validform.+(?:(?&lt;!(?:-|\.)min)\.css)]"/>
     </wb-module>
 </project-modules>

@@ -5,7 +5,7 @@
   <div region="center" style="padding:0px;border:0px">
   <t:datagrid name="companyList" checkbox="true" pagination="true" fitColumns="true" title="公司表" actionUrl="companyController.do?datagrid" idField="id" sortName="createDate" fit="true" queryMode="group">
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="物业公司名称"  field="comName"  query="true"  queryMode="single"  width="120" ></t:dgCol>
+   <t:dgCol title="物业公司名称"  field="comName"  query="true"  queryMode="single"  width="120" url="managerareaController.do?list&fatherId={id}"></t:dgCol>
    <t:dgCol title="公司负责人"  field="comContact"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="联系电话"  field="comPhone"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人"  field="createBy"  queryMode="single"  width="120"></t:dgCol>

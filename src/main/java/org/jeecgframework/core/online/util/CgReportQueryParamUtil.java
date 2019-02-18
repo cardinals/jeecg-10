@@ -6,14 +6,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.jeecgframework.core.online.def.CgReportConstant;
-import org.jeecgframework.core.util.DateUtils;
+import org.jeecgframework.core.util.DBTypeUtil;
 import org.jeecgframework.core.util.StringUtil;
 
 /**
@@ -24,24 +22,23 @@ import org.jeecgframework.core.util.StringUtil;
  * @date Jul 5, 2013 10:22:31 PM
  * @version V1.0
  */
-public class CgReportQueryParamUtil{
+public class CgReportQueryParamUtil
 
+{
 	/**
 	 * 组装查询参数
 	 * @param request 请求(查询值从此处取)
 	 * @param item 动态报表字段配置
-	 * @param pageSearchFields 页面参数查询字段（占位符的条件语句）
-	 * @param paramData 占位符对应的数据
+	 * @param params 参数存放
 	 */
-	public static void loadQueryParams(HttpServletRequest request, Map<String,Object> item, Map<String,Object> pageSearchFields,Map<String,Object> paramData) {
+	@SuppressWarnings("unchecked")
+	public static void loadQueryParams(HttpServletRequest request, Map item, Map params) {
 		String filedName = (String) item.get(CgReportConstant.ITEM_FIELDNAME);
 		String queryMode = (String) item.get(CgReportConstant.ITEM_QUERYMODE);
 		String filedType = (String) item.get(CgReportConstant.ITEM_FIELDTYPE);
 		if("single".equals(queryMode)){
 			//单条件组装方式
-
-			String value =request.getParameter(filedName.toLowerCase());
-
+			String value =request.getParameter(filedName);
 			try {
 				if(StringUtil.isEmpty(value)){
 					return;
@@ -55,86 +52,37 @@ public class CgReportQueryParamUtil{
 				e.printStackTrace();
 				return;
 			} 
-
-//			sql_inj_throw(value);
-//			SqlInjectionUtil.filterContent(value);
-
-//			value = applyType(filedType,value);
-
+			sql_inj_throw(value);
+			value = applyType(filedType,value);
 			if(!StringUtil.isEmpty(value)){
 				if(value.contains("*")){
 					//模糊查询
 					value = value.replaceAll("\\*", "%");
-//					params.put(filedName, CgReportConstant.OP_LIKE+value);
-					pageSearchFields.put(filedName, CgReportConstant.OP_LIKE+":"+filedName);
+					params.put(filedName, CgReportConstant.OP_LIKE+value);
 				}else{
-//					params.put(filedName, CgReportConstant.OP_EQ+value);
-					pageSearchFields.put(filedName, CgReportConstant.OP_EQ+":"+filedName);
+					params.put(filedName, CgReportConstant.OP_EQ+value);
 				}
 			}
-
-			paramData.put(filedName, covertData(filedType,value,true));
-
 		}else if("group".equals(queryMode)){
 			//范围查询组装
-
-			String begin = request.getParameter(filedName.toLowerCase()+"_begin");
-
-//			sql_inj_throw(begin);
-//			SqlInjectionUtil.filterContent(begin);
-
-//			begin= applyType(filedType,begin);
-
-			String end = request.getParameter(filedName.toLowerCase()+"_end");
-
-//			sql_inj_throw(end);
-//			SqlInjectionUtil.filterContent(end);
-
-//			end= applyType(filedType,end);
-
+			String begin = request.getParameter(filedName+"_begin");
+			sql_inj_throw(begin);
+			begin= applyType(filedType,begin);
+			String end = request.getParameter(filedName+"_end");
+			sql_inj_throw(end);
+			end= applyType(filedType,end);
 			if(!StringUtil.isEmpty(begin)){
-//				String re = CgReportConstant.OP_RQ+begin;
-				String re = CgReportConstant.OP_RQ+":"+filedName+"_begin";
-				pageSearchFields.put(filedName, re);
-				paramData.put(filedName+"_begin", covertData(filedType,begin,true));
-			} 
-			if(!StringUtil.isEmpty(end)){
-//				String re = CgReportConstant.OP_LQ+end;
-				String re = CgReportConstant.OP_LQ+":"+filedName+"_end";
-				pageSearchFields.put(filedName, re);
-				paramData.put(filedName+"_end", covertData(filedType,end,false));
-			}
-
-		}
-	}
-
-	private static Object covertData(String fieldType,String value,boolean isBegin){
-		Object obj = null;
-		if(!StringUtil.isEmpty(value)){
-			if(CgReportConstant.TYPE_STRING.equalsIgnoreCase(fieldType)){
-				obj = value;
-			}else if(CgReportConstant.TYPE_DATE.equalsIgnoreCase(fieldType)){
-				if (value.length() == 19) {
-				} else if (value.length() == 10) {
-					if(isBegin){
-						value +=" 00:00:00";
-					}else{
-						value +=" 23:59:59";
-					}
+				String re = CgReportConstant.OP_RQ+begin;
+				if(!StringUtil.isEmpty(end)){
+					re +=" AND "+filedName+CgReportConstant.OP_LQ+end;
 				}
-				SimpleDateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				obj = DateUtils.str2Date(value, datetimeFormat);
-			}else if(CgReportConstant.TYPE_DOUBLE.equalsIgnoreCase(fieldType)){
-				obj = value;
-			}else if(CgReportConstant.TYPE_INTEGER.equalsIgnoreCase(fieldType)){
-				obj = value;
-			}else{
-				obj = value;
+				params.put(filedName, re);
+			}else if(!StringUtil.isEmpty(end)){
+				String re = CgReportConstant.OP_LQ+end;
+				params.put(filedName, re);
 			}
 		}
-		return obj;
 	}
-
 	
 	/**
 	 * 将结果集转化为列表json格式
@@ -146,21 +94,19 @@ public class CgReportQueryParamUtil{
 		JSONObject main = new JSONObject();
 		JSONArray rows = new JSONArray();
 		main.put("total",size );
-		if(result!=null){
-			for(Map m:result){
-				JSONObject item = new JSONObject();
-				Iterator  it =m.keySet().iterator();
-				while(it.hasNext()){
-					String key = (String) it.next();
-					String value =String.valueOf(m.get(key));
-					key = key.toLowerCase();
-					if(key.contains("time")||key.contains("date")){
-						value = datatimeFormat(value);
-					}
-					item.put(key,value );
+		for(Map m:result){
+			JSONObject item = new JSONObject();
+			Iterator  it =m.keySet().iterator();
+			while(it.hasNext()){
+				String key = (String) it.next();
+				String value =String.valueOf(m.get(key));
+				key = key.toLowerCase();
+				if(key.contains("time")||key.contains("date")){
+					value = datatimeFormat(value);
 				}
-				rows.add(item);
+				item.put(key,value );
 			}
+			rows.add(item);
 		}
 		main.put("rows", rows);
 		return main.toString();
@@ -207,36 +153,35 @@ public class CgReportQueryParamUtil{
 			return datetime;
 		}
 	}
-
-//	/**
-//	 * 防止sql注入
-//	 * @param str 输入sql
-//	 * @return 是否存在注入关键字
-//	 */
-//	public static boolean sql_inj(String str) {
-//		if(StringUtil.isEmpty(str)){
-//			return false;
-//		}
-//		String inj_str = "'|and|exec|insert|select|delete|update|count|chr|mid|master|truncate|char|declare|;|or|+|,";
-////		String inj_str = "'|and|exec|insert|select|delete|update|count|chr|mid|master|truncate|char|declare|;|or|-|+|,";
-//		String inj_stra[] = inj_str.split("\\|");
-//		for (int i = 0; i < inj_stra.length; i++) {
-//			if (str.indexOf(" "+inj_stra[i]+" ") >= 0) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//	/**
-//	 * 当存在sql注入时抛异常
-//	 * @param str 输入sql
-//	 */
-//	public static void sql_inj_throw(String str){
-//		if(sql_inj(str)){
-//			throw new RuntimeException("请注意,填入的参数可能存在SQL注入!");
-//		}
-//	}
-
+	
+	/**
+	 * 防止sql注入
+	 * @param str 输入sql
+	 * @return 是否存在注入关键字
+	 */
+	public static boolean sql_inj(String str) {
+		if(StringUtil.isEmpty(str)){
+			return false;
+		}
+		String inj_str = "'|and|exec|insert|select|delete|update|count|chr|mid|master|truncate|char|declare|;|or|+|,";
+//		String inj_str = "'|and|exec|insert|select|delete|update|count|chr|mid|master|truncate|char|declare|;|or|-|+|,";
+		String inj_stra[] = inj_str.split("\\|");
+		for (int i = 0; i < inj_stra.length; i++) {
+			if (str.indexOf(" "+inj_stra[i]+" ") >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 当存在sql注入时抛异常
+	 * @param str 输入sql
+	 */
+	public static void sql_inj_throw(String str){
+		if(sql_inj(str)){
+			throw new RuntimeException("请注意,填入的参数可能存在SQL注入!");
+		}
+	}
 	
 	/**
 	 * 根据字段类型 进行处理
@@ -244,7 +189,7 @@ public class CgReportQueryParamUtil{
 	 * @param value 值
 	 * @return
 	 */
-	/*public static String applyType(String fieldType, String value) {
+	public static String applyType(String fieldType, String value) {
 		if(!StringUtil.isEmpty(value)){
 			String result = "";
 			if(CgReportConstant.TYPE_STRING.equalsIgnoreCase(fieldType)){
@@ -253,9 +198,7 @@ public class CgReportQueryParamUtil{
 				//	value="*"+value+"*";
 				//}
 
-//				result = "'" +value+ "'";
-				result = value;
-
+				result = "'" +value+ "'";
 			}else if(CgReportConstant.TYPE_DATE.equalsIgnoreCase(fieldType)){
 				result = getDateFunction(value, "yyyy-MM-dd");
 			}else if(CgReportConstant.TYPE_DOUBLE.equalsIgnoreCase(fieldType)){
@@ -269,7 +212,7 @@ public class CgReportQueryParamUtil{
 		}else{
 			return "";
 		}
-	}*/
+	}
 	
 	/**
 	 * 跨数据库返回日期函数
@@ -277,7 +220,7 @@ public class CgReportQueryParamUtil{
 	 * @param dateFormat 日期格式
 	 * @return 日期函数
 	 */
-	/*public static String getDateFunction(String dateStr,String dateFormat){
+	public static String getDateFunction(String dateStr,String dateFormat){
 		String dbType = getDBType();
 		String dateFunction = "";
 		if("mysql".equalsIgnoreCase(dbType)){
@@ -296,13 +239,13 @@ public class CgReportQueryParamUtil{
 			dateFunction = dateStr;
 		}
 		return dateFunction;
-	}*/
+	}
 	
 	/**
 	 * 获取数据库类型
 	 * @return
 	 */
-	/*public static String getDBType(){
+	public static String getDBType(){
 		return DBTypeUtil.getDBType();
-	}*/
+	}
 }

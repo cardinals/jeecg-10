@@ -4,9 +4,6 @@
 <#include "../../ui/datatype.ftl"/>
 <#include "../../ui/dictInfo.ftl"/>
 <#-- update--end--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
-<#-- update--begin--author:taoyan date:20180427 for:TASK #2660 【代码生成器】代码生成器改造，上传控件、树控件，生成的代码太乱了 -->
-<#include "../../ui/tag.ftl"/>
-<#-- update--end--author:taoyan date:20180427 for:TASK #2660 【代码生成器】代码生成器改造，上传控件、树控件，生成的代码太乱了 -->
 <!DOCTYPE html>
 <#assign callbackFlag = false />
 <#assign fileName = "" />
@@ -23,12 +20,32 @@
   <title>${ftl_description}</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <t:base type="jquery,aceform,DatePicker,validform,ueditor<#if callbackFlag == true>,uploadify</#if>"></t:base>
-  <#-- update-end-author:taoyan date:20180705 for:TASK #2765 【online表单】多tab风格 存在文件字段时样式乱了-->
-  <#if callbackFlag == true>
-  <style>.con-wrapper .show-grid > div,.con-wrapper .row > div{border-left:none;}</style>
+  <link rel="stylesheet" href="online/template/ledefault/css/vendor.css">
+  <link rel="stylesheet" href="online/template/ledefault/css/bootstrap-theme.css">
+  <link rel="stylesheet" href="online/template/ledefault/css/bootstrap.css">
+  <link rel="stylesheet" href="online/template/ledefault/css/app.css">
+
+  <link rel="stylesheet" href="plug-in/Validform/css/metrole/style.css" type="text/css"/>
+  <link rel="stylesheet" href="plug-in/Validform/css/metrole/tablefrom.css" type="text/css"/>
+  <script type="text/javascript" src="plug-in/jquery/jquery-1.8.3.js"></script>
+  <script type="text/javascript" src="plug-in/tools/dataformat.js"></script>
+  <script type="text/javascript" src="plug-in/easyui/jquery.easyui.min.1.3.2.js"></script>
+  <script type="text/javascript" src="plug-in/easyui/locale/zh-cn.js"></script>
+  <script type="text/javascript" src="plug-in/tools/syUtil.js"></script>
+  <script type="text/javascript" src="plug-in/My97DatePicker/WdatePicker.js"></script>
+  <script type="text/javascript" src="plug-in/lhgDialog/lhgdialog.min.js"></script>
+  <script type="text/javascript" src="plug-in/tools/curdtools_zh-cn.js"></script>
+  <script type="text/javascript" src="plug-in/tools/easyuiextend.js"></script>
+  <script type="text/javascript" src="plug-in/Validform/js/Validform_v5.3.1_min_zh-cn.js"></script>
+  <script type="text/javascript" src="plug-in/Validform/js/Validform_Datatype_zh-cn.js"></script>
+  <script type="text/javascript" src="plug-in/Validform/js/datatype_zh-cn.js"></script>
+  <script type="text/javascript" src="plug-in/Validform/plugin/passwordStrength/passwordStrength-min.js"></script>
+    <#if callbackFlag == true>
+		<link rel="stylesheet" href="plug-in/uploadify/css/uploadify.css" type="text/css" />
+		<script type="text/javascript" src="plug-in/uploadify/jquery.uploadify-3.1.js"></script>
   </#if>
-  <#-- update-end-author:taoyan date:20180705 for:TASK #2765 【online表单】多tab风格 存在文件字段时样式乱了-->
+  <script type="text/javascript"  charset="utf-8" src="plug-in/ueditor/ueditor.config.js"></script>
+  <script type="text/javascript"  charset="utf-8" src="plug-in/ueditor/ueditor.all.min.js"></script>
 </head>
 
 
@@ -62,7 +79,27 @@
         return false;  
     });  
   });
-
+  //初始化下标
+	function resetTrNum(tableId) {
+		$tbody = $("#"+tableId+"");
+		$tbody.find('>tr').each(function(i){
+			$(':input, select', this).each(function(){
+				var $this = $(this), name = $this.attr('name'), val = $this.val();
+				if(name!=null){
+					if (name.indexOf("#index#") >= 0){
+						$this.attr("name",name.replace('#index#',i));
+					}else{
+						var s = name.indexOf("[");
+						var e = name.indexOf("]");
+						var new_name = name.substring(s+1,e);
+						$this.attr("name",name.replace(new_name,i));
+					}
+				}
+			});
+			$(this).find('div[name=\'xh\']').html(i+1);
+		});
+	}
+	
 	function init(){
     	var tabHead =$("#jform_tab li:first");
     	var tabBox = $("#jform_tab .con-wrapper:first"); 
@@ -103,19 +140,11 @@
 			          <div class="col-xs-3 text-center">
 			          	<b>${po.content}：</b>
 			          </div>
-			          <#-- update--begin--author:Yandong date:20180320 for:TASK #2574 【代码生成器】代码生成效果有问题 2. 有附件的，应该弹窗宽一些  -->
-			          <#if po.showType=='file' || po.showType == 'image'>
-			          		<div class="col-xs-3">
-			          <#else>
-			          		<div class="col-xs-3">
-			          </#if>
-					  <#-- update--end--author:Yandong date:20180320 for:TASK #2574 【代码生成器】代码生成效果有问题  2. 有附件的，应该弹窗宽一些  -->
+			          <div class="col-xs-3">
 							<#if po.showType=='text'>
 								<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 								<#-- update--begin--author:Yandong Date:20180226 for:TASK #2513 【bug】代码生成器，新添加的online唯一校验生成代码问题-->
-								<#-- update--begin--author:Yandong Date:20180326 for:TASK #2571 【代码生成器bug】[Online开发] 主从表主表生成的代码字段没有长度限制-->
-								<input id="${po.fieldName}" name="${po.fieldName}" type="text" maxlength="${po.length?c}" class="form-control" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" tableName="${po.table.tableName}" fieldName="${po.oldFieldName}"/> value='${'$'}{${entityName?uncap_first}Page.${po.fieldName}}' />
-								<#-- update--end--author:Yandong Date:20180326 for:TASK #2571 【代码生成器bug】[Online开发] 主从表主表生成的代码字段没有长度限制-->
+								<input id="${po.fieldName}" name="${po.fieldName}" type="text" class="form-control" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" tableName="${po.table.tableName}" fieldName="${po.oldFieldName}"/> value='${'$'}{${entityName?uncap_first}Page.${po.fieldName}}' />
 						    	<#-- update--end--author:Yandong Date:20180226 for:TASK #2513 【bug】代码生成器，新添加的online唯一校验生成代码问题-->
 						    	<#-- update--end--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 						   <#elseif po.showType=='popup'>
@@ -132,14 +161,12 @@
 						    	<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 						    <#elseif po.showType=='password'>
 						      	<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
-						      	<#-- update--begin--author:Yandong Date:20180326 for:TASK #2571 【代码生成器bug】[Online开发] 主从表主表生成的代码字段没有长度限制-->
-						      	<input id="${po.fieldName}" name="${po.fieldName}" type="password" maxlength="${po.length?c}" class="form-control" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" /> value='${'$'}{${entityName?uncap_first}Page.${po.fieldName}}' />
-						      	<#-- update--end--author:Yandong Date:20180326 for:TASK #2571 【代码生成器bug】[Online开发] 主从表主表生成的代码字段没有长度限制-->
-								<#-- update--end--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
+						      	<input id="${po.fieldName}" name="${po.fieldName}" type="password" class="form-control" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" /> value='${'$'}{${entityName?uncap_first}Page.${po.fieldName}}' />
+								<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 							<#elseif po.showType=='radio' || po.showType=='select' || po.showType=='checkbox' || po.showType=='list'>	 
-								<#-- update-begin-author:taoyan Date:20180519 for:dictselect改用标签便于以后统一修改 -->
-								<@dictSelecttag po = po namePre="" valuePre = "${entityName?uncap_first}Page." formStyle="aces" opt="update" />
-								<#-- update-end-author:taoyan Date:20180519 for:dicselect改用标签便于以后统一修改 -->
+								<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
+								<t:dictSelect field="${po.fieldName}" type="${po.showType?if_exists?html}" extendJson="{class:'form-control',style:'width:150px'}" <@datatype inputCheck="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/> <@dictInfo dictTable="${po.dictTable}" dictField="${po.dictField}" dictText="${po.dictText}" /> defaultVal="${'$'}{${entityName?uncap_first}Page.${po.fieldName}}" hasLabel="false"  title="${po.content}"></t:dictSelect>     
+								<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 							<#elseif po.showType=='date'>
 								<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 								<input id="${po.fieldName}" name="${po.fieldName}" type="text"  <@datatype showType="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/> style="background: url('plug-in/ace/images/datetime.png') no-repeat scroll right center transparent;"  class="form-control" onClick="WdatePicker()" value="<fmt:formatDate value='${'$'}{${entityName?uncap_first}Page.${po.fieldName}}' type='date' pattern='yyyy-MM-dd'/>" />
@@ -149,9 +176,76 @@
 								<input id="${po.fieldName}" name="${po.fieldName}" type="text" style="background: url('plug-in/ace/images/datetime.png') no-repeat scroll right center transparent;" class="form-control" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'})" <@datatype showType="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/>  value="<fmt:formatDate value='${'$'}{${entityName?uncap_first}Page.${po.fieldName}}' type='date' pattern='yyyy-MM-dd hh:mm:ss'/>" />
 						   		<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 						   <#elseif po.showType=='file' || po.showType == 'image'>
-								<#-- update--begin--author:taoyan date:20180427 for:TASK #2660 【代码生成器】代码生成器改造，上传控件、树控件，生成的代码太乱了 -->
-								<@uploadtag po = po  opt = "update"/>
-								<#-- update--end--author:taoyan date:20180427 for:TASK #2660 【代码生成器】代码生成器改造，上传控件、树控件，生成的代码太乱了 -->
+								<table id="${fieldMeta[po.fieldName]?lower_case}_fileTable"></table>
+								<#if !(po.operationCodesReadOnly ??)>
+									<#assign fileName = fileName + "${po.fieldName}," />
+									<table></table>
+									<script type="text/javascript">
+										var serverMsg="";
+										$(function(){
+											$('#${po.fieldName}').uploadify({
+												<#-- update--begin--author:zhangjiaqiang date:20170531 for:增加图片和文件的支持 -->
+												<#if po.showType == 'image'>
+												buttonText:'添加图片',
+												<#else>
+												buttonText:'添加文件',
+												</#if>
+												<#-- update--end--author:zhangjiaqiang date:20170531 for:增加图片和文件的支持 -->
+												auto:false,
+												progressData:'speed',
+												multi:true,
+												height:25,
+												overrideEvents:['onDialogClose'],
+												fileTypeDesc:'文件格式:',
+												queueID:'filediv_${po.fieldName}',
+												<#-- fileTypeExts:'*.rar;*.zip;*.doc;*.docx;*.txt;*.ppt;*.xls;*.xlsx;*.html;*.htm;*.pdf;*.jpg;*.gif;*.png',   页面弹出很慢解决 20170317 scott -->
+												fileSizeLimit:'15MB',
+												swf:'plug-in/uploadify/uploadify.swf',	
+												uploader:'cgUploadController.do?saveFiles&jsessionid='+$("#sessionUID").val()+'',
+												onUploadStart : function(file) { 
+													var cgFormId=$("input[name='id']").val();
+													$('#${po.fieldName}').uploadify("settings", "formData", {
+														'cgFormId':cgFormId,
+														'cgFormName':'${tableName}',
+														'cgFormField':'${fieldMeta[po.fieldName]}'
+													});
+												} ,
+												onQueueComplete : function(queueData) {
+													 var win = frameElement.api.opener;
+													 win.reloadTable();
+													 win.tip(serverMsg);
+													 frameElement.api.close();
+												},
+												onUploadSuccess : function(file, data, response) {
+													var d=$.parseJSON(data);
+													if(d.success){
+														var win = frameElement.api.opener;
+														serverMsg = d.msg;
+													}
+												},
+												onFallback: function() {
+								                    tip("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试")
+								                },
+								                onSelectError: function(file, errorCode, errorMsg) {
+								                    switch (errorCode) {
+								                    case - 100 : tip("上传的文件数量已经超出系统限制的" + $('#file').uploadify('settings', 'queueSizeLimit') + "个文件！");
+								                        break;
+								                    case - 110 : tip("文件 [" + file.name + "] 大小超出系统限制的" + $('#file').uploadify('settings', 'fileSizeLimit') + "大小！");
+								                        break;
+								                    case - 120 : tip("文件 [" + file.name + "] 大小异常！");
+								                        break;
+								                    case - 130 : tip("文件 [" + file.name + "] 类型不正确！");
+								                        break;
+								                    }
+								                },
+								                onUploadProgress: function(file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) {}
+											});
+										});
+									</script>
+									<span id="file_uploadspan"><input type="file" name="${po.fieldName}" id="${po.fieldName}" /></span> 
+									<div class="form" id="filediv_${po.fieldName}"></div>
+								</#if>
+								
 							<#--update-start--Author: jg_huangxg  Date:20160421 for：TASK #1027 【online】代码生成器模板不支持UE编辑器 -->
 							<#elseif po.showType='umeditor'>
 								<#-- update--begin--author:zhangjiaqiang date:20170522 for:ueditor配置文件只加载一次 -->
@@ -172,16 +266,133 @@
 							<#--update-end--Author: jg_huangxg  Date:20160421 for：TASK #1027 【online】代码生成器模板不支持UE编辑器 -->
 						     <#-- update--begin--author:zhangjiaqiang date:20170815 for:TASK #2274 【online】Online 表单支持树控件 -->
 							<#elseif po.showType=='tree'>
-								<#-- update--begin--author:taoyan date:20180427 for:TASK #2660 【代码生成器】代码生成器改造，上传控件、树控件，生成的代码太乱了 -->
-								<@treetag po = po formStyle="ace" opt = "update"/>
-								<#-- update--end--author:taoyan date:20180427 for:TASK #2660 【代码生成器】代码生成器改造，上传控件、树控件，生成的代码太乱了 -->
+								<input id="${po.fieldName}" ${po.extendJson?if_exists}  type="text"
+							       style="width: 150px" class="inputxt" <@datatype showType="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/>
+					               onclick="show${po.fieldName?cap_first }Tree();" readonly="readonly">
+					               <input type="hidden" id="${po.fieldName}Id" name="${po.fieldName}"  class="show${po.fieldName?cap_first}">  
+									<div id="show${po.fieldName?cap_first }TreeContent" class="menuContent" style="display: none; position: absolute; border: 1px #CCC solid; background-color: #F0F6E4;z-index:9999;">  
+									    <ul id="show${po.fieldName?cap_first }Tree" class="ztree" style="margin-top:0;"></ul>  
+									</div>
+								<script>
+									$(function(){
+										if(!$.fn.zTree){
+											$("head").append('<link rel="stylesheet" href="plug-in/ztree/css/zTreeStyle.css"/>');
+											$("head").append('<script type=\"text/javascript\" src=\"plug-in/ztree/js/jquery.ztree.core-3.5.min.js\"><\/script>');
+											$("head").append('<script type=\"text/javascript\" src=\"plug-in/ztree/js/jquery.ztree.excheck-3.5.min.js\"><\/script>');
+										}
+										var defaultVal = $("#${po.fieldName}Id").val();
+										$("#${po.fieldName}").val(getTreeResult(defaultVal));
+										$("body").bind("mousedown", onBodyDownBy${po.fieldName?cap_first });  
+									});
+									
+									var ${po.fieldName}Setting = {  
+										   check: {  
+								                enable: true
+									        }, 
+										    view: {  
+										        dblClickExpand: false  
+										    },  
+										    data: {  
+										        simpleData: {  
+										            enable: true  
+										        },
+										        key:{
+										        	name:'text'
+										        }
+										    },  
+										    callback: {  
+										        onClick: ${po.fieldName}OnClick,
+										        onCheck: ${po.fieldName}OnCheck
+										    }   
+										}; 
+									function ${po.fieldName}OnCheck(e, treeId, treeNode) { 
+										    var idVal = $("#${po.fieldName}Id").val();
+										    var textVal = $("#${po.fieldName}").val();
+										    if(treeNode.checked){
+										    	//选中
+										    	if(idVal != null && idVal != ''){
+										    		$("#${po.fieldName}Id").val(idVal + ',' +treeNode.id);  
+											    }else{
+												    $("#${po.fieldName}Id").val(treeNode.id);  
+											    }
+											    if(textVal != null && textVal != ''){
+											    	 $("#${po.fieldName}").val(textVal + ',' + treeNode.text);  
+											    }else{
+												    $("#${po.fieldName}").val(treeNode.text);  
+											    }
+										    }else{
+										    	idVal = idVal.replace(treeNode.id,"");
+										    	if(idVal.indexOf(",") == 0){
+										    		idVal = idVal.substring(1);
+										    	}else if(idVal.indexOf(",,") > -1){
+										    		idVal = idVal.replace(",,",",");
+										    	}else if(idVal.indexOf(",") == idVal.length -1){
+										    		idVal = idVal.substring(0,idVal.length - 1);
+										    	}
+										    	textVal = textVal.replace(treeNode.text,"");
+										    	if(textVal.indexOf(",") == 0){
+										    		textVal = textVal.substring(1);
+										    	}else if(textVal.indexOf(",,") > -1){
+										    		textVal = textVal.replace(",,",",");
+										    	}else if(textVal.indexOf(",") == textVal.length -1){
+										    		textVal = textVal.substring(0,textVal.length - 1);
+										    	}
+										    	$("#${po.fieldName}").val(textVal);
+										    	 $("#${po.fieldName}Id").val(idVal);
+										    }
+										    e.stopPropagation();
+										}  
+									function ${po.fieldName}OnClick(e, treeId, treeNode) {  
+										    var zTree = $.fn.zTree.getZTreeObj("show${po.fieldName?cap_first }Tree");  
+										  	zTree.checkNode(treeNode, !treeNode.checked, true,true);
+										  	e.stopPropagation();
+										}    
+									function show${po.fieldName?cap_first }Tree(){
+										 $.ajax({  
+									        url:'categoryController.do?tree',  
+									        type:'POST',  
+									        dataType:'JSON',
+									        async:false,  
+									        success:function(res){
+									            var obj = res; 
+									            $.fn.zTree.init($("#show${po.fieldName?cap_first }Tree"), ${po.fieldName}Setting, obj);  
+									            var deptObj = $("#${po.fieldName}");  
+									            var deptOffset = $("#${po.fieldName}").offset();  
+									            $("#show${po.fieldName?cap_first }TreeContent").css({left:deptOffset.left + "px", top:deptOffset.top + deptObj.outerHeight() + "px"}).slideDown("fast");  
+									            $('#show${po.fieldName?cap_first }Tree').css({width:deptObj.outerWidth() - 12 + "px"});  
+									            var zTree = $.fn.zTree.getZTreeObj("show${po.fieldName?cap_first }Tree");  
+									            var idVal =  $("#${po.fieldName}Id").val();
+									            if(idVal != null && idVal != ''){
+										             if(idVal.indexOf(",") > -1){
+										            	var idArray = idVal.split(",");
+										            	for(var i = 0; i < idArray.length; i++){
+										            		var node = zTree.getNodeByParam("id", idArray[i], null);
+										            		zTree.checkNode(node, true, true);
+										            	}
+										            }else{
+										            	var node = zTree.getNodeByParam("id", idVal, null);
+										            		zTree.checkNode(node, true, true);
+										            } 
+									            } 
+									            
+									        }  
+									    });  
+									    }
+									    function onBodyDownBy${po.fieldName?cap_first }(event){
+									    	if(event.target.id == '' || (event.target.id.indexOf('switch') == -1 
+										    	&& event.target.id.indexOf('check') == -1 
+										    	&& event.target.id.indexOf('span') == -1
+										    	&& event.target.id.indexOf('ico') == -1)){  
+										    	$("#show${po.fieldName?cap_first }TreeContent").fadeOut("fast");  
+	   											 //$("body").unbind("mousedown", onBodyDownBy${po.fieldName?cap_first });
+   											 }
+									    }
+								</script>
 								<#-- update--begin--author:zhangjiaqiang date:20170815 for:TASK #2274 【online】Online 表单支持树控件 -->
 						    <#else>
 						      	<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
-						      	<#-- update--begin--author:Yandong Date:20180326 for:TASK #2571 【代码生成器bug】[Online开发] 主从表主表生成的代码字段没有长度限制-->
-						      	<input id="${po.fieldName}" name="${po.fieldName}" type="text" maxlength="${po.length?c}" style="width: 150px" class="form-control"  <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/>   value='${'$'}{${entityName?uncap_first}Page.${po.fieldName}}'/>
-								<#-- update--end--author:Yandong Date:20180326 for:TASK #2571 【代码生成器bug】[Online开发] 主从表主表生成的代码字段没有长度限制-->
-								<#-- update--end--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
+						      	<input id="${po.fieldName}" name="${po.fieldName}" type="text" style="width: 150px" class="form-control"  <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/>   value='${'$'}{${entityName?uncap_first}Page.${po.fieldName}}'/>
+								<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 							</#if>
 						<span class="Validform_checktip" style="float:left;height:0px;"></span>
 						<label class="Validform_label" style="display: none">${po.content?if_exists?html}</label>
@@ -210,9 +421,7 @@
 			          <div class="col-xs-3">
 						    <#if po.showType=='textarea'>
 						  	 	<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
-						  	 	<#-- update--begin--author:gj_shaojc Date:20180315 for:TASK #2548 【代码生成器】样式问题-->
-						  	 	<textarea id="${po.fieldName}" class="form-control" rows="6" name="${po.fieldName}" cols="22" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" />>${'$'}{${entityName?uncap_first}Page.${po.fieldName}}</textarea>
-						    	<#-- update--end--author:gj_shaojc Date:20180315 for:TASK #2548 【代码生成器】样式问题-->
+						  	 	<textarea id="${po.fieldName}" class="form-control" rows="6" name="${po.fieldName}" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" />>${'$'}{${entityName?uncap_first}Page.${po.fieldName}}</textarea>
 						    	<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 							<#elseif po.showType='umeditor'>
 								<#-- update--begin--author:zhangjiaqiang date:20170522 for:ueditor配置文件只加载一次 -->
@@ -288,9 +497,6 @@
 		<div align="center"  id = "sub_tr" style="display: none;" > <input type="button" value="提交" onclick="neibuClick();" class="ui_state_highlight"></div>
 		<script src="plug-in/layer/layer.js"></script>
 		<script type="text/javascript">
-		<#-- update-begin-author:taoyan date:20180428 for:一对多页面form不是标签生成js,需要加个变量  -->
-		var subDlgIndex = null;
-		<#-- update-end-author:taoyan  date:20180428 for:一对多页面form不是标签生成js,需要加个变量  -->
 		$(function() {
 			$("#formobj").Validform({
 				tiptype: function(msg, o, cssctl) {
@@ -397,9 +603,9 @@
 									<input name="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" maxlength="${po.length?c}" type="password" class="form-control"  style="width:120px;"<@datatype showType="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/>/>
 									<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 								<#elseif po.showType=='radio' || po.showType=='select' || po.showType=='checkbox' || po.showType=='list'>
-									<#-- update-begin-author:taoyan Date:20180519 for:dictselect改用标签便于以后统一修改 -->
-									<@dictSelecttag po = po namePre="${sub.entityName?uncap_first}List[#index#]." valuePre = "" formStyle="aces" opt="" />
-									<#-- update-end-author:taoyan Date:20180519 for:dicselect改用标签便于以后统一修改 -->
+									<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
+									<t:dictSelect field="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" type="${po.showType?if_exists?html}" extendJson="{class:'form-control',style:'width:150px'}" <#if po.isNull != 'Y'>datatype="*"</#if><@dictInfo dictTable="${po.dictTable}" dictField="${po.dictField}" dictText="${po.dictText}" />defaultVal="" hasLabel="false"  title="${po.content}"></t:dictSelect>     
+									<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 								<#elseif po.showType=='date'>
 									<#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
 									<input name="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" maxlength="${po.length?c}" 
@@ -416,9 +622,7 @@
 								<#elseif po.showType=='popup'>
 							    	<#-- update--begin--author:baiyu Date:20171031 for:popupClick支持返回多个字段 -->
 							    	<#-- update--begin--author:gj_shaojc Date:20180302 for:TASK #2548 【代码生成器】样式问题-->
-					  				<#-- update--begin--author:gj_shaojc Date:20180315 for:TASK #2548 【代码生成器】样式问题-->
-					  				<input name="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" name="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" type="text"  class="form-control" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" /> <#if po.dictTable?if_exists?html!="">  onclick="popupClick(this,'${po.dictText}','${po.dictField}','${po.dictTable}')"</#if> value="${'$'}{poVal.${po.fieldName} }" />
-									<#-- update--end--author:gj_shaojc Date:20180315 for:TASK #2548 【代码生成器】样式问题-->
+					  				<input name="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" name="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" type="text" style="width: 150px" class="form-control" <@datatype validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" /> <#if po.dictTable?if_exists?html!="">  onclick="popupClick(this,'${po.dictText}','${po.dictField}','${po.dictTable}')"</#if> value="${'$'}{poVal.${po.fieldName} }" />
 									<#-- update--end--author:gj_shaojc Date:20180302 for:TASK #2548 【代码生成器】样式问题-->
 									<#-- update--end--author:baiyu Date:20171031 for:popupClick支持返回多个字段 -->
 							    <#elseif po.showType=='file' || po.showType == 'image'>
@@ -426,17 +630,138 @@
 												<input type="hidden" id="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" name="${sub.entityName?uncap_first}List[#index#].${po.fieldName}" />
 											  <#-- update--begin--author:zhangjiaqiang date:20171120 for:TASK #2419 【代码生成器模板】一对多情况下，附件样式改造 -->
 											    <#-- update--begin--author:zhangjiaqiang date:20170614 for:修订上传附件按钮的大小 -->
-											    <#-- update--begin--author:jiaqiankun date:20180710 for：TASK #2934 【bug - 少谦】老版代码生成器都存在的问题，明细页面上传附件的问题 -->
-											   <input class="btn btn-sm btn-success" style="margin-left:10px;" type="button" value="上传附件"  name="${sub.entityName?uncap_first}List[#index#].imgBtn"
+											   <input class="btn btn-sm btn-success" style="margin-left:10px;" type="button" value="上传附件"
 															onclick="commonUpload(commonUploadDefaultCallBack,'${sub.entityName?uncap_first}List\\[#index#\\]\\.${po.fieldName}')"/>
-											    <#-- update--end--author:jiaqiankun date:20180710 for：TASK #2934 【bug - 少谦】老版代码生成器都存在的问题，明细页面上传附件的问题 -->
 							       				<#-- update--begin--author:zhangjiaqiang date:20170614 for:修订上传附件按钮的大小 -->
 							       				<a  target="_blank" id="${sub.entityName?uncap_first}List[#index#].${po.fieldName}_href"></a>
 							       				<#-- update--end--author:zhangjiaqiang date:20171120 for:TASK #2419 【代码生成器模板】一对多情况下，附件样式改造 -->
+							       <#-- update--begin--author:zhangjiaqiang date:20170815 for:TASK #2274 【online】Online 表单支持树控件 -->
+							<#elseif po.showType=='tree'>
+								<input id="${po.fieldName}" ${po.extendJson?if_exists}  type="text"
+							       style="width: 150px" class="inputxt" <@datatype showType="2" validType="${po.fieldValidType!''}" isNull="${po.isNull}" type="${po.type}" mustInput="${po.fieldMustInput!''}" isNull="${po.isNull}"/>
+					               onclick="show${po.fieldName?cap_first }Tree();" readonly="readonly">
+					               <input type="hidden" id="${po.fieldName}Id" name="${po.fieldName}"  class="show${po.fieldName?cap_first}">  
+									<div id="show${po.fieldName?cap_first }TreeContent" class="menuContent" style="display: none; position: absolute; border: 1px #CCC solid; background-color: #F0F6E4;z-index:9999;">  
+									    <ul id="show${po.fieldName?cap_first }Tree" class="ztree" style="margin-top:0;"></ul>  
+									</div>
+								<script>
+									$(function(){
+										if(!$.fn.zTree){
+											$("head").append('<link rel="stylesheet" href="plug-in/ztree/css/zTreeStyle.css"/>');
+											$("head").append('<script type=\"text/javascript\" src=\"plug-in/ztree/js/jquery.ztree.core-3.5.min.js\"><\/script>');
+											$("head").append('<script type=\"text/javascript\" src=\"plug-in/ztree/js/jquery.ztree.excheck-3.5.min.js\"><\/script>');
+										}
+										var defaultVal = $("#${po.fieldName}Id").val();
+										$("#${po.fieldName}").val(getTreeResult(defaultVal));
+										$("body").bind("mousedown", onBodyDownBy${po.fieldName?cap_first });  
+									});
 									
-									<#-- update--begin--author:taoyan date:20180514 for:新增模板、子页面都没有树控件 保持一致删除之 -->
-									
-									<#-- update--end--author:taoyan date:20180514 for:新增模板、子页面都没有树控件 保持一致删除之 -->
+									var ${po.fieldName}Setting = {  
+										   check: {  
+								                enable: true
+									        }, 
+										    view: {  
+										        dblClickExpand: false  
+										    },  
+										    data: {  
+										        simpleData: {  
+										            enable: true  
+										        },
+										        key:{
+										        	name:'text'
+										        }
+										    },  
+										    callback: {  
+										        onClick: ${po.fieldName}OnClick,
+										        onCheck: ${po.fieldName}OnCheck
+										    }   
+										}; 
+									function ${po.fieldName}OnCheck(e, treeId, treeNode) { 
+										    var idVal = $("#${po.fieldName}Id").val();
+										    var textVal = $("#${po.fieldName}").val();
+										    if(treeNode.checked){
+										    	//选中
+										    	if(idVal != null && idVal != ''){
+										    		$("#${po.fieldName}Id").val(idVal + ',' +treeNode.id);  
+											    }else{
+												    $("#${po.fieldName}Id").val(treeNode.id);  
+											    }
+											    if(textVal != null && textVal != ''){
+											    	 $("#${po.fieldName}").val(textVal + ',' + treeNode.text);  
+											    }else{
+												    $("#${po.fieldName}").val(treeNode.text);  
+											    }
+										    }else{
+										    	idVal = idVal.replace(treeNode.id,"");
+										    	if(idVal.indexOf(",") == 0){
+										    		idVal = idVal.substring(1);
+										    	}else if(idVal.indexOf(",,") > -1){
+										    		idVal = idVal.replace(",,",",");
+										    	}else if(idVal.indexOf(",") == idVal.length -1){
+										    		idVal = idVal.substring(0,idVal.length - 1);
+										    	}
+										    	textVal = textVal.replace(treeNode.text,"");
+										    	if(textVal.indexOf(",") == 0){
+										    		textVal = textVal.substring(1);
+										    	}else if(textVal.indexOf(",,") > -1){
+										    		textVal = textVal.replace(",,",",");
+										    	}else if(textVal.indexOf(",") == textVal.length -1){
+										    		textVal = textVal.substring(0,textVal.length - 1);
+										    	}
+										    	$("#${po.fieldName}").val(textVal);
+										    	 $("#${po.fieldName}Id").val(idVal);
+										    }
+										    e.stopPropagation();
+										}  
+									function ${po.fieldName}OnClick(e, treeId, treeNode) {  
+										    var zTree = $.fn.zTree.getZTreeObj("show${po.fieldName?cap_first }Tree");  
+										  	zTree.checkNode(treeNode, !treeNode.checked, true,true);
+										  	e.stopPropagation();
+										}    
+									function show${po.fieldName?cap_first }Tree(){
+										 $.ajax({  
+									        url:'categoryController.do?tree',  
+									        type:'POST',  
+									        dataType:'JSON',
+									        async:false,  
+									          data:{
+									        	selfCode:'${po.dictField}'
+									        },
+									        success:function(res){
+									            var obj = res; 
+									            $.fn.zTree.init($("#show${po.fieldName?cap_first }Tree"), ${po.fieldName}Setting, obj);  
+									            var deptObj = $("#${po.fieldName}");  
+									            var deptOffset = $("#${po.fieldName}").offset();  
+									            $("#show${po.fieldName?cap_first }TreeContent").css({left:deptOffset.left + "px", top:deptOffset.top + deptObj.outerHeight() + "px"}).slideDown("fast");  
+									            $('#show${po.fieldName?cap_first }Tree').css({width:deptObj.outerWidth() - 12 + "px"});  
+									            var zTree = $.fn.zTree.getZTreeObj("show${po.fieldName?cap_first }Tree");  
+									            var idVal =  $("#${po.fieldName}Id").val();
+									            if(idVal != null && idVal != ''){
+										             if(idVal.indexOf(",") > -1){
+										            	var idArray = idVal.split(",");
+										            	for(var i = 0; i < idArray.length; i++){
+										            		var node = zTree.getNodeByParam("id", idArray[i], null);
+										            		zTree.checkNode(node, true, true);
+										            	}
+										            }else{
+										            	var node = zTree.getNodeByParam("id", idVal, null);
+										            		zTree.checkNode(node, true, true);
+										            } 
+									            } 
+									            
+									        }  
+									    });  
+									    }
+									    function onBodyDownBy${po.fieldName?cap_first }(event){
+									    	if(event.target.id == '' || (event.target.id.indexOf('switch') == -1 
+										    	&& event.target.id.indexOf('check') == -1 
+										    	&& event.target.id.indexOf('span') == -1
+										    	&& event.target.id.indexOf('ico') == -1)){  
+										    	$("#show${po.fieldName?cap_first }TreeContent").fadeOut("fast");  
+	   											 //$("body").unbind("mousedown", onBodyDownBy${po.fieldName?cap_first });
+   											 }
+									    }
+								</script>
 								<#-- update--begin--author:zhangjiaqiang date:20170815 for:TASK #2274 【online】Online 表单支持树控件 -->
 							       <#else>
 							       <#-- update--begin--author:zhangjiaqiang Date:20170509 for:修订生成页面乱 -->
@@ -474,27 +799,23 @@
 	  				if(title.length > 15){
 	  					title = title.substring(0,12) + "...";
 	  				}
-	  				var td_title = $("<td title='"+ file.title+"'>" + title + "</td>");
+	  				var td_title = $("<td>" + title + "</td>");
 	  				<#-- update--end--author:zhangjiaqiang date:20170614 for:文件名称太长显示问题 -->
 	  		  		<#-- update--begin--author:zhangjiaqiang date:20170607 for:增加按钮之间的间隔 -->
 	  		  		var td_download = $("<td><a style=\"margin-left:10px;\" href=\"commonController.do?viewFile&fileid=" + file.fileKey + "&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity\" title=\"下载\">下载</a></td>")
 	  		  		var td_view = $("<td><a style=\"margin-left:10px;\" href=\"javascript:void(0);\" onclick=\"openwindow('预览','commonController.do?openViewFile&fileid=" + file.fileKey + "&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity','fList',700,500)\">预览</a></td>");
+	  		  		var td_del = $("<td><a style=\"margin-left:10px;\" href=\"javascript:void(0)\" class=\"jeecgDetail\" onclick=\"del('cgUploadController.do?delFile&id=" + file.fileKey + "',this)\">删除</a></td>");
 	  		  		<#-- update--end--author:zhangjiaqiang date:20170607 for:增加按钮之间的间隔 -->
 	  		  		
 	  		  		tr.appendTo(table);
 	  		  		td_title.appendTo(tr);
 	  		  		td_download.appendTo(tr);
 	  		  		td_view.appendTo(tr);
-	  		  		<#-- update--begin--author:jiaqiankun date:20180713 for：TASK #2969 【代码生成器--贾乾坤】代码生成器模板测试 -->
-		  		  		if(location.href.indexOf("load=detail")==-1){
-			  		  		var td_del = $("<td><a style=\"margin-left:10px;\" href=\"javascript:void(0)\" class=\"jeecgDetail\" onclick=\"del('cgUploadController.do?delFile&id=" + file.fileKey + "',this)\">删除</a></td>");
-			  		  		td_del.appendTo(tr);
-		  		  		}
-	  		  		<#-- update--begin--author:jiaqiankun date:20180713 for：TASK #2969 【代码生成器--贾乾坤】代码生成器模板测试 -->
+	  		  		td_del.appendTo(tr);
 	  			 });
 	  		   }
 	  		});
-	  	});
+	  	})
 	  	
 	  		<#-- update--begin--author:zhangjiaqiang date:20170531 for:附件资源删除处理 -->
 		  	/**

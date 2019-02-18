@@ -1,8 +1,5 @@
 <#--update-start--Author:luobaoli  Date:20150614 for：表单（主表/单表）属性中增加了扩展参数 ${po.extend_json?if_exists}-->
-<#-- update--begin--author:taoyan date:20180514 for:【Online表单】上传空间、树控件 宏封装 -->
-<#include "/online/template/ui/tag.ftl"/>
-<#-- update--end--author:taoyan date:20180514 for:【Online表单】上传空间、树控件 宏封装 -->
-<div class="con-wrapper" id="con-wrapper0">
+<div class="con-wrapper" id="con-wrapper0" style="display: none;">
 	<input type="hidden" name="tableName" value="${tableName?if_exists?html}" >
     <input type="hidden" name="id" value="${data['${tableName}']['id']?if_exists?html}" >
 	<#list columnhidden as po>
@@ -13,22 +10,12 @@
 		<div class="row form-wrapper">
 			<#list columns as po>
 				<#if po_index%2==0>
-					<#-- update-begin-author:taoyan date:20180705 for:TASK #2765 【online表单】多tab风格 存在文件字段时样式乱了-->
-					<#if po_index==0>
-						<div class="row show-grid" style="border-left:1px solid #e4e4e4">
-					<#else>
-						<div class="row show-grid">
-					</#if>
-					<#-- update-end-author:taoyan date:20180705 for:TASK #2765 【online表单】多tab风格 存在文件字段时样式乱了-->
+					<div class="row show-grid">
 				</#if>
 				<div class="col-xs-3 text-center">
 					<b>${po.content}：</b>
 				</div>
-				<#if po.show_type=='file' || po.show_type=='image'>
-		          <div class="col-xs-3">
-		          <#else>
-		          <div class="col-xs-3">
-		          </#if>
+				<div class="col-xs-3">
 					<#if head.isTree=='Y' && head.treeParentIdFieldName==po.field_name>
 						<!--如果为树形菜单，父id输入框设置为select-->
 						<input id="${po.field_name}" ${po.extend_json?if_exists} name="${po.field_name}" type="text"
@@ -38,7 +25,7 @@
 									<#if po.file_must_input??><#if po.file_must_input == 'Y' || po.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif po.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
 									<#-- update--end--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 						       <#if po.field_valid_type?if_exists?html != ''>
-					                datatype="${po.field_valid_type?if_exists?html}"
+					               datatype="${po.field_valid_type?if_exists?html}"
 					               <#else>
 					               <#if po.type == 'int'>
 					               datatype="n"  
@@ -84,12 +71,7 @@
 								   <#if po.file_must_input??><#if po.file_must_input == 'Y' || po.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif po.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
 									<#-- update--end--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 						       <#if po.field_valid_type?if_exists?html != ''>
-					               <#if po.field_valid_type=='only'>
-						       		   validType="${tableName},${po.field_name},id"
-						       		   datatype="*"
-						       		<#else>
-					                   datatype="${po.field_valid_type?if_exists?html}"
-					               </#if>
+					               datatype="${po.field_valid_type?if_exists?html}"
 					               <#else>
 					               <#if po.type == 'int'>
 					               datatype="n" 
@@ -223,12 +205,105 @@
 					               <#else>
 					               <#if po.is_null != 'Y'>datatype="*"</#if>
 					               </#if>>
-					    
-					    <#-- update--begin--author:taoyan date:20180514 for:【Online表单】上传空间 宏封装 -->
-						<#elseif po.show_type=='file' || po.show_type=='image'>
-							<@uploadtag po = po />
-						<#-- update--end--author:taoyan date:20180514 for:【Online表单】上传空间 宏封装 -->
 						
+						<#elseif po.show_type=='file'>
+							 <table>
+									<#list filesList as fileB>
+										<#-- update--begin--author:zhangjiaqiang date:20170608 for:修订字段为小写 -->
+										<#if fileB['field']?lower_case == po.field_name>
+										<#-- update--end--author:zhangjiaqiang date:20170608 for:修订字段为小写 -->
+										<tr style="height:34px;">
+										<td>${fileB['title']}</td>
+										<td><a href="${basePath}/commonController.do?viewFile&fileid=${fileB['fileKey']}&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity" title="下载">下载</a></td>
+										<td><a href="javascript:void(0);" onclick="openwindow('预览','${basePath}/commonController.do?openViewFile&fileid=${fileB['fileKey']}&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity','fList',700,500)">预览</a></td>
+										<td><a href="javascript:void(0)" class="jeecgDetail" onclick="del('${basePath}/cgUploadController.do?delFile&id=${fileB['fileKey']}',this)">删除</a></td>
+										</tr>
+										</#if>
+									</#list>
+								</table>
+								<#if !(po.operationCodesReadOnly ??)>
+							    <div class="form jeecgDetail">
+									<script type="text/javascript">
+									var serverMsg="";
+									var m = new Map();
+									$(function(){$('#${po.field_name}').uploadify(
+										{buttonText:'添加文件',
+										auto:false,
+										progressData:'speed',
+										multi:true,
+										height:25,
+										overrideEvents:['onDialogClose'],
+										fileTypeDesc:'文件格式:',
+										queueID:'filediv_${po.field_name}',
+										<#-- fileTypeExts:'*.rar;*.zip;*.doc;*.docx;*.txt;*.ppt;*.xls;*.xlsx;*.html;*.htm;*.pdf;*.jpg;*.gif;*.png',   页面弹出很慢解决 20170317 scott -->
+										fileSizeLimit:'15MB',swf:'${basePath}/plug-in/uploadify/uploadify.swf',	
+										uploader:'${basePath}/cgUploadController.do?saveFiles&jsessionid='+$("#sessionUID").val()+'',
+										onUploadStart : function(file) { 
+											var cgFormId=$("input[name='id']").val();
+											$('#${po.field_name}').uploadify("settings", "formData", {'cgFormId':cgFormId,'cgFormName':'${tableName?if_exists?html}','cgFormField':'${po.field_name}'});} ,
+										onQueueComplete : function(queueData) {
+											 var win = frameElement.api.opener;
+											 win.reloadTable();
+											 win.tip(serverMsg);
+											 frameElement.api.close();},
+										onUploadSuccess : function(file, data, response) {var d=$.parseJSON(data);if(d.success){var win = frameElement.api.opener;serverMsg = d.msg;}},onFallback : function(){tip("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试")},onSelectError : function(file, errorCode, errorMsg){switch(errorCode) {case -100:tip("上传的文件数量已经超出系统限制的"+$('#${po.field_name}').uploadify('settings','queueSizeLimit')+"个文件！");break;case -110:tip("文件 ["+file.name+"] 大小超出系统限制的"+$('#${po.field_name}').uploadify('settings','fileSizeLimit')+"大小！");break;case -120:tip("文件 ["+file.name+"] 大小异常！");break;case -130:tip("文件 ["+file.name+"] 类型不正确！");break;}},
+										onUploadProgress : function(file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) { }});});
+									
+										</script><span id="file_uploadspan"><input type="file" name="${po.field_name}" id="${po.field_name}" /></span>
+								</div>
+								<div class="form" id="filediv_${po.field_name}"> </div>
+								</#if>
+						<#-- update--begin--author:zhangjiaqiang date:20170607 for:增加图片格式的上传 -->
+						<#elseif po.show_type=='image'>
+								<table>
+									<#-- update--begin--author:zhangjiaqiang date:20170519 for:修订资源预览关联错误 -->
+									<#list imageList as imageB>
+									<#-- update--begin--author:zhangjiaqiang date:20170608 for:修订字段为小写 -->
+										<#if imageB['field']?lower_case == po.field_name>
+										<#-- update--end--author:zhangjiaqiang date:20170608 for:修订字段为小写 -->
+										<tr style="height:34px;">
+										<td>${imageB['title']}</td>
+										<td><a href="${basePath}/commonController.do?viewFile&fileid=${imageB['fileKey']}&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity" title="下载">下载</a></td>
+										<td><a href="javascript:void(0);" onclick="openwindow('预览','${basePath}/commonController.do?openViewFile&fileid=${imageB['fileKey']}&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity','fList',700,500)">预览</a></td>
+										<td><a href="javascript:void(0)" class="jeecgDetail" onclick="del('${basePath}/cgUploadController.do?delFile&id=${imageB['fileKey']}',this)">删除</a></td>
+										</tr>
+										</#if>
+									</#list>
+									<#-- update--end--author:zhangjiaqiang date:20170519 for:修订资源预览关联错误 -->
+								</table>
+								<#if !(po.operationCodesReadOnly ??)>
+							    <div class="form jeecgDetail">
+									<script type="text/javascript">
+									var serverMsg="";
+									var m = new Map();
+									$(function(){$('#${po.field_name}').uploadify(
+										{buttonText:'添加图片',
+										auto:false,
+										progressData:'speed',
+										multi:true,
+										height:25,
+										overrideEvents:['onDialogClose'],
+										fileTypeDesc:'图片格式:',
+										queueID:'imagediv_${po.field_name}',
+										fileTypeExts:'*.jpg;*.jpeg;*.gif;*.png;*.bmp',
+										fileSizeLimit:'15MB',swf:'${basePath}/plug-in/uploadify/uploadify.swf',	
+										uploader:'${basePath}/cgUploadController.do?saveFiles&jsessionid='+$("#sessionUID").val()+'',
+										onUploadStart : function(file) { 
+											var cgFormId=$("input[name='id']").val();
+											$('#${po.field_name}').uploadify("settings", "formData", {'cgFormId':cgFormId,'cgFormName':'${tableName?if_exists?html}','cgFormField':'${po.field_name}'});} ,
+										onQueueComplete : function(queueData) {
+											 var win = frameElement.api.opener;
+											 win.reloadTable();
+											 win.tip(serverMsg);
+											 frameElement.api.close();},
+										onUploadSuccess : function(file, data, response) {var d=$.parseJSON(data);if(d.success){var win = frameElement.api.opener;serverMsg = d.msg;}},onFallback : function(){tip("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试")},onSelectError : function(file, errorCode, errorMsg){switch(errorCode) {case -100:tip("上传的文件数量已经超出系统限制的"+$('#${po.field_name}').uploadify('settings','queueSizeLimit')+"个文件！");break;case -110:tip("文件 ["+file.name+"] 大小超出系统限制的"+$('#${po.field_name}').uploadify('settings','fileSizeLimit')+"大小！");break;case -120:tip("文件 ["+file.name+"] 大小异常！");break;case -130:tip("文件 ["+file.name+"] 类型不正确！");break;}},
+										onUploadProgress : function(file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) { }});});
+									
+										</script><span id="image_uploadspan"><input type="file" name="${po.field_name}" id="${po.field_name}" /></span>
+								</div>
+								<div class="form" id="imagediv_${po.field_name}"> </div>
+							</#if>
+							<#-- update--end--author:zhangjiaqiang date:20170607 for:增加图片格式的上传 -->
 						<#else>
 							<input id="${po.field_name}" ${po.extend_json?if_exists} name="${po.field_name}" type="text"
 							        class="form-control" value="${data['${tableName}']['${po.field_name}']?if_exists?html}"

@@ -33,9 +33,6 @@ public class DataGridColumn {
 	protected String funname="openwindow";//自定义函数名称
 	protected String arg;
 	protected String dictionary;
-
-	protected String dictCondition;
-
 	protected boolean popup=false;	//是否启用popup模式选择 默认不启用
 	protected String replace;
 	protected String extend;
@@ -51,12 +48,7 @@ public class DataGridColumn {
 	protected String showMode;//表单元素,查询表单中显示样式,默认样式select	
 
 	protected boolean newColumn;
-
-	private String filterType = "text";//过滤操作的类型
-	private boolean optsMenu = false;//操作列风格转变
-
-	private boolean isAjaxDict = false;
-
+	
 	public boolean isNewColumn() {
 		return newColumn;
 	}
@@ -237,15 +229,6 @@ public class DataGridColumn {
 	public void setDictionary(String dictionary) {
 		this.dictionary = dictionary;
 	}
-
-	public String getDictCondition() {
-		return dictCondition;
-	}
-
-	public void setDictCondition(String dictCondition) {
-		this.dictCondition = dictCondition;
-	}
-
 	public boolean isPopup() {
 		return popup;
 	}
@@ -332,28 +315,6 @@ public class DataGridColumn {
 
 	public void setDefaultVal(String defaultVal) {
 		this.defaultVal = defaultVal;
-	}
-
-	public String getFilterType() {
-		return filterType;
-	}
-	public void setFilterType(String filterType) {
-		this.filterType = filterType;
-	}
-	
-	public boolean isOptsMenu() {
-		return optsMenu;
-	}
-	public void setOptsMenu(boolean optsMenu) {
-		this.optsMenu = optsMenu;
-	}
-	
-	public boolean getIsAjaxDict() {
-		return isAjaxDict;
-	}
-
-	public void setAjaxDict(boolean isAjaxDict) {
-		this.isAjaxDict = isAjaxDict;
 	}
 
 	@Override

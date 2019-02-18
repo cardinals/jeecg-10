@@ -16,12 +16,11 @@
         <script src="plug-in/Formdesign/js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript" src="online/template/${this_olstylecode}/js/jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="plug-in/jquery-plugs/i18n/jquery.i18n.properties.js"></script>
     <script type="text/javascript" src="online/template/${this_olstylecode}/js/respond.min.js"></script>
    <script type="text/javascript" src="online/template/${this_olstylecode}/js/bootstrap.js"></script>
     <script type="text/javascript" src="online/template/${this_olstylecode}/js/sco.message.js"></script>
     <script type="text/javascript" src="online/template/${this_olstylecode}/js/sco.confirm.js"></script>
-    <script type="text/javascript" src="plug-in/tools/curdtools.js"></script>
+    <script type="text/javascript" src="plug-in/tools/curdtools_zh-cn.js"></script>
     <script type="text/javascript" src="plug-in/tools/dataformat.js"></script>
     <script type="text/javascript" src="plug-in/My97DatePicker/WdatePicker.js"></script>
 	<script type="text/javascript">
@@ -209,7 +208,7 @@
 										<#if x['field_isQuery']=="Y">
 											<#if  (x['field_dictlist']?size >0)>
                                                 <select name = "${x['field_id']}" class="col-sm-8 col-md-8">
-                                                    <option value = ""></option>
+                                                    <option value = "">-- 请选择 --</option>
 													<#list x['field_dictlist']  as xd>
                                                         <option value = "${xd['typecode']}">${xd['typename']}</option>
 													</#list>

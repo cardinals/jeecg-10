@@ -28,6 +28,7 @@ var ZtreeCreator = function(treeId,url,initJson){
 	 
 	/**初始化树**/	
 	this.initZtree = function(param,level,callBack){
+		console.log('level:'+level);
 		if(!url && !_setting.async.url) alert("构造Ztree必须提供 请求地址！");
 		if (jQuery.isFunction(param)) {
 			callBack = param;

@@ -10,7 +10,8 @@ import org.jeecgframework.jwt.def.JwtConstants;
 import org.jeecgframework.jwt.model.TokenModel;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,8 +21,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RedisTokenManager implements TokenManager {
-	@Autowired
-    private StringRedisTemplate redisTemplate;
+
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    public void setRedis(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+        //泛型设置成Long后必须更改对应的序列化方案
+        redisTemplate.setKeySerializer(new JdkSerializationRedisSerializer());
+    }
 
     /**
      * 生成TOKEN

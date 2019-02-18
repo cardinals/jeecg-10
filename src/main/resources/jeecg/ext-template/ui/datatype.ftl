@@ -10,9 +10,9 @@
  <#if validType?if_exists?html != ''><#rt/>
  	<#-- update--begin--author:Yandong Date:20180226 for:TASK #2513 【bug】代码生成器，新添加的online唯一校验生成代码问题-->
  	<#if validType?if_exists?html=='only'><#rt/>
- validType="${tableName},${fieldName},${idFieldName}" datatype="*"<#rt/>
+		validType="${tableName},${fieldName},${idFieldName}" datatype="*"<#rt/>
 	<#else><#rt/>
- datatype="${validType?if_exists?html}"<#rt/>
+		datatype="${validType?if_exists?html}"<#rt/>
 	</#if><#rt/>
 	<#-- update--end--author:Yandong Date:20180226 for:TASK #2513 【bug】代码生成器，新添加的online唯一校验生成代码问题 -->
  <#elseif type == 'java.lang.Integer'><#rt/>

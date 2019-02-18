@@ -221,11 +221,6 @@ public class CgFormHeadController extends BaseController {
 		cgFormField = systemService.getEntity(CgFormFieldEntity.class,
 				cgFormField.getId());
 		String message = cgFormField.getFieldName()+"删除成功";
-
-		CgFormHeadEntity table = cgFormField.getTable();
-		table.setIsDbSynch("N");
-		this.cgFormFieldService.updateEntitie(table);
-
 		cgFormFieldService.delete(cgFormField);
 		systemService.addLog(message, Globals.Log_Type_DEL,
 				Globals.Log_Leavel_INFO);
@@ -250,8 +245,8 @@ public class CgFormHeadController extends BaseController {
 
 		logger.info("---同步数据库 ---doDbSynch-----> TableName:"+cgFormHead.getTableName()+" ---修改时间 :"+cgFormHead.getUpdateDate()+" ----创建时间:"+cgFormHead.getCreateDate() +"---请求IP ---+"+oConvertUtils.getIpAddrByRequest(request));
 		//安全控制，判断不在online管理中表单不允许操作
-		String sql = "select count(*) from cgform_head where table_name = ?";
-		Long i = systemService.getCountForJdbcParam(sql,cgFormHead.getTableName());
+		String sql = "select count(*) from cgform_head where table_name = '"+cgFormHead.getTableName()+"'";
+		Long i = systemService.getCountForJdbc(sql);
 		if(i==0){
 			message = "同步失败，非法无授权访问！";
 			logger.info(message+" ----- 请求IP ---+"+IpUtil.getIpAddr(request));
@@ -259,8 +254,8 @@ public class CgFormHeadController extends BaseController {
 			return j;
 		}
 		TSUser currentUser = ResourceUtil.getSessionUser();
-        if(CgAutoListConstant.SYS_DEV_FLAG_0.equals(currentUser.getDevFlag())){
-            message = "同步失败，当前用户未授权开发权限！";
+        if("0".equals(currentUser.getDevFlag())){
+            message = "同步失败，您不是开发人员无授权访问！";
             logger.info(message+" ----- 请求IP ---+"+IpUtil.getIpAddr(request));
             j.setMsg(message);
             return j;
@@ -631,7 +626,7 @@ public class CgFormHeadController extends BaseController {
 			req.setAttribute("cgFormHeadPage", cgFormHead);
 		}
 
-		List<TSType> typeList = ResourceUtil.getCacheTypes(MutiLangUtil.getLang("bdfl"));
+		List<TSType> typeList = ResourceUtil.allTypes.get(MutiLangUtil.getLang("bdfl"));
 		req.setAttribute("typeList", typeList);
 
 		return new ModelAndView("jeecg/cgform/config/cgFormHead");
@@ -1161,16 +1156,8 @@ public class CgFormHeadController extends BaseController {
 	public void configDatagrid(CgFormHeadEntity cgFormHead,String id,
 			HttpServletRequest request, HttpServletResponse response,
 			DataGrid dataGrid) {
-
-		List<CgFormHeadEntity> findHql = null;
-		if(oConvertUtils.isNotEmpty(cgFormHead.getTableName())) {
-			String hql = "from CgFormHeadEntity c where c.physiceId = ? AND c.tableName = ? order by c.tableVersion asc";
-			findHql = systemService.findHql(hql, id, cgFormHead.getTableName());
-		} else {
-			String hql = "from CgFormHeadEntity c where c.physiceId = ? order by c.tableVersion asc";
-			findHql = systemService.findHql(hql, id);
-		}
-
+		String hql = "from CgFormHeadEntity c where c.physiceId = ? order by c.tableVersion asc";
+		List<CgFormHeadEntity> findHql = systemService.findHql(hql, id);
 		dataGrid.setResults(findHql);
 		dataGrid.setTotal(findHql.size());
 		TagUtil.datagrid(response, dataGrid);

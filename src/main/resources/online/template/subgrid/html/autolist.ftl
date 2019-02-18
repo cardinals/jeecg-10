@@ -5,7 +5,7 @@ ${config_iframe}
 /**
 *表单的高度,表单的宽度
 **/
-<#if tableType=="2">var ${config_id}Fw = 950,${config_id}Fh = 450;<#else>var ${config_id}Fw = 700,${config_id}Fh = 400;</#if>
+var ${config_id}Fw = 700,${config_id}Fh = 400;
 
 $(function(){
 	$.get("cgFormHeadController.do?checkIsExit&checkIsTableCreate&name=${config_id}",
@@ -21,9 +21,8 @@ $(function(){
 
 function  detailFormatterFun(){
 			return '<div class="orderInfoHidden" style="padding:2px;">'+
-							<#--update-begin--Author:Yandong  Date:20180413 for：TASK #2636 【样式问题】一对多，列表带明细的模板，多个明细情况下展示有问题-->
-                            '<div class="easyui-tabs"   style="height:230px;width:800px">'+
-                            <#--update-end--Author:Yandong  Date:20180413 for：TASK #2636 【样式问题】一对多，列表带明细的模板，多个明细情况下展示有问题-->
+                            '<div class="easyui-tabs"   style="height:230px;width:1850px">'+
+                            
                           	<#assign subTableStr>${head.subTableStr?if_exists?html}</#assign>
 							<#assign subtablelist=subTableStr?split(",")>
 							<#list subtablelist as sub >
@@ -74,9 +73,7 @@ function onExpandRowFun(index,row){
 					}, 
 			        columns:[[
 			        		<#list field['${sub}'].fieldList as subTableField >
-			        			<#--update-begin--Author:Yandong  Date:20180413 for：TASK #2636 【样式问题】一对多，列表带明细的模板，多个明细情况下展示有问题-->
-								{title:'${subTableField.content?if_exists?html}',field:'${subTableField.field_name?if_exists?html}',align:'left',width:50},
-								<#--update-end--Author:Yandong  Date:20180413 for：TASK #2636 【样式问题】一对多，列表带明细的模板，多个明细情况下展示有问题-->
+								{title:'${subTableField.content?if_exists?html}',field:'${subTableField.field_name?if_exists?html}',align:'left'},
 							</#list>
 							<#list field['${sub}'].hiddenFieldList as subTableField >
 							      {field:'${subTableField.field_name?if_exists?html}',hidden:true},
@@ -153,14 +150,11 @@ function createDataGrid${config_id}(){
 						 		}else{
 						 			<#-- //update-begin--Author:zhangjiaqiang  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
 						 			<#-- update--begin--author:zhangjiaqiang date:20170628 for: TASK #2194 【online链接样式切换】Online 功能测试的列表链接样式，需要根据浏览器IE进行切换 -->
-						 			<#-- update-begin- author:taoyan date:20181023 for:txt文件下载bug -->
-						 			var value2="systemController/downloadFile.do?filePath="+value
 						 			<#if brower_type?? && brower_type == 'Microsoft%20Internet%20Explorer'>
-						 				href+="[<a href='"+value2+"' style='text-decoration:none;' target=_blank>点击下载</a>]";
+						 				href+="[<a href='"+value+"' style='text-decoration:none;' target=_blank>点击下载</a>]";
 						 			<#else>
-						 				href+="<a href='"+value2+"' class='ace_button' style='text-decoration:none;' target=_blank><u><i class='fa fa-download'></i>点击下载</u></a>";
+						 				href+="<a href='"+value+"' class='ace_button' style='text-decoration:none;' target=_blank><u><i class='fa fa-download'></i>点击下载</u></a>";
 						 			</#if>
-						 			<#-- update-end- author:taoyan date:20181023 for:txt文件下载bug -->
 						 			<#-- update--end--author:zhangjiaqiang date:20170628 for: TASK #2194 【online链接样式切换】Online 功能测试的列表链接样式，需要根据浏览器IE进行切换 -->
 						 			<#-- //update-begin--Author:zhangjiaqiang  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
 						 		}
@@ -283,11 +277,6 @@ function createDataGrid${config_id}(){
 						</#if>
 						<#list config_buttons as x>
 							<#if x['buttonStyle'] == 'link' && x['buttonStatus']=='1' && config_noliststr?index_of("${x['buttonCode']}")==-1>
-								<#--update-begin--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
-									<#if x['exp'] != '' ||x['exp'] !=null>
-										if(<@exp exp="${ x['exp']}" data="rec" />){
-								 	 </#if>
-								<#--update-end--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
 								<#--//update-begin--Author:zhangjiaqiang  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
 								<#-- update--begin--author:zhangjiaqiang date:20170628 for: TASK #2194 【online链接样式切换】Online 功能测试的列表链接样式，需要根据浏览器IE进行切换 -->
 								<#if brower_type?? && brower_type != 'Microsoft%20Internet%20Explorer'>
@@ -323,11 +312,6 @@ function createDataGrid${config_id}(){
 								</#if>
 								<#-- update--end--author:zhangjiaqiang date:20170628 for: TASK #2194 【online链接样式切换】Online 功能测试的列表链接样式，需要根据浏览器IE进行切换 -->
 								<#--//update-end--Author:zhangjiaqiang  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
-								<#--update-begin--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
-									<#if x['exp'] != '' ||x['exp'] !=null>
-										}
-								 	 </#if>
-								 <#--update-end--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
 							</#if>
 						</#list>
 						return href;
@@ -607,7 +591,7 @@ function createDataGrid${config_id}(){
 			<#if x['field_isQuery']=="Y">
 				<#if  (x['field_dictlist']?size >0)>
 					<select name = "${x['field_id']}"  style="width: 120px">
-					<option value = ""></option>
+					<option value = "">-- 请选择 --</option>
 					<#list x['field_dictlist']  as xd>
 						<option value = "${xd['typecode']}">${xd['typename']}</option>
 					</#list>
@@ -619,9 +603,7 @@ function createDataGrid${config_id}(){
 					<#else>
 					<input type="text" name="${x['field_id']}"  style="width: 120px" 
 									class="searchbox-inputtext" value="${x['field_value']?if_exists?default('')}"
-							       <#--update--begin--author:gj_shaojc date:20180316 for:TASK #2557 【问题确认】网友问题确认 -->
-							       onClick="popupClick(this,'${x['field_dictText']?if_exists?html}','${x['field_dictField']?if_exists?html}','${x['field_dictTable']?if_exists?html}');" />
-									<#--update--end--author:gj_shaojc date:20180316 for:TASK #2557 【问题确认】网友问题确认 -->
+							       onClick="inputClick(this,'${x['field_dictField']?if_exists?html}','${x['field_dictTable']?if_exists?html}');" />
 					</#if>
 				</#if>
 			<#else>

@@ -5,32 +5,36 @@
 <head>
 <title>用户信息</title>
 <t:base type="jquery,easyui,tools"></t:base>
-<script>
-	/**
-	 * 选择组织机构
-	 */
+    <script>
+<%-- //        update-start--Author:zhangguoming  Date:20140826 for：将combobox修改为combotree
+        function setOrgIds() {
+//            var orgIds = $("#orgSelect").combobox("getValues");
+            var orgIds = $("#orgSelect").combotree("getValues");
+            $("#orgIds").val(orgIds);
+        }
+        $(function() {
+            $("#orgSelect").combotree({
+                onChange: function(n, o) {
+                    if($("#orgSelect").combotree("getValues") != "") {
+                        $("#orgSelect option").eq(1).attr("selected", true);
+                    } else {
+                        $("#orgSelect option").eq(1).attr("selected", false);
+                    }
+                }
+            });
+            $("#orgSelect").combobox("setValues", ${orgIdList});
+            $("#orgSelect").combotree("setValues", ${orgIdList});
+        }); --%>
+
+
 		function openDepartmentSelect() {
 			$.dialog.setting.zIndex = getzIndex(); 
 			var orgIds = $("#orgIds").val();
 
-			$.dialog({
-			    content: 'url:departController.do?departSelect&orgIds=' + orgIds,
-			    zIndex: getzIndex(),
-			    title: '组织机构列表',
-			    lock: true,
-			    width: '400px',
-			    height: '350px',
-			    opacity: 0.4,
-			    button: [{
-			        name: '<t:mutiLang langKey="common.confirm"/>',
-			        callback: callbackDepartmentSelect,
-			        focus: true
-			    },
-			    {
-			        name: '<t:mutiLang langKey="common.cancel"/>',
-			        callback: function() {}
-			    }]
-			}).zindex();
+			$.dialog({content: 'url:departController.do?departSelect&orgIds='+orgIds, zIndex: getzIndex(), title: '组织机构列表', lock: true, width: '400px', height: '350px', opacity: 0.4, button: [
+			   {name: '<t:mutiLang langKey="common.confirm"/>', callback: callbackDepartmentSelect, focus: true},
+			   {name: '<t:mutiLang langKey="common.cancel"/>', callback: function (){}}
+		   ]}).zindex();
 
 		}
 			
@@ -56,9 +60,7 @@
 			 $('#orgIds').val('');	
 		}
 		
-		function setOrgIds() {
-			return true;
-		}
+		function setOrgIds() {}
 		$(function(){
 			$("#departname").prev().hide();
 		});
@@ -75,15 +77,15 @@
 			<td class="value" width="85%">
                 <c:if test="${user.id!=null }"> ${user.userName } </c:if>
                 <c:if test="${user.id==null }">
-                    <input id="userName" class="inputxt" name="userName" validType="t_s_base_user,userName,id" value="${user.userName }" maxlength="50" datatype="s2-50" />
-                    <span class="Validform_checktip"> <t:mutiLang langKey="username.rang2to50"/></span>
+                    <input id="userName" class="inputxt" name="userName" validType="t_s_base_user,userName,id" value="${user.userName }" datatype="s2-10" />
+                    <span class="Validform_checktip"> <t:mutiLang langKey="username.rang2to10"/></span>
                 </c:if>
             </td>
 		</tr>
 		<tr>
 			<td align="right" width="10%" nowrap><label class="Validform_label"> <t:mutiLang langKey="common.real.name"/>: </label></td>
 			<td class="value" width="10%">
-                <input id="realName" class="inputxt" name="realName" value="${user.realName }" maxlength="25" datatype="s2-25"/>
+                <input id="realName" class="inputxt" name="realName" value="${user.realName }" datatype="s2-10"/>
                 <span class="Validform_checktip"><t:mutiLang langKey="fill.realname"/></span>
             </td>
 		</tr>
@@ -111,6 +113,16 @@
 		<tr>
 			<td align="right"><label class="Validform_label"> <t:mutiLang langKey="common.department"/>: </label></td>
 			<td class="value">
+                <%--<select class="easyui-combobox" data-options="multiple:true, editable: false" id="orgSelect" datatype="*">--%>
+                <%--<select class="easyui-combotree" data-options="url:'departController.do?getOrgTree', multiple:true, cascadeCheck:false"
+                        id="orgSelect" name="orgSelect" datatype="select1">
+                update-end--Author:zhangguoming  Date:20140826 for：将combobox修改为combotree
+                    <c:forEach items="${departList}" var="depart">
+                        <option value="${depart.id }">${depart.departname}</option>
+                    </c:forEach>
+                </select> --%>
+                <%--  <t:departSelect departId="${tsDepart.id }" departName="${tsDepart.departname }"></t:departSelect>--%>
+                
                 <input id="departname" name="departname" type="text" readonly="readonly" class="inputxt" datatype="*" value="${departname}"/>
                 <input id="orgIds" name="orgIds" type="hidden" value="${orgIds}"/>
                 <a href="#" class="easyui-linkbutton" plain="true" icon="icon-search" id="departSearch" onclick="openDepartmentSelect()">选择</a>

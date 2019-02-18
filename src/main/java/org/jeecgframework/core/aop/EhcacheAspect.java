@@ -1,97 +1,121 @@
 package org.jeecgframework.core.aop;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.jeecgframework.core.annotation.Ehcache;
-import org.jeecgframework.core.util.oConvertUtils;
-import org.jeecgframework.web.system.service.CacheServiceI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * 
  * @author  张代浩
- * @TODO 【暂时注释掉，减少内存占用 - 实际项目可根据需求放开注释，提高平台性能】
- * 用途：注解式Ehcache缓存类
+ *
  */
-//@Component
-//@Aspect
+@Component
+@Aspect
 public class EhcacheAspect {
-	private static final Logger logger = LoggerFactory.getLogger(EhcacheAspect.class);
-	private static Cache SYSTEM_BASE_CACHE = CacheManager.getInstance().getCache(CacheServiceI.SYSTEM_BASE_CACHE);
-	private static Cache SYS_AUTH_CACHE = CacheManager.getInstance().getCache(CacheServiceI.SYS_AUTH_CACHE);
-	
-	
+//	private static Cache dictCache;
+//	private static Cache eternalCache;
+//	
+//	static {
+//		if (eternalCache == null) {
+//			eternalCache = CacheManager.getInstance().getCache("eternalCache");
+//		}
+//		if (dictCache == null) {
+//			dictCache = CacheManager.getInstance().getCache("dictCache");
+//		}
+//	}
+
 	@Pointcut("@annotation(org.jeecgframework.core.annotation.Ehcache)")
 	public void simplePointcut() {
 	}
 
-	@Around("simplePointcut() && @annotation(ehcache)")
-	public Object aroundLogCalls(ProceedingJoinPoint joinPoint,Ehcache ehcache)throws Throwable {
-		String targetName = joinPoint.getTarget().getClass().getName();
+	@AfterReturning(pointcut = "simplePointcut()")
+	public void simpleAdvice() {
+	}
+
+	@Around("simplePointcut()")
+	public Object aroundLogCalls(ProceedingJoinPoint joinPoint)
+			throws Throwable {
+
+		Cache eternalCache = CacheManager.getInstance().getCache("eternalCache");
+		Cache dictCache = CacheManager.getInstance().getCache("eternalCache");
+
+		String targetName = joinPoint.getTarget().getClass().toString();
 		String methodName = joinPoint.getSignature().getName();
-		Object[] arguments = joinPoint.getArgs();
+		Object[] arguments = joinPoint.getArgs();  
 		
-		logger.debug("-------ehcache[aspect]-----------targetclass:[{}] , methodName:[{}] , arguments:[{}] ", new Object[] {targetName,methodName,arguments});
-		Cache cache = null;
+		//试图得到标注的Ehcache类
+		@SuppressWarnings("unused")
+		Method[] methods = joinPoint.getTarget().getClass().getMethods();
+		Ehcache flag = null;
+		for(Method m:methods){
+			if(m.getName().equals(methodName)){
+				Class[] tmpCs = m.getParameterTypes();  
+                if(tmpCs.length==arguments.length){  
+                	flag = m.getAnnotation(Ehcache.class);
+    				break; 
+            }  
+			}
+		}
+		if(flag==null){
+			return null;
+		}
+		//Ehcache flag =joinPoint.getTarget().getClass().getMethod(methodName).getAnnotation(Ehcache.class);
 		Object result;
 		String cacheKey = getCacheKey(targetName, methodName, arguments);
 		
 		Element element = null;
-		
-		if(oConvertUtils.isNotEmpty(ehcache.cacheName()) && CacheServiceI.SYS_AUTH_CACHE.equals(ehcache.cacheName())){
-			//自定义缓存对象
-			cache = this.SYS_AUTH_CACHE;
+		if(flag.eternal()){
+			//永久缓存
+			 element = dictCache.get(cacheKey);
 		}else{
-			//默认缓存对象
-			cache = this.SYSTEM_BASE_CACHE;
+			//临时缓存
+			 element = eternalCache.get(cacheKey);
 		}
 		
-		//获取缓存
-		element = cache.get(cacheKey);
 
 		if (element == null) {
-			if ((arguments != null && arguments.length != 0)) {
+			if ((arguments != null) && (arguments.length != 0)) {
 				result = joinPoint.proceed(arguments);
 			} else {
 				result = joinPoint.proceed();
 			}
+
 			element = new Element(cacheKey, (Serializable) result);
-			//设置缓存
-			cache.put(element);
-			logger.debug("-------ehcache[aspect]----------设置缓存成功---");
+			if(flag.eternal()){
+				//永久缓存
+				dictCache.put(element);
+			}else{
+				//临时缓存
+				eternalCache.put(element);
+			}
 		}
 		return element.getValue();
 	}
 
 	/**
-	 * 获得cache key的方法
-	 * cache key包括: 包名+类名+方法名
-	 * 举例：com.co.cache.service.UserServiceImpl.getAllUser
+	 * 获得cache key的方法，cache key是Cache中一个Element的唯一标识 cache key包括
+	 * 包名+类名+方法名，如com.co.cache.service.UserServiceImpl.getAllUser
 	 */
-	private String getCacheKey(String targetName, String methodName, Object[] arguments) {
+	private String getCacheKey(String targetName, String methodName,
+			Object[] arguments) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(targetName).append(".").append(methodName);
-		if ((arguments != null && arguments.length != 0)) {
+		if ((arguments != null) && (arguments.length != 0)) {
 			for (int i = 0; i < arguments.length; i++) {
-				if (arguments[i] instanceof String[]) {
-					String[] strArray = (String[]) arguments[i];
-					sb.append(".");
-					for (String str : strArray) {
-						sb.append(str);
-					}
-				} else {
-					sb.append(".").append(arguments[i]);
-				}
+				sb.append(".").append(JSON.toJSONString(arguments[i]));
 			}
 		}
 		return sb.toString();

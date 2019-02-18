@@ -1,19 +1,9 @@
 package org.jeecgframework.web.cgform.service.impl.generate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import freemarker.cache.TemplateLoader;
 
 import org.jeecgframework.codegenerate.database.JeecgReadTable;
-import org.jeecgframework.core.util.MyBeanUtils;
-import org.jeecgframework.core.util.oConvertUtils;
+import org.jeecgframework.core.util.ContextHolderUtils;
 import org.jeecgframework.web.cgform.common.CgAutoListConstant;
 import org.jeecgframework.web.cgform.entity.config.CgFormFieldEntity;
 import org.jeecgframework.web.cgform.entity.config.CgFormHeadEntity;
@@ -27,7 +17,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
-import freemarker.cache.TemplateLoader;
+import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @ClassName: DBTempletLoader
@@ -201,21 +196,17 @@ public class DBTempletLoaderWord implements TemplateLoader {
 			while(result) {
 				thStr = matcher.group(1);
 				inputStr = "";
-
 				if("jform_hidden_field".equals(thStr)){
-					//隐藏列不用生成
-					//inputStr = getHiddenForm(hiddenFielList);
-					inputStr = "";
+					inputStr = getHiddenForm(hiddenFielList);
 				}else{
 					if(fieldMap.get(thStr)!=null){
 						CgFormFieldEntity cgFormFieldEntity = fieldMap.get(thStr);
 						if("Y".equals(cgFormFieldEntity.getIsShow())){
-							inputStr = FormHtmlUtilWord.getFormHTML(cgFormFieldEntity,tableName);
+							inputStr = FormHtmlUtilWord.getFormHTML(cgFormFieldEntity);
 							inputStr +="<span class=\"Validform_checktip\">&nbsp;</span>";
 						}
 					}
 				}
-
 				matcher.appendReplacement(sb, inputStr); 
 				result = matcher.find(); 
 			} 
@@ -231,14 +222,11 @@ public class DBTempletLoaderWord implements TemplateLoader {
     	StringBuffer html = new StringBuffer(""); 
     	if(hiddenFielList!=null&&hiddenFielList.size()>0){
     		for(CgFormFieldEntity cgFormFieldEntity:hiddenFielList){
-
-    			  String fieldName = oConvertUtils.camelName(cgFormFieldEntity.getFieldName());
     		      html.append("<input type=\"hidden\" ");
-    		      html.append("id=\"").append(fieldName).append("\" ");
-    		      html.append("name=\"").append(fieldName).append("\" ");
-    		      html.append("value=\"\\@{onlineCodeGenereateEntityKey@.").append(fieldName).append("}\" ");
+    		      html.append("id=\"").append(cgFormFieldEntity.getFieldName()).append("\" ");
+    		      html.append("name=\"").append(cgFormFieldEntity.getFieldName()).append("\" ");
+    		      html.append("value=\"\\${").append(cgFormFieldEntity.getFieldName()).append("?if_exists?html}\" ");
     		      html.append("\\/>\r\n");
-
     		}
     	}
     	return html.toString();

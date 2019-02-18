@@ -3,13 +3,11 @@ package org.jeecgframework.web.system.controller.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +27,6 @@ import org.jeecgframework.core.enums.SysThemesEnum;
 import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.IpUtil;
 import org.jeecgframework.core.util.ListtoMenu;
-import org.jeecgframework.core.util.LogUtil;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.PasswordUtil;
 import org.jeecgframework.core.util.ResourceUtil;
@@ -38,13 +35,13 @@ import org.jeecgframework.core.util.SetListSort;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.core.util.SysThemesUtil;
 import org.jeecgframework.core.util.oConvertUtils;
-import org.jeecgframework.minidao.pojo.MiniDaoPage;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.dao.DepartAuthGroupDao;
+import org.jeecgframework.tag.vo.datatable.DataTableReturn;
+import org.jeecgframework.tag.vo.datatable.DataTables;
 import org.jeecgframework.web.system.manager.ClientManager;
 import org.jeecgframework.web.system.pojo.base.InterroleEntity;
 import org.jeecgframework.web.system.pojo.base.InterroleUserEntity;
@@ -57,7 +54,6 @@ import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.pojo.base.TSUserOrg;
 import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.web.system.service.UserService;
-import org.jeecgframework.web.system.util.OrgConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -76,17 +72,17 @@ import org.springframework.web.servlet.ModelAndView;
  * @Description: TODO(用户管理处理类)
  * @author 张代浩
  */
+//@Scope("prototype")
 @Controller
 @RequestMapping("/userController")
 public class UserController extends BaseController {
+	/**
+	 * Logger for this class
+	 */
 	private static final Logger logger = Logger.getLogger(UserController.class);
 
 	private UserService userService;
 	private SystemService systemService;
-	@Resource
-	private ClientManager clientManager;
-	@Autowired
-	private DepartAuthGroupDao departAuthGroupDao;
 
 	@Autowired
 	public void setSystemService(SystemService systemService) {
@@ -167,71 +163,6 @@ public class UserController extends BaseController {
 		departList.clear();
 		return "system/user/userList";
 	}
-
-	@RequestMapping(params = "interfaceUser")
-	public String interfaceUser(HttpServletRequest request) {
-		// 给部门查询条件中的下拉框准备数据
-		List<TSDepart> departList = systemService.getList(TSDepart.class);
-		request.setAttribute("departsReplace", RoletoJson.listToReplaceStr(departList, "departname", "id"));
-		departList.clear();
-		return "system/user/interfaceUserList";
-	}
-	
-	@RequestMapping(params = "interfaceUserDatagrid")
-	public void interfaceUserDatagrid(TSUser user,HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
-        CriteriaQuery cq = new CriteriaQuery(TSUser.class, dataGrid);
-        //查询条件组装器
-        org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, user);
-        Short[] userstate = new Short[]{Globals.User_Normal, Globals.User_ADMIN, Globals.User_Forbidden};
-        cq.in("status", userstate);
-        cq.eq("deleteFlag", Globals.Delete_Normal);
-        cq.eq("userType", Globals.USER_TYPE_INTERFACE);
-        cq.add();
-        this.systemService.getDataGridReturn(cq, true);
-        List<TSUser> cfeList = new ArrayList<TSUser>();
-        for (Object o : dataGrid.getResults()) {
-            if (o instanceof TSUser) {
-                TSUser cfe = (TSUser) o;
-                if (cfe.getId() != null && !"".equals(cfe.getId())) {
-                    List<InterroleUserEntity> roleUser = systemService.findByProperty(InterroleUserEntity.class, "TSUser.id", cfe.getId());
-                    if (roleUser.size() > 0) {
-                        String roleName = "";
-                        for (InterroleUserEntity ru : roleUser) {
-                            roleName += ru.getInterroleEntity().getRoleName() + ",";
-                        }
-                        roleName = roleName.substring(0, roleName.length() - 1);
-                        cfe.setUserKey(roleName);
-                    }
-                }
-                cfeList.add(cfe);
-            }
-        }
-        TagUtil.datagrid(response, dataGrid);
-    }
-	
-	@RequestMapping(params = "delInterfaceUser")
-	@ResponseBody
-	public AjaxJson delInterfaceUser(@RequestParam(required = true) String userid) {
-		AjaxJson ajaxJson = new AjaxJson();
-		try {
-			TSUser user = this.userService.getEntity(TSUser.class, userid);
-			if(user!=null) {
-				String sql = "delete from t_s_interrole_user where user_id = ?";
-				this.systemService.executeSql(sql, userid);
-				this.userService.delete(user);
-				ajaxJson.setMsg("删除成功");
-			}else {
-				ajaxJson.setMsg("用户不存在");
-			}
-			
-		} catch (Exception e) {
-			LogUtil.log("删除失败", e.getMessage());
-			ajaxJson.setSuccess(false);
-			ajaxJson.setMsg(e.getMessage());
-		}
-		return ajaxJson;
-	}
-
 
 	/**
 	 * 用户信息
@@ -472,50 +403,6 @@ public class UserController extends BaseController {
 	 * @param response
 	 * @param dataGrid
 	 */
-	@RequestMapping(params = "datagridByOrgCode")
-	public void datagridByOrgCode(TSUser user,HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
-		Map<String, Map<String, Object>> extMap = new HashMap<String, Map<String, Object>>();
-		String departid = request.getParameter("orgIds");
-		
-		// Minidao查询条件
-		if (oConvertUtils.isNotEmpty(user.getUserName())) {
-			user.setUserName(user.getUserName().replace("*", "%"));
-		}
-		if (oConvertUtils.isNotEmpty(user.getRealName())) {
-			user.setRealName(user.getRealName().replace("*", "%"));
-		}
-
-		//获取公司编码
-		String orgCode = null;
-		if (oConvertUtils.isNotEmpty(departid)) {
-			TSDepart tsdepart = this.systemService.get(TSDepart.class, departid);
-			orgCode = tsdepart.getOrgCode();
-		}
-		
-		//查询机构下用户列表
-		MiniDaoPage<TSUser> list = departAuthGroupDao.getUserByDepartCode(dataGrid.getPage(), dataGrid.getRows(),orgCode , user);
-		dataGrid.setTotal(list.getTotal());
-		dataGrid.setResults(list.getResults());
-
-		//获取用户的部门名称
-		for (TSUser u : list.getResults()) {
-			if (oConvertUtils.isNotEmpty(u.getId())) {
-				List<String> depNames = departAuthGroupDao.getUserDepartNames(u.getId());
-				// 此为针对原来的行数据，拓展的新字段
-				Map<String,Object> m = new HashMap<String,Object>();
-				m.put("orgNames", depNames != null ? depNames.toArray() : null);
-				extMap.put(u.getId(), m);
-			}
-		}
-		TagUtil.datagrid(response, dataGrid, extMap);
-    }
-	
-	/**
-	 * easyuiAJAX用户列表请求数据 
-	 * @param request
-	 * @param response
-	 * @param dataGrid
-	 */
 	@RequestMapping(params = "datagrid")
 	public void datagrid(TSUser user,HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(TSUser.class, dataGrid);
@@ -525,8 +412,9 @@ public class UserController extends BaseController {
         Short[] userstate = new Short[]{Globals.User_Normal, Globals.User_ADMIN, Globals.User_Forbidden};
         cq.in("status", userstate);
         cq.eq("deleteFlag", Globals.Delete_Normal);
-        cq.eq("userType", Globals.USER_TYPE_SYSTEM);//用户列表不显示接口类型的用户
-        
+
+        cq.eq("userType", Globals.USER_TYPE_SYSTEM);
+
         String orgIds = request.getParameter("orgIds");
         List<String> orgIdList = extractIdListByComma(orgIds);
         // 获取 当前组织机构的用户信息
@@ -539,8 +427,10 @@ public class UserController extends BaseController {
             cq.add(Property.forName("id").in(subCq.getDetachedCriteria()));
         }
 
+
         cq.add();
         this.systemService.getDataGridReturn(cq, true);
+
         List<TSUser> cfeList = new ArrayList<TSUser>();
         for (Object o : dataGrid.getResults()) {
             if (o instanceof TSUser) {
@@ -559,9 +449,10 @@ public class UserController extends BaseController {
                 cfeList.add(cfe);
             }
         }
+
         TagUtil.datagrid(response, dataGrid);
     }
-	
+
 	/**
 	 * 用户删除选择对话框
 	 * 
@@ -775,8 +666,6 @@ public class UserController extends BaseController {
 				user.setPassword(PasswordUtil.encrypt(user.getUserName(), oConvertUtils.getString(req.getParameter("password")), PasswordUtil.getStaticSalt()));
 				user.setStatus(Globals.User_Normal);
 				user.setDeleteFlag(Globals.Delete_Normal);
-				//默认添加为系统用户
-				user.setUserType(Globals.USER_TYPE_SYSTEM);
 				this.userService.saveOrUpdate(user, orgid.split(","), roleid.split(","));				
 				message = "用户: " + user.getUserName() + "添加成功";
 				logType=Globals.Log_Type_INSERT;
@@ -852,9 +741,6 @@ public class UserController extends BaseController {
 	public void datagridRole(TSRole tsRole, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
 		CriteriaQuery cq = new CriteriaQuery(TSRole.class, dataGrid);
 		//查询条件组装器
-
-		cq.eq("roleType", OrgConstants.SYSTEM_ROLE_TYPE);//默认只查询系统角色
-
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, tsRole);
 		this.systemService.getDataGridReturn(cq, true);
 		TagUtil.datagrid(response, dataGrid);
@@ -888,28 +774,7 @@ public class UserController extends BaseController {
 			req.setAttribute("user", user);
 			idandname(req, user);
 			getOrgInfos(req, user);
-
-		}else{
-			//组织机构关联用户录入
-			String departid = oConvertUtils.getString(req.getParameter("departid"));
-			if(StringUtils.isNotEmpty(departid)){
-				TSDepart depart = systemService.getEntity(TSDepart.class,departid);
-				if(depart!=null){
-					req.setAttribute("orgIds", depart.getId()+",");
-					req.setAttribute("departname", depart.getDepartname()+",");
-				}
-			}
-			//角色管理关联用户录入
-			String roleId = oConvertUtils.getString(req.getParameter("roleId"));
-			if(StringUtils.isNotEmpty(roleId)){
-				TSRole tsRole = systemService.getEntity(TSRole.class,roleId);
-				if(tsRole!=null){
-					req.setAttribute("id", roleId);
-					req.setAttribute("roleName", tsRole.getRoleName());
-				}
-			}
 		}
-
 		req.setAttribute("tsDepart", tsDepart);
         //req.setAttribute("orgIdList", JSON.toJSON(orgIdList));
 
@@ -927,20 +792,18 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping(params = "addorupdateInterfaceUser")
 	public ModelAndView addorupdateInterfaceUser(TSUser user, HttpServletRequest req) {
-
+        TSDepart tsDepart = new TSDepart();
 		if (StringUtil.isNotEmpty(user.getId())) {
 			user = systemService.getEntity(TSUser.class, user.getId());
 			req.setAttribute("user", user);
 			interfaceroleidandname(req, user);
 		}else{
 			String roleId = req.getParameter("roleId");
-			if(StringUtils.isNotBlank(roleId)) {
-				InterroleEntity role = systemService.getEntity(InterroleEntity.class, roleId);
-				req.setAttribute("roleId", roleId);
-				req.setAttribute("roleName", role.getRoleName());
-			}
+	        InterroleEntity role = systemService.getEntity(InterroleEntity.class, roleId);
+	        req.setAttribute("roleId", roleId);
+			req.setAttribute("roleName", role.getRoleName());
 		}
-
+		req.setAttribute("tsDepart", tsDepart);
         return new ModelAndView("system/user/interfaceUser");
 	}
 	
@@ -980,8 +843,6 @@ public class UserController extends BaseController {
 			users.setOfficePhone(user.getOfficePhone());
 			users.setMobilePhone(user.getMobilePhone());
 			users.setDevFlag(user.getDevFlag());
-
-			user.setPassword(PasswordUtil.encrypt(user.getUserName(), password, PasswordUtil.getStaticSalt()));
 
 //            systemService.executeSql("delete from t_s_user_org where user_id=?", user.getId());
 //            saveUserOrgList(req, user);
@@ -1200,26 +1061,26 @@ public class UserController extends BaseController {
 		TagUtil.datagrid(response, dataGrid);
 	}
 
-//	/**
-//	 * 测试 【Datatable 数据列表】
-//	 * 
-//	 * @param user
-//	 * @param req
-//	 * @return
-//	 */
-//	@RequestMapping(params = "test")
-//	public void test(HttpServletRequest request, HttpServletResponse response) {
-//		String jString = request.getParameter("_dt_json");
-//		DataTables dataTables = new DataTables(request);
-//		CriteriaQuery cq = new CriteriaQuery(TSUser.class, dataTables);
-//		String username = request.getParameter("userName");
-//		if (username != null) {
-//			cq.like("userName", username);
-//			cq.add();
-//		}
-//		DataTableReturn dataTableReturn = systemService.getDataTableReturn(cq, true);
-//		TagUtil.datatable(response, dataTableReturn, "id,userName,mobilePhone,TSDepart_departname");
-//	}
+	/**
+	 * 测试
+	 * 
+	 * @param user
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(params = "test")
+	public void test(HttpServletRequest request, HttpServletResponse response) {
+		String jString = request.getParameter("_dt_json");
+		DataTables dataTables = new DataTables(request);
+		CriteriaQuery cq = new CriteriaQuery(TSUser.class, dataTables);
+		String username = request.getParameter("userName");
+		if (username != null) {
+			cq.like("userName", username);
+			cq.add();
+		}
+		DataTableReturn dataTableReturn = systemService.getDataTableReturn(cq, true);
+		TagUtil.datatable(response, dataTableReturn, "id,userName,mobilePhone,TSDepart_departname");
+	}
 
 	/**
 	 * 用户列表页面跳转
@@ -1385,7 +1246,7 @@ public class UserController extends BaseController {
 			}
 
 			try {
-				clientManager.getClient().getFunctions().clear();
+				 ClientManager.getInstance().getClient().getFunctions().clear();
 			} catch (Exception e) {
 			}
 
@@ -1540,7 +1401,7 @@ public class UserController extends BaseController {
 								systemService.saveOrUpdate(user);
 
 								String id = user.getId();
-								systemService.executeSql("delete from t_s_role_user where userid = ?",id);
+								systemService.executeSql("delete from t_s_role_user where userid='"+id+"'");
 								for(String roleCode:roles){
 									//根据角色编码得到roleid
 									List<TSRole> roleList = systemService.findByProperty(TSRole.class,"roleCode",roleCode);
@@ -1550,7 +1411,7 @@ public class UserController extends BaseController {
 									systemService.save(tsRoleUser);
 								}
 
-								systemService.executeSql("delete from t_s_user_org where user_id = ?",id);
+								systemService.executeSql("delete from t_s_user_org where user_id='"+id+"'");
 								for(String orgCode:depts){
 									//根据角色编码得到roleid
 									List<TSDepart> departList = systemService.findByProperty(TSDepart.class,"orgCode",orgCode);

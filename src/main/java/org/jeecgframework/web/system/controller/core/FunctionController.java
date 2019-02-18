@@ -31,7 +31,6 @@ import org.jeecgframework.web.system.pojo.base.TSFunction;
 import org.jeecgframework.web.system.pojo.base.TSIcon;
 import org.jeecgframework.web.system.pojo.base.TSOperation;
 import org.jeecgframework.web.system.pojo.base.TSRoleFunction;
-import org.jeecgframework.web.system.service.FunctionService;
 import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.web.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +50,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/functionController")
 public class FunctionController extends BaseController {
+	/**
+	 * Logger for this class
+	 */
 	private static final Logger logger = Logger.getLogger(FunctionController.class);
-	
 	private UserService userService;
 	private SystemService systemService;
-	@Autowired
-	private FunctionService functionService;
 
 	@Autowired
 	public void setSystemService(SystemService systemService) {
@@ -151,8 +150,49 @@ public class FunctionController extends BaseController {
 	@RequestMapping(params = "del")
 	@ResponseBody
 	public AjaxJson del(TSFunction function, HttpServletRequest request) {
-		AjaxJson j = functionService.delFunction(function.getId());
-		systemService.addLog(j.getMsg(), Globals.Log_Type_DEL,Globals.Log_Leavel_INFO);
+		String message = null;
+		AjaxJson j = new AjaxJson();
+		function = systemService.getEntity(TSFunction.class, function.getId());
+		message = MutiLangUtil.paramDelSuccess("common.menu");
+		systemService
+				.updateBySqlString("delete from t_s_role_function where functionid='"
+						+ function.getId() + "'");
+
+		TSFunction parent = function.getTSFunction();
+		try{
+
+			if(parent != null){
+				parent.getTSFunctions().remove(function);
+			}
+			systemService.delete(function);
+		}catch (Exception e){
+			if(parent != null){
+				parent.getTSFunctions().add(function);
+			}
+
+			e.printStackTrace();
+			message=MutiLangUtil.getLang("common.menu.del.fail");
+		}
+
+		systemService.addLog(message, Globals.Log_Type_DEL,
+				Globals.Log_Leavel_INFO);
+
+		// // 删除权限时先删除权限与角色之间关联表信息
+		// List<TSRoleFunction> roleFunctions =
+		// systemService.findByProperty(TSRoleFunction.class, "TSFunction.id",
+		// function.getId());
+		//
+		// if (roleFunctions.size() > 0) {
+		// j.setMsg("菜单已分配无法删除");
+		//
+		// }
+		// else {
+		// userService.delete(function);
+		// systemService.addLog(message, Globals.Log_Type_DEL,
+		// Globals.Log_Leavel_INFO);
+		// }
+
+		j.setMsg(message);
 		return j;
 	}
 
@@ -239,11 +279,6 @@ public class FunctionController extends BaseController {
 			TSFunction t = systemService.getEntity(TSFunction.class,function.getId());
 			try {
 				MyBeanUtils.copyBeanNotNull2Bean(function, t);
-
-				if(t.getFunctionLevel()==0){
-					t.setTSFunction(null);
-				}
-
 				userService.saveOrUpdate(t);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -416,11 +451,9 @@ public class FunctionController extends BaseController {
 		treeGridModel.setFunctionType("functionType");
 
 		treeGrids = systemService.treegrid(functionList, treeGridModel);
-
-//		for (TreeGrid tg : treeGrids) {
-//			if("closed".equals(tg.getState()))tg.setSrc("");
-//		}
-
+		for (TreeGrid tg : treeGrids) {
+			if("closed".equals(tg.getState()))tg.setSrc("");
+		}
 		
 		
 		MutiLangUtil.setMutiTree(treeGrids);
@@ -661,14 +694,13 @@ public class FunctionController extends BaseController {
 	}
 
 	public int justHaveDataRule(TSDataRule dataRule) {
+		String sql = "SELECT id FROM t_s_data_rule WHERE functionId='"+dataRule.getTSFunction()
+				.getId()+"' AND rule_column='"+dataRule.getRuleColumn()+"' AND rule_conditions='"+dataRule
+				.getRuleConditions()+"'";
 
-		String column = dataRule.getRuleColumn();
-		if(oConvertUtils.isEmpty(column)){
-			return 0;
-		}
-		String sql = "SELECT count(*) FROM t_s_data_rule WHERE functionId = ? and rule_column = ? AND rule_conditions = ?";
-		Long count = this.systemService.getCountForJdbcParam(sql, dataRule.getTSFunction().getId(),column,dataRule.getRuleConditions());
-		return count.intValue();
+		sql+=" AND rule_column IS NOT NULL AND rule_column <> ''";
 
+		List<String> hasOperList = this.systemService.findListbySql(sql); 
+		return hasOperList.size();
 	}
 }

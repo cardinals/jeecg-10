@@ -94,11 +94,9 @@ public class ExtendJsonConvert {
 						}
 						re.append("\" ");
 				} catch (Exception e) {
-
 					re.append(key+"="+"\"");
-					re.append(obj.get(key)+"\" ");//为了正则匹配 加上空格
+					re.append(obj.get(key)+"\"");
 					//re.append("\" ");
-
 				}
 			}
 		}catch (Exception e) {

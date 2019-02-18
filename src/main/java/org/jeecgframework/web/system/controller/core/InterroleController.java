@@ -202,9 +202,8 @@ public class InterroleController extends BaseController {
 		// }
 		// int count = interroleService.getUsersOfThisRole(role.getId());
 
-		String hql = " from InterroleInterfaceEntity  where  interrole_id= ?";
-		List<InterroleInterfaceEntity> findByQueryString = systemService.findHql(hql,role.getId());
-
+		String hql = (" from InterroleInterfaceEntity  where  interrole_id='" + role.getId() + "'");
+		List<InterroleInterfaceEntity> findByQueryString = systemService.findByQueryString(hql);
 		role = systemService.getEntity(InterroleEntity.class, role.getId());
 		if (findByQueryString.size() > 0 && findByQueryString != null) {
 			// 删除角色之前先删除角色权限关系
@@ -288,11 +287,7 @@ public class InterroleController extends BaseController {
 			if (roleInterfaceList.size() > 0) {
 				for (InterroleInterfaceEntity roleInterface : roleInterfaceList) {
 					TSInterfaceEntity inter = (TSInterfaceEntity) roleInterface.getInterfaceEntity();
-
-					if(inter!=null){
-						loginActionlist.add(inter);
-					}
-
+					loginActionlist.add(inter);
 				}
 			}
 			roleInterfaceList.clear();
@@ -431,11 +426,7 @@ public class InterroleController extends BaseController {
 					.findByProperty(InterroleInterfaceEntity.class, "interroleEntity.id", role.getId());
 			Map<String, InterroleInterfaceEntity> map = new HashMap<String, InterroleInterfaceEntity>();
 			for (InterroleInterfaceEntity interfaceOfRole : roleInterfaceList) {
-
-				if(interfaceOfRole.getInterfaceEntity()!=null){
-					map.put(interfaceOfRole.getInterfaceEntity().getId(), interfaceOfRole);
-				}
-
+				map.put(interfaceOfRole.getInterfaceEntity().getId(), interfaceOfRole);
 			}
 			Set<String> set = new HashSet<String>();
 			if (StringUtil.isNotEmpty(roleinterface)) {

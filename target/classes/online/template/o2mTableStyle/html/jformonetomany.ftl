@@ -1,14 +1,10 @@
     
     
     <!-- tab内容 -->
-    <!-- update-begin-Author:zhangweijian  Date: 20180709 for：#2919 online样式问题 -->
-    <div class="con-wrapper" id="con-wrapper${sub_index + 1}" style="display: none">
-    <!-- update-end-Author:zhangweijian  Date: 20180709 for：#2919 online样式问题 -->
+    <div class="con-wrapper" id="con-wrapper${sub_index + 1}" style="display: none;">
 	    <!-- <h4>分类标题</h4> -->
 	    <div class="row">
-	    <#-- update--begin--author:taoyan Date:20170601 for:TASK #2731 【bug】uploadify上传控件被隐藏导致上传失败 -->
-	      <div style="margin-left:15px;">
-	    <#-- update--end--author:taoyan Date:20170601 for:TASK #2731 【bug】uploadify上传控件被隐藏导致上传失败 -->
+	      <div class="col-md-12 layout-header">
 	        <button id="addBtn_${sub}" type="button" class="btn btn-default">添加</button>
 	        <button id="delBtn_${sub}" type="button" class="btn btn-default">删除</button>
 	        <script type="text/javascript"> 
@@ -36,11 +32,11 @@
 		    });
 		</script>
 	      </div>
-<!-- update-begin-Author:zhangweijian  Date: 20180709 for：#2919 online样式问题 -->	    
-	<div style="margin: 0 15px; background-color: white;overflow-x:auto">    
+	    </div>
+	<div style="margin: 0 15px; background-color: white;">    
 	    <!-- Table -->
       <table id="${sub}_table" class="table table-bordered table-hover" style="margin-bottom: 0;">
-        <thead style="background: #fff">
+        <thead>
           <tr>
             <th style="white-space:nowrap;width:50px;">序号</th>
             <th style="white-space:nowrap;width:50px;">操作</th>
@@ -49,8 +45,7 @@
 			</#list>
           </tr>
         </thead>
-        <tbody id="add_${sub}_table" style="background: #fff">
-<!-- update-end-Author:zhangweijian  Date: 20180709 for：#2919 online样式问题 -->
+        <tbody id="add_${sub}_table">
           <#if data['${sub}']?exists&&(data['${sub}']?size>0) >
 								<#list data['${sub}'] as subTableData >
 									<tr>
@@ -73,12 +68,7 @@
 								<#if subTableField.field_must_input?if_exists?html != ''><#if subTableField.field_must_input == 'Y' || subTableField.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif subTableField.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
 								<#-- update--end--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 								               <#if subTableField.field_valid_type?if_exists?html != ''>
-								               <#if subTableField.field_valid_type=='only'>
-					       		   					validType="${sub},${subTableField.field_name},${sub}[${subTableData_index}].id"
-					       		   					datatype="*"
-					       						<#else>
-				                   					datatype="${subTableField.field_valid_type?if_exists?html}"
-				               					</#if>
+								               datatype="${subTableField.field_valid_type?if_exists?html}"
 								               <#else>
 								               <#if subTableField.type == 'int'>
 								               datatype="n" 
@@ -283,12 +273,7 @@
 												<#-- update--end--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 								               <#if subTableField.operationCodesReadOnly?exists> readonly = "readonly"</#if>
 								               <#if subTableField.field_valid_type?if_exists?html != ''>
-								               <#if subTableField.field_valid_type=='only'>
-					       		   					validType="${sub},${subTableField.field_name},${sub}[${subTableData_index}].id"
-					       		   					datatype="*"
-					       						<#else>
-				                   					datatype="${subTableField.field_valid_type?if_exists?html}"
-				               					</#if>
+								               datatype="${subTableField.field_valid_type?if_exists?html}"
 								               <#else>
 								               <#if subTableField.type == 'int'>
 								               datatype="n" 
@@ -467,7 +452,7 @@
       </table>
 	 </div>   
 	    
-	</div> 
+	    
     </div>
     
     

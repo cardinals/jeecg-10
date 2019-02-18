@@ -76,7 +76,22 @@ public class CommunityController extends BaseController {
 		mav.addObject("fatherId", fatherId);
 		return mav;
 	}
-
+	/**
+	 * 返回上一层
+	 * @param request
+	 * @param response
+	 * @param fatherId
+	 * @return
+	 */
+	@RequestMapping(params="goLastOne")
+	public ModelAndView goLastOne(HttpServletRequest request,HttpServletResponse response,String fatherId) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("com/jeecg/estate/managerareaList");
+		List<ManagerareaEntity> mana = systemService.findByProperty(ManagerareaEntity.class, "id", fatherId);
+		fatherId=mana.get(0).getFatherId();
+		mav.addObject("fatherId", fatherId);
+		return mav;
+	}
 	/**
 	 * easyui AJAX请求数据
 	 * 

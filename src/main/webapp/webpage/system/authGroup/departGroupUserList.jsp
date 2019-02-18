@@ -124,9 +124,7 @@ function callbackRealNameSelect() {
 		},
 		success:function(data){
 			//location.reload("departAuthGroupController.do?getDepartGroupUser&groupId="+groupId);
-
-			$('#userList').datagrid('reload');
-
+			reloadTable();
 		},
 		error:function(data) {
 			var d = $.parseJSON(data);

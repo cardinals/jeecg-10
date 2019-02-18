@@ -1,6 +1,9 @@
 .icon-blank{
 	background:url('icons/blank.gif') no-repeat center center;
 }
+.icon-money{
+	background:url('icons/money.png') no-repeat center center;
+}
 .icon-add{
 	background:url('icons/le_new.png') no-repeat center center;
 }
@@ -81,7 +84,7 @@
 .icon-le-back{
 	background:url('icons/le-back.png') no-repeat center center;
 }
-/*update-begin--author:zhangjiaqiang date:20170301 for:�޶��б�ͼ�� */
+/*update-begin--author:zhangjiaqiang date:20170301 for:锟睫讹拷锟叫憋拷图锟斤拷 */
 .icon-user-set-o{
 	background:url('icons/user-set-o.png') no-repeat center center;
 }
@@ -89,23 +92,19 @@
 .icon-user-set{
 	background:url('icons/user-set.png') no-repeat center center;
 }
-/*update-begin--author:LiShaoQing date:20171027 for:高级查询添加右侧历史数据图标  */
+/*update-begin--author:LiShaoQing date:20171027 for:楂樼骇鏌ヨ娣诲姞鍙充晶鍘嗗彶鏁版嵁鍥炬爣  */
 .icon-history-search {
   	background:url('icons/tree_historySearch.png') no-repeat center center;
 }
-/*update-end--author:LiShaoQing date:20171027 for:高级查询添加右侧历史数据图标  */
-/*update-end--author:zhangjiaqiang date:20170301 for:�޶��б�ͼ�� */
-/*update-begin author:xuelin date:20171116 for:TASK #2404 【平台UI改造】UI样式改造点  5.参考fineui，做下字段过滤功能效果-----*/
+/*update-end--author:LiShaoQing date:20171027 for:楂樼骇鏌ヨ娣诲姞鍙充晶鍘嗗彶鏁版嵁鍥炬爣  */
+/*update-end--author:zhangjiaqiang date:20170301 for:锟睫讹拷锟叫憋拷图锟斤拷 */
+/*update-begin author:xuelin date:20171116 for:TASK #2404 銆愬钩鍙癠I鏀归�犮�慤I鏍峰紡鏀归�犵偣  5.鍙傝�僨ineui锛屽仛涓嬪瓧娈佃繃婊ゅ姛鑳芥晥鏋�-----*/
 .icon-filter{
 	background:url('icons/filter.png') no-repeat center center;
 }
-/*update-end author:xuelin date:20171116 for:TASK #2404 【平台UI改造】UI样式改造点  5.参考fineui，做下字段过滤功能效果-----*/
-/*update-begin-Author:LiShaoQing date:20180103 for:组织机构添加职务信息图标  */
+/*update-end author:xuelin date:20171116 for:TASK #2404 銆愬钩鍙癠I鏀归�犮�慤I鏍峰紡鏀归�犵偣  5.鍙傝�僨ineui锛屽仛涓嬪瓧娈佃繃婊ゅ姛鑳芥晥鏋�-----*/
+/*update-begin-Author:LiShaoQing date:20180103 for:缁勭粐鏈烘瀯娣诲姞鑱屽姟淇℃伅鍥炬爣  */
 .icon-chart-organisation {
   	background:url('icons/chart_organisation.png') no-repeat center center;
 }
-/*update-end-Author:LiShaoQing date:20180103 for:组织机构添加职务信息图标  */
-
-.icon-caret-down{
-	background:url('icons/fa-caret-down.png') no-repeat center center;
-}
+/*update-end-Author:LiShaoQing date:20180103 for:缁勭粐鏈烘瀯娣诲姞鑱屽姟淇℃伅鍥炬爣  */

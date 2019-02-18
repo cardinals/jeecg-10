@@ -2321,9 +2321,7 @@ th {
 .table-bordered > thead > tr > td,
 .table-bordered > tbody > tr > td,
 .table-bordered > tfoot > tr > td {
-  /*update-begin--Author:scott ---- Date:20180706 ---- for：ace风格去掉表格竖线------*/
-  /*border: 1px solid #dddddd;*/
-  /*update-end--Author:scott ---- Date:20180706 ---- for：ace风格去掉表格竖线------*/
+  border: 1px solid #dddddd;
 }
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {

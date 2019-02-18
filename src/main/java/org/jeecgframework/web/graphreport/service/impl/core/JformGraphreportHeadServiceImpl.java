@@ -49,9 +49,7 @@ public class JformGraphreportHeadServiceImpl extends CommonServiceImpl implement
 		Object id0 = jformGraphreportHead.getId();
 		//===================================================================================
 		//1.查询出数据库的明细数据-子表
-
-	    String hql0 = "from JformGraphreportItemEntity where 1 = 1 AND cgreportHeadId = ? ";
-
+	    String hql0 = "from JformGraphreportItemEntity where 1 = 1 AND cGREPORT_HEAD_ID = ? ";
 	    List<JformGraphreportItemEntity> jformGraphreportItemOldList = this.findHql(hql0,id0);
 		//2.筛选更新明细数据-子表
 		for(JformGraphreportItemEntity oldE:jformGraphreportItemOldList){
@@ -97,9 +95,7 @@ public class JformGraphreportHeadServiceImpl extends CommonServiceImpl implement
 		Object id0 = jformGraphreportHead.getId();
 		//===================================================================================
 		//删除-子表
-
-	    String hql0 = "from JformGraphreportItemEntity where 1 = 1 AND cgreportHeadId = ? ";
-
+	    String hql0 = "from JformGraphreportItemEntity where 1 = 1 AND cGREPORT_HEAD_ID = ? ";
 	    List<JformGraphreportItemEntity> jformGraphreportItemOldList = this.findHql(hql0,id0);
 		this.deleteAllEntitie(jformGraphreportItemOldList);
 	}

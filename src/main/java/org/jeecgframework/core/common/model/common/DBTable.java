@@ -2,6 +2,8 @@ package org.jeecgframework.core.common.model.common;
 
 import java.io.Serializable;
 import java.util.List;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 /**
  * 
  * @author Hank

@@ -20,8 +20,8 @@ import java.util.List;
 import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,7 +56,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
-<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
+
 <#-- restful 通用方法生成 -->
 import org.apache.commons.lang3.StringUtils;
 import org.jeecgframework.jwt.util.GsonUtil;
@@ -88,7 +88,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 <#-- swagger api end -->
-</#if>
+
 <#-- 列为文件类型的文件代码生成 -->
 <#assign fileFlag = false />
 <#list columns as filePo>
@@ -113,24 +113,23 @@ import java.util.HashMap;
  * @version V1.0   
  *
  */
- <#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
  <#-- update--begin--author:zhangjiaqiang date:20171031 for:API 注解 start -->
 @Api(value="${entityName}",description="${ftl_description}",tags="${entityName?uncap_first}Controller")
 <#-- update--end--author:zhangjiaqiang date:20171031 for:API 注解 start -->
-</#if>
 @Controller
 @RequestMapping("/${entityName?uncap_first}Controller")
 public class ${entityName}Controller extends BaseController {
-	private static final Logger logger = LoggerFactory.getLogger(${entityName}Controller.class);
+	/**
+	 * Logger for this class
+	 */
+	private static final Logger logger = Logger.getLogger(${entityName}Controller.class);
 
 	@Autowired
 	private ${entityName}ServiceI ${entityName?uncap_first}Service;
 	@Autowired
 	private SystemService systemService;
-	<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
 	@Autowired
 	private Validator validator;
-	</#if>
 	<#-- 列为文件类型的文件代码生成 -->
 	<#if fileFlag==true>
 	@Autowired
@@ -161,11 +160,29 @@ public class ${entityName}Controller extends BaseController {
 	public void datagrid(${entityName}Entity ${entityName?uncap_first},HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
 		CriteriaQuery cq = new CriteriaQuery(${entityName}Entity.class, dataGrid);
 		//查询条件组装器
-		<#-- update--begin--author:jiaqiankun date:20180709 for：TASK #2928 代码生成器，为什么要单独生成范围查询的逻辑，查询过滤器不是有这个功能吗 -->
-		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, ${entityName?uncap_first}, request.getParameterMap());
-		<#-- update--end--author:jiaqiankun date:20180709 for：TASK #2928 代码生成器，为什么要单独生成范围查询的逻辑，查询过滤器不是有这个功能吗 -->
+		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, ${entityName?uncap_first});
 		try{
 		//自定义追加查询条件
+		<#list columns as po>
+		<#if po.isQuery =='Y' && po.queryMode =='group'>
+		String query_${po.fieldName}_begin = request.getParameter("${po.fieldName}_begin");
+		String query_${po.fieldName}_end = request.getParameter("${po.fieldName}_end");
+		if(StringUtil.isNotEmpty(query_${po.fieldName}_begin)){
+			<#if po.type == "java.util.Date">
+			cq.ge("${po.fieldName}", new SimpleDateFormat("yyyy-MM-dd").parse(query_${po.fieldName}_begin));
+			<#else>
+			cq.ge("${po.fieldName}", Integer.parseInt(query_${po.fieldName}_begin));
+			</#if>
+		}
+		if(StringUtil.isNotEmpty(query_${po.fieldName}_end)){
+			<#if po.type == "java.util.Date">
+			cq.le("${po.fieldName}", new SimpleDateFormat("yyyy-MM-dd").parse(query_${po.fieldName}_end));
+			<#else>
+			cq.le("${po.fieldName}", Integer.parseInt(query_${po.fieldName}_end));
+			</#if>
+		}
+		</#if>
+		</#list> 
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}
@@ -427,7 +444,7 @@ public class ${entityName}Controller extends BaseController {
 				j.setMsg("文件导入成功！");
 			} catch (Exception e) {
 				j.setMsg("文件导入失败！");
-				logger.error(e.getMessage());
+				logger.error(ExceptionUtil.getExceptionMessage(e));
 			}finally{
 				try {
 					file.getInputStream().close();
@@ -472,9 +489,7 @@ public class ${entityName}Controller extends BaseController {
 	@ResponseBody
 	public AjaxJson do${btn.buttonCode?cap_first}(${entityName}Entity ${entityName?uncap_first}, HttpServletRequest request) {
 		AjaxJson j = new AjaxJson();
-		<#-- update--begin--author:zhoujf date:20180413 for:生成报错修正-->
-		String message = "${btn.buttonName}成功";
-		<#-- update--end--author:zhoujf date:20180413 for:生成报错修正-->
+		message = "${btn.buttonName}成功";
 		${entityName}Entity t = ${entityName?uncap_first}Service.get(${entityName}Entity.class, ${entityName?uncap_first}.getId());
 		try{
 			${entityName?uncap_first}Service.do${btn.buttonCode?cap_first}Sql(t);
@@ -487,27 +502,18 @@ public class ${entityName}Controller extends BaseController {
 		return j;
 	}
  	</#if>
- 	</#list>
- 	 
- 	<#if cgformConfig.supportRestful?? && cgformConfig.supportRestful == "1">
+ 	</#list> 
+ 	
  	<#-- restful 通用方法生成 -->
  	<#-- update--begin--author:zhangjiaqiang date:20171113 for:TASK #2415 【restful接口模板】模板再次改造，封装了通用了返回结果，加了必要校验 -->
- 	<#-- update-begin-Author:LiShaoQing Date:20180828 for: TASK #3105 【代码生成器】代码生成rest接口 list获取改造 -->
- 	@RequestMapping(value="/list/{pageNo}/{pageSize}",method = RequestMethod.GET)
+ 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	<#-- update--begin--author:zhangjiaqiang date:20171031 for:TASK #2397 【新功能】代码生成器模板修改，追加swagger-ui注解 -->
 	@ApiOperation(value="${ftl_description}列表信息",produces="application/json",httpMethod="GET")
 	<#-- update--end--author:zhangjiaqiang date:20171031 for:TASK #2397 【新功能】代码生成器模板修改，追加swagger-ui注解 -->
 	<#-- update--begin--author:zhangjiaqiang date:20171031 for:TASK #2400 【功能不足】一对多，restful接口不足，目前只返回主表的数据，应该把主子表的数据一起返回 -->
-	public ResponseMessage<List<${entityName}Page>> list(@PathVariable("pageNo") int pageNo, @PathVariable("pageSize") int pageSize, HttpServletRequest request) {
-		if(pageSize>Globals.MAX_PAGESIZE){
-			return Result.error("每页请求不能超过" + Globals.MAX_PAGESIZE + "条");
-		}
-		CriteriaQuery query = new CriteriaQuery(${entityName}Entity.class);
-		query.setCurPage(pageNo<=0?1:pageNo);
-		query.setPageSize(pageSize<1?1:pageSize);
-		List<${entityName}Entity> list = this.${entityName?uncap_first}Service.getListByCriteriaQuery(query,true);
-		<#-- update-end-Author:LiShaoQing Date:20180828 for: TASK #3105 【代码生成器】代码生成rest接口 list获取改造 -->
+	public ResponseMessage<List<${entityName}Page>> list() {
+		List<${entityName}Entity> list= ${entityName?uncap_first}Service.getList(${entityName}Entity.class);
     	List<${entityName}Page> pageList=new ArrayList<${entityName}Page>();
         if(list!=null&&list.size()>0){
         	for(${entityName}Entity entity:list){
@@ -638,7 +644,7 @@ public class ${entityName}Controller extends BaseController {
 	@ApiOperation(value="删除${ftl_description}")
 	<#-- update--begin--author:zhangjiaqiang date:20171031 for:TASK #2397 【新功能】代码生成器模板修改，追加swagger-ui注解 -->
 	public ResponseMessage<?> delete(@ApiParam(name="id",value="ID",required=true)@PathVariable("id") String id) {
-		logger.info("delete[{}]" , id);
+		logger.info("delete[{}]" + id);
 		// 验证
 		if (StringUtils.isEmpty(id)) {
 			return Result.error("ID不能为空");
@@ -655,7 +661,6 @@ public class ${entityName}Controller extends BaseController {
 	}
 	<#-- update--end--author:zhangjiaqiang date:20171113 for:TASK #2415 【restful接口模板】模板再次改造，封装了通用了返回结果，加了必要校验 -->
 	<#-- restful 通用方法生成 -->
-	</#if>
 	
 	<#-- 列为文件类型的文件代码生成 -->
 	<#if fileFlag==true>

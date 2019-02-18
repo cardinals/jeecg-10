@@ -39,12 +39,6 @@ public class UploadTag extends JeecgTag {
 	protected String formId;//参数名称
 
 	private boolean outhtml = true;
-
-	private String onUploadStart;//上传开始处理函数
-
-	
-	private String height="18";//自定义上传按钮高度
-	private String width="80";//自定义上传按钮宽度
 	
 	public boolean isOuthtml() {
 		return outhtml;
@@ -100,13 +94,6 @@ public class UploadTag extends JeecgTag {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public String getOnUploadStart() {
-		return onUploadStart;
-	}
-	public void setOnUploadStart(String onUploadStart) {
-		this.onUploadStart = onUploadStart;
-	}
 	@SuppressWarnings("unchecked")
 	public int doStartTag() throws JspTagException {
 
@@ -157,10 +144,9 @@ public class UploadTag extends JeecgTag {
 		if(outhtml){
 			sb.append("<link rel=\"stylesheet\" href=\"plug-in/uploadify/css/uploadify.css\" type=\"text/css\"></link>");
 			sb.append("<script type=\"text/javascript\" src=\"plug-in/uploadify/jquery.uploadify-3.1.js\"></script>");
-
-			sb.append("<script type=\"text/javascript\" src=\"plug-in/tools/Map.js\"></script>");
-
 		}
+
+		sb.append("<script type=\"text/javascript\" src=\"plug-in/tools/Map.js\"></script>");
 
 		sb.append("<script type=\"text/javascript\">"
 				+"var flag = false;"
@@ -174,8 +160,7 @@ public class UploadTag extends JeecgTag {
 				+"auto:"+auto+","
 				+"progressData:\'speed\'," 
 				+"multi:"+multi+","
-				+"height:"+height+","
-				+"width:"+width+","
+				+"height:25,"
 				+"overrideEvents:[\'onDialogClose\']," 
 				+"fileTypeDesc:\'文件格式:\'," 
 				+"queueID:\'"+queueID+"\',"
@@ -184,53 +169,49 @@ public class UploadTag extends JeecgTag {
 				+"swf:\'plug-in/uploadify/uploadify.swf\',	"
 				+"uploader:\'"+getUploader()			
 						+"onUploadStart : function(file) { ");	
-				if(onUploadStart==null || "".equals(onUploadStart)){
-					if (formData!=null) {
-						String[] paramnames=formData.split(",");				
-						for (int i = 0; i < paramnames.length; i++) {
-							String paramname=paramnames[i];
+				if (formData!=null) {
+					String[] paramnames=formData.split(",");				
+					for (int i = 0; i < paramnames.length; i++) {
+						String paramname=paramnames[i];
 
-							String fieldName = paramname;
-							if(paramname.indexOf("_")> -1 ){
-								fieldName = paramname.substring(0, paramname.indexOf("_"));
-							}
-							sb.append("var "+fieldName+"=$(\'#"+paramname+"\').val();");
-
-						}				 
-				        sb.append("$(\'#"+id+"\').uploadify(\"settings\", \"formData\", {");
-				        for (int i = 0; i < paramnames.length; i++) {
-							String paramname=paramnames[i];
-
-							if(paramname.indexOf("_")> -1 ){
-								paramname = paramname.substring(0, paramname.indexOf("_"));
-							}
-
-							if (i==paramnames.length-1) {
-								sb.append("'"+paramname+"':"+paramname+"");	
-							}else{
-								sb.append("'"+paramname+"':"+paramname+",");
-							}
+						String fieldName = paramname;
+						if(paramname.indexOf("_")> -1 ){
+							fieldName = paramname.substring(0, paramname.indexOf("_"));
 						}
-				        sb.append("});");
+						sb.append("var "+fieldName+"=$(\'#"+paramname+"\').val();");
 
-					}else if (formId!=null) {
-						sb.append(" var o = {};");
-	            		sb.append("    var _array = $('#"+formId+"').serializeArray();");
-	            		sb.append("    $.each(_array, function() {");
-	            		sb.append("        if (o[this.name]) {");
-	            		sb.append("            if (!o[this.name].push) {");
-	            		sb.append("                o[this.name] = [ o[this.name] ];");
-	            		sb.append("            }");
-	            		sb.append("            o[this.name].push(this.value || '');");
-	            		sb.append("        } else {");
-	            		sb.append("            o[this.name] = this.value || '';");
-	            		sb.append("        }");
-	            		sb.append("    });");
-	            		sb.append("$(\'#"+id+"\').uploadify(\"settings\", \"formData\", o);");
+					}				 
+			        sb.append("$(\'#"+id+"\').uploadify(\"settings\", \"formData\", {");
+			        for (int i = 0; i < paramnames.length; i++) {
+						String paramname=paramnames[i];
+
+						if(paramname.indexOf("_")> -1 ){
+							paramname = paramname.substring(0, paramname.indexOf("_"));
+						}
+
+						if (i==paramnames.length-1) {
+							sb.append("'"+paramname+"':"+paramname+"");	
+						}else{
+							sb.append("'"+paramname+"':"+paramname+",");
+						}
 					}
-				}else{
-					sb.append(this.onUploadStart+"(file);");
-				}
+			        sb.append("});");
+
+				}else if (formId!=null) {
+					sb.append(" var o = {};");
+            		sb.append("    var _array = $('#"+formId+"').serializeArray();");
+            		sb.append("    $.each(_array, function() {");
+            		sb.append("        if (o[this.name]) {");
+            		sb.append("            if (!o[this.name].push) {");
+            		sb.append("                o[this.name] = [ o[this.name] ];");
+            		sb.append("            }");
+            		sb.append("            o[this.name].push(this.value || '');");
+            		sb.append("        } else {");
+            		sb.append("            o[this.name] = this.value || '';");
+            		sb.append("        }");
+            		sb.append("    });");
+            		sb.append("$(\'#"+id+"\').uploadify(\"settings\", \"formData\", o);");
+				};
 
 		       sb.append("} ," 	          
 				+"onQueueComplete : function(queueData) { ");
@@ -353,19 +334,7 @@ public class UploadTag extends JeecgTag {
 	public void setExtend(String extend) {
 		this.extend = extend;
 	}
-	
-	public String getHeight() {
-		return height;
-	}
-	public void setHeight(String height) {
-		this.height = height;
-	}
-	public String getWidth() {
-		return width;
-	}
-	public void setWidth(String width) {
-		this.width = width;
-	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -382,10 +351,11 @@ public class UploadTag extends JeecgTag {
 				.append(outhtml).append(", fileSizeLimit=").append(fileSizeLimit)
 				.append(",sysTheme=").append(SysThemesUtil.getSysTheme(ContextHolderUtils.getRequest()).getStyle())
 				.append(",brower_type=").append(ContextHolderUtils.getSession().getAttribute("brower_type"))
-				.append(",height=").append(height)
-				.append(",width=").append(width)
 				.append("]");
 		return builder.toString();
 	}
+
+
+	 
 	
 }

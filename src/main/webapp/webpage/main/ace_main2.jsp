@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="plug-in/jquery/jquery.contextmenu.css"/>
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="plug-in/ace/css/bootstrap.css" />
-		<link href="plug-in/hplus/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<link href="plug-in-ui/hplus/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
 		<link rel="stylesheet" href="plug-in/ace/assets/css/font-awesome.min.css" />
 		<link rel="stylesheet" type="text/css" href="plug-in/accordion/css/accordion.css">
 		<!-- text fonts -->
@@ -874,7 +874,6 @@
 		<script src="plug-in/ace/js/ace/ace.settings-skin.js"></script>
 		<script src="plug-in/ace/js/ace/ace.widget-on-reload.js"></script>
 		<script src="plug-in/ace/js/ace/ace.searchbox-autocomplete.js"></script>
-		<script type="text/javascript" src="plug-in/jquery-plugs/i18n/jquery.i18n.properties.js"></script>
 		<t:base type="tools"></t:base>
 		<script src="plug-in/jquery-plugs/storage/jquery.storageapi.min.js"></script>
 		<script type="text/javascript" src="plug-in/ace/js/bootstrap-tab.js"></script>

@@ -32,8 +32,4 @@ public interface NoticeAuthorityRoleServiceI extends CommonService{
  	public boolean doDelSql(TSNoticeAuthorityRole t);
  	
  	public boolean checkAuthorityRole(String noticeId, String roleid);
- 	
- 	public void saveTSNoticeAuthorityRole(TSNoticeAuthorityRole noticeAuthorityRole);
- 	
- 	public void doDelTSNoticeAuthorityRole(TSNoticeAuthorityRole noticeAuthorityRole);
 }

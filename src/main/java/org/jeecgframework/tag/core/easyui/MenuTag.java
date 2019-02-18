@@ -70,10 +70,8 @@ public class MenuTag extends JeecgTag {
 //				if(endString != null){
 //					endString.setLength(0);
 //				}
-//				endString = null;
 				//end().setLength(0);
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (Exception e2) {
 			}
 		}
 		return EVAL_PAGE;
@@ -128,9 +126,6 @@ public class MenuTag extends JeecgTag {
 			sb.append(ListtoMenu.getHplusMultistageTree(menuFun));
 		}else if (style.equals("fineui")){
 			sb.append(ListtoMenu.getFineuiMultistageTree(menuFun));
-		}
-		if(style.equals("adminlte")) {
-			sb.append(ListtoMenu.getAdminlteTree(menuFun));
 		}
 
 		this.putTagCache(sb);

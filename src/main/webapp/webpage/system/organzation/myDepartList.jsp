@@ -12,13 +12,11 @@
 <body>
 	<div class="easyui-layout" fit="true" scroll="no">
 		<div  data-options="region:'west',title:'我的机构管理',split:true" style="width:200px;overflow: auto;">
-		   <!-- update-begin--Author:Yandong  Date:20180402 for： TASK #2601 【严重样式问题】我的组织机构，在shortcut风格下样式有问题-->
-		   <div style="width:105px;margin-left: 8px;margin-top: 2px;">
+		   <div style="width:85px;float: left;margin-left: 8px;margin-top: 2px;">
 			<a  icon="icon-add" class="easyui-linkbutton l-btn l-btn-plain"  onclick="addOneNode()">
-				<span class="bigger-110 no-text-shadow" style="width: 50px;">添加公司</span>
+				<span class="bigger-110 no-text-shadow">添加公司</span>
 			</a>
 			</div>
-			<!-- update-begin--Author:Yandong  Date:20180402 for： TASK #2601 【严重样式问题】我的组织机构，在shortcut风格下样式有问题-->
 			 <div class="clear"></div> 
 	        <div id="orgTree" class="ztree"></div>
 	        <input type="hidden" id="userName" name="userName" value="${userName}"/>
@@ -59,13 +57,12 @@
 </body>
 </html>
 <script>
-
 $(function() {
-	loadTreeNodes();
+	loadTree();
 });
 var flag = true;
 var TimeFn = null;
-var currOrgId,currOrgOpt;//设置当前右击事件的部门Id以及操作类型0-add;1-edit;2-del
+
 
 function addtt(title, url, id, icon, closable) {
 	$('#tt').tabs('add',{
@@ -96,46 +93,15 @@ function beforeDbl(){
 }
 //加载树
 var orgTree ;
-
-function showIndex(a,b,c){
-	if(!c){
-		//第一次进来加载第一个节点信息
-		var treeObj = $.fn.zTree.getZTreeObj("orgTree");
-		var node =treeObj.getNodes()[0];
-		if(!!node){
-			$("#"+node.tId+" a").click();
-		}
-	}else{
-		if(currOrgOpt==1){
-			//编辑点击当前结点
-			var treety = $.fn.zTree.getZTreeObj("orgTree");
-			var currentNode = treety.getNodeByParam("id",currOrgId, null);
-			$("#"+currentNode.tId+" a").click();
-		}else if(currOrgOpt==0){
-			//新增点击新增节点
-			var childs = c.children;
-			if(!!childs && childs.length>0){
-				var last = childs[childs.length-1];
-				$("#"+last.tId+" a").click();
-			}
-		}
-		
-	}
-}
-
-function loadTreeNodes() {
+function loadTree() {
 	var zNodes;
 	var ztreeCreator = new ZtreeCreator('orgTree',"","")
-
- 			.setCallback({onClick:zTreeOnLeftClick,onRightClick:zTreeOnRightClick,onDblClick:zTreeOnDblClick,beforeDblClick:beforeDbl,onAsyncSuccess:showIndex})
-
+ 			.setCallback({onClick:zTreeOnLeftClick,onRightClick:zTreeOnRightClick,onDblClick:zTreeOnDblClick,beforeDblClick:beforeDbl})
  			.setAsync({
                 enable: true,
-				url: "organzationController.do?getMyTreeDataAsync",
-				autoParam: ["id"],//提交参数
-				type: 'get',
-			    dataType: 'json',
-			    dataFilter: filter,
+                url:"organzationController.do?getMyTreeData",
+                autoParam:["id", "name", "level"],
+                dataFilter:filter
             }) 
  			.initZtree({},function(treeObj){
  				orgTree = treeObj
@@ -161,31 +127,29 @@ function zTreeOnLeftClick(event, treeId, treeNode) {
 			var parentId = treeNode.id;
 			var orgType = treeNode.orgType;
 			closeAllTab();
-
 			if(orgType=="1"){
-				var url = "organzationController.do?myUserOrgList&departid="+treeNode.id;
+				var url = "organzationController.do?comDetail&id="+treeNode.id;
+				addtt('基本信息', url, '01','icon-comturn', 'false');
+				url = "organzationController.do?myUserOrgList&departid="+treeNode.id;
 				addtt('用户信息', url, '02','icon-user-set', 'false');
 				url = "tSCompanyPositionController.do?list&companyId="+treeNode.id;;
 				addtt('职务信息', url, '03','icon-chart-organisation', 'false');
-				url = "organzationController.do?comDetail&id="+treeNode.id;
-				addtt('基本信息', url, '01','icon-comturn', 'false');
 			}else if(orgType=="4"){
-				var url = "organzationController.do?myUserOrgList&departid="+treeNode.id;
+				var url = "organzationController.do?comDetail&id="+treeNode.id;
+				addtt('基本信息', url, '01','icon-comturn', 'false');
+				url = "organzationController.do?myUserOrgList&departid="+treeNode.id;
 				addtt('用户信息', url, '02','icon-user-set', 'false');
 				url = "tSCompanyPositionController.do?list&companyId="+treeNode.id;;
 				addtt('职务信息', url, '03','icon-chart-organisation', 'false');
-				url = "organzationController.do?comDetail&id="+treeNode.id;
-				addtt('基本信息', url, '01','icon-comturn', 'false');
 			}else if(orgType=="9"){
 				//var url = "organzationController.do?comDetail&id="+treeNode.id;
 				//addtt('基本信息', url, '01','icon-comturn', 'false');
 			}else{
-				var url = "organzationController.do?myUserOrgList&departid="+treeNode.id;
-				addtt('用户信息', url, '02','icon-user-set', 'false');
-				url = "organzationController.do?comDetail&id="+treeNode.id;
+				var url = "organzationController.do?comDetail&id="+treeNode.id;
 				addtt('基本信息', url, '01','icon-comturn', 'false');
+				url = "organzationController.do?myUserOrgList&departid="+treeNode.id;
+				addtt('用户信息', url, '02','icon-user-set', 'false');
 			}
-
 			$("#tt").tabs("select", 0);
 		}
 	},301);
@@ -195,7 +159,6 @@ function zTreeOnLeftClick(event, treeId, treeNode) {
  */
 function zTreeOnRightClick(e, treeId, treeNode) {	
 	if (treeNode) {
-		currOrgId = treeNode.id;
 		orgTree.selectNode(treeNode);
 		curSelectNode=treeNode;
 		var isfolder = treeNode.isFolder;
@@ -244,13 +207,10 @@ function zTreeOnDblClick(event, treeId, treeNode) {
 function menuHandler(item) {
 	if ('addSubCompany' == item.name) {
 		addSubCompany();
-		currOrgOpt = 0;
 	} else if ('addSubOrg' == item.name) {
 		addSubOrg();
-		currOrgOpt = 0;
 	} else if ('addSubJob' == item.name) {
 		addSubJob();
-		currOrgOpt = 0;
 	} else if ('editSupplier' == item.name) {
 		editNode();
 	} else if ('removeSupplier' == item.name) {
@@ -266,7 +226,7 @@ function menuHandler(item) {
 	}
 };
 function refreshNode() {
-	loadTreeNodes();
+	loadTree();
 };
 
 //添加下级公司
@@ -331,7 +291,6 @@ function addOneNode() {
 	closeAllTab();
 	var url = "organzationController.do?toAddCompany";
 	addtt('添加一级公司', url, '01','icon-search', 'false');
-	currOrgId = -1;
 };
 //编辑节点
 function editNode() {
@@ -342,7 +301,6 @@ function editNode() {
 	closeAllTab();
 	var url = "organzationController.do?comUpdate&id="+selectNode.id;
 	addtt('编辑', url, '01','icon-search', 'false');
-	currOrgOpt = 1;
 };
 
 //删除
@@ -371,8 +329,7 @@ function delNode() {
 	        success:function(data){ //请求成功后处理函数。
 			    if(data.success){
 			    	tip(data.msg);
-			    	currOrgOpt = 2;
-			    	loadTree();
+			    	orgTree.removeNode(selectNode);
 			    }else{
 			    	tip(data.msg);
 			    }
@@ -389,33 +346,5 @@ function getSelectNode() {
 	var node = nodes[0];
 	return node;
 };
-
-//增删改之后重新加载节点方法
-function loadTree(){
-	if(currOrgId==-1){
-		loadTreeNodes();
-		return false;
-	}
-	 var treety = $.fn.zTree.getZTreeObj("orgTree");
-	 var node = treety.getNodeByParam("id",currOrgId, null);
-	 if(node==null){
-		 return ;
-	 }
-	 if(currOrgOpt==0){
-		 var isParent = node.isParent;
-		 if(!isParent){
-			 node.isParent = true;
-			 treety.updateNode(node);
-		 }
-		 treety.reAsyncChildNodes(node, "refresh");
-	 }else if(currOrgOpt==1 ||currOrgOpt==2){
-		 var currParentTId = node.parentTId;
-		 var parentNode = treety.getNodeByTId(currParentTId);
-		 treety.reAsyncChildNodes(parentNode, "refresh");
-		 if(currOrgOpt==2){
-			 $("#"+currParentTId).children("a[treenode_a]").click();
-		 }
-	 }
-}
 
 </script>

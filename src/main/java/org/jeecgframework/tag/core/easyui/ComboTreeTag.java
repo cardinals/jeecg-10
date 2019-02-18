@@ -15,16 +15,12 @@ import javax.servlet.jsp.tagext.TagSupport;
  * @version 1.0
  */
 public class ComboTreeTag extends TagSupport {
-	private static final long serialVersionUID = 1L;
 	protected String id;// ID
 	protected String url;// 远程数据URL
 	protected String name;// 控件名称
 	protected String width;// 宽度
 	protected String value;// 控件值
 	private boolean multiple=false;//是否多选
-
-	private boolean onlyLeafCheck=false;//是否只选择子节点(默认为false)
-
 	public int doStartTag() throws JspTagException {
 		return EVAL_PAGE;
 	}
@@ -54,12 +50,7 @@ public class ComboTreeTag extends TagSupport {
 				+ "$(function() { " + "$(\'#"+id+"\').combotree({		 " 
 				+ "url :\'"+url+"\'," 
 				+ "width :\'"+width+"\'," 
-				+ "multiple:"+multiple+","
-
-				+"onlyLeafCheck:"+onlyLeafCheck+","
-
-				+"onLoadSuccess:function(){$(\'#"+id+"\').combotree('tree').tree('expandAll')}"
-
+				+ "multiple:"+multiple+""
 				+ "});		" 
 				+ "});	" 
 				+ "</script>");
@@ -94,9 +85,4 @@ public class ComboTreeTag extends TagSupport {
 	public void setMultiple(boolean multiple) {
 		this.multiple = multiple;
 	}
-
-	public void setOnlyLeafCheck(boolean onlyLeafCheck) {
-		this.onlyLeafCheck = onlyLeafCheck;
-	}
-
 }

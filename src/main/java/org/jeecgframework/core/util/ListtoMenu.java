@@ -413,7 +413,9 @@ public class ListtoMenu {
 		}
 		menuString.append("<li iconCls=\"");
 		menuString.append(icon);
-		menuString.append("\"> <a onclick=\"addTab(\'");
+
+		menuString.append("\"> <a onclick=\"addTab4MenuId(\'");
+
 		menuString.append(getMutiLang(function.getFunctionName()));
 		menuString.append("\',\'");
 		menuString.append(function.getFunctionUrl());
@@ -432,6 +434,10 @@ public class ListtoMenu {
 
 		menuString.append("\',\'");
 		menuString.append(icon);
+
+		menuString.append("\',\'");
+		menuString.append(function.getId());
+
 		menuString.append("\')\"  title=\"");
 		menuString.append(getMutiLang(function.getFunctionName()));
 		menuString.append("\" url=\"");
@@ -860,9 +866,7 @@ public class ListtoMenu {
 					menuString.append("<li>");
 
 					if(function.getFunctionIconStyle()!=null&&!function.getFunctionIconStyle().trim().equals("")){
-
-						menuString.append("<a href=\"#\" class=\"dropdown-toggle\" ><i class=\"fa "+function.getFunctionIconStyle()+"\"></i>");
-
+						menuString.append("<a href=\"#\" class=\"dropdown-toggle\" ><i class=\""+function.getFunctionIconStyle()+"\"></i>");
 					}else{
 						menuString.append("<a href=\"#\" class=\"dropdown-toggle\" ><i class=\""+SysACEIconEnum.toEnum(function.getTSIcon().getIconClas()).getThemes()+"\"></i>");
 					}
@@ -1117,28 +1121,6 @@ public class ListtoMenu {
 				menuString.append(getFineuiSubMenu(function,2,map));
 				menuString.append("</ul></li>");
 			}
-			return menuString.toString();
-		}
-
-		/**
-	     * 拼装AdminLTE 多级 菜单  下级菜单为树形
-	     * @param map  the map of Map<Integer, List<TSFunction>>
-	     * @param style 样式：AdminLTE风格
-	     * @return
-	     */
-		public static String getAdminlteTree(Map<Integer, List<TSFunction>> map) {
-			if(map==null||map.size()==0||!map.containsKey(0)){return "不具有任何权限,\n请找管理员分配权限";}
-			StringBuffer menuString = new StringBuffer();
-			List<TSFunction> list = map.get(0);
-            for (TSFunction function : list) {
-                if(!function.hasSubFunction(map)){
-                	menuString.append(getChildOfTree(function,1,map));
-                }else{
-                	menuString.append("<li fit=\"false\" border=\"false\">");
-                	menuString.append("<a onclick=\"onSelectTree('"+function.getId()+"')\">"+ getMutiLang(function.getFunctionName()) +"</a>");
-                	menuString.append("</li>");
-                }
-            }
 			return menuString.toString();
 		}
 

@@ -10,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 /**
  * @Title: Entity
@@ -60,9 +58,6 @@ public class InterroleInterfaceEntity implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "interface_id")
-
-	@NotFound(action=NotFoundAction.IGNORE)
-
 	public TSInterfaceEntity getInterfaceEntity() {
 		return this.interfaceEntity;
 	}

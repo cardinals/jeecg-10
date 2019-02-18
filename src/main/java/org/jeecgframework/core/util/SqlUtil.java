@@ -120,15 +120,12 @@ public class SqlUtil {
      */
     @SuppressWarnings("rawtypes")
 	public static String jeecgCreatePageSql(String dbKey,String sql,Map params, int page, int rows){
-
-    	sql = getFullSql(sql,params);
-
         int beginNum = (page - 1) * rows;
         String[] sqlParam = new String[3];
         sqlParam[0] = sql;
         sqlParam[1] = beginNum+"";
         sqlParam[2] = rows+"";
-        DynamicDataSourceEntity dynamicSourceEntity = ResourceUtil.getCacheDynamicDataSourceEntity(dbKey);
+        DynamicDataSourceEntity dynamicSourceEntity = ResourceUtil.dynamicDataSourceMap.get(dbKey);
         String databaseType = dynamicSourceEntity.getDbType();
         if(DATABSE_TYPE_MYSQL.equalsIgnoreCase(databaseType)){
             sql = MessageFormat.format(MYSQL_SQL, sqlParam);

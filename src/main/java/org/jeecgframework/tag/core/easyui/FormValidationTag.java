@@ -1,29 +1,25 @@
 package org.jeecgframework.tag.core.easyui;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.log4j.Logger;
 import org.jeecgframework.core.enums.SysThemesEnum;
 import org.jeecgframework.core.util.ContextHolderUtils;
+import org.jeecgframework.core.util.EhcacheUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.core.util.SysThemesUtil;
+import org.jeecgframework.tag.core.JeecgTag;
 
 /**
  * 
  * @author  张代浩
  *
  */
-public class FormValidationTag extends TagSupport {
-	private static final Logger logger = Logger.getLogger(FormValidationTag.class);
+public class FormValidationTag extends JeecgTag {
 	private static final long serialVersionUID = 8360534826228271024L;
-	
 	protected String formid = "formobj";// 表单FORM ID
 	protected Boolean refresh = true;
 	protected String callback;// 回调函数
@@ -84,15 +80,38 @@ public class FormValidationTag extends TagSupport {
 	public void setAction(String action) {
 		this.action = action;
 	}
+
+	/**
+	 * 根据key获取缓存
+	 * @param key
+	 * @return
+	 */
+	public StringBuffer getTagCache(String key){
+		return (StringBuffer) EhcacheUtil.get(EhcacheUtil.TagCache, key);
+	}
+	/**
+	 * 存放缓存
+	 * @param key
+	 * @param tagCache
+	 */
+	public void putTagCache(String key, StringBuffer tagCache){
+		EhcacheUtil.put(EhcacheUtil.TagCache, key, tagCache);
+	}
+
 	
 	public int doStartTag() throws JspException {
-		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		//long start = System.currentTimeMillis();
-		//logger.debug("=================Form=====doStartTag==========开始时间:" + sdf.format(new Date()) + "==============================");
 		JspWriter out = null;
+
+		StringBuffer sb = this.getTagCache("doStartTag"+"_"+toString());
 		try {
 			out = this.pageContext.getOut();
-			StringBuffer sb = new StringBuffer();
+			if(sb != null){
+				out.print(sb.toString());
+				out.flush();
+				return EVAL_PAGE;
+			}
+
+				sb = new StringBuffer();
 				/*//			if(cssTheme==null){//手工设置值优先
 				Cookie[] cookies = ((HttpServletRequest) super.pageContext
 						.getRequest()).getCookies();
@@ -108,9 +127,7 @@ public class FormValidationTag extends TagSupport {
 			if(cssTheme==null||"default".equals(cssTheme))cssTheme="";*/
 			if ("div".equals(layout)) {
 				sb.append("<div id=\"content\">");
-
-				sb.append("<div id=\"wrapper\" style=\"border-left:1px solid #ddd;\">");
-
+				sb.append("<div id=\"wrapper\">");
 				sb.append("<div id=\"steps\">");
 			}
 			sb.append("<form id=\"" + formid + "\" " );
@@ -122,7 +139,9 @@ public class FormValidationTag extends TagSupport {
 					sb.append(" action=\"" + action + "\" name=\"" + formid + "\" method=\"post\">");
 			if ("btn_sub".equals(btnsub) && dialog)
 				sb.append("<input type=\"hidden\" id=\"" + btnsub + "\" class=\"" + btnsub + "\"/>");
-			
+
+			this.putTagCache("doStartTag"+"_"+toString(), sb);
+
 			out.print(sb.toString());
 			out.flush();
 		} catch (IOException e) {
@@ -134,24 +153,23 @@ public class FormValidationTag extends TagSupport {
 				e2.printStackTrace();
 			}
 		}
-		//long end = System.currentTimeMillis();
-		//logger.debug("==============Form=====doStartTag=================结束时间:" + sdf.format(new Date()) + "==============================");
-		//logger.debug("===============Form=====doStartTag=================耗时:" + (end - start) + "ms==============================");
-
 		return EVAL_PAGE;
 	}
 
 	
 	public int doEndTag() throws JspException {
-		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		//long start = System.currentTimeMillis();
-		//logger.debug("=================Form=====doEndTag==========开始时间:" + sdf.format(new Date()) + "==============================");
-		StringBuffer sb = null;
 		String lang = (String)((HttpServletRequest) this.pageContext.getRequest()).getSession().getAttribute("lang");
 
+		StringBuffer sb = this.getTagCache("doEndTag"+"_"+lang+"_"+toString());
 		JspWriter out = null;
 		try {
 			out = this.pageContext.getOut();
+			if(sb != null){
+				out.print(sb.toString());
+				out.flush();
+				return EVAL_PAGE;
+			}
+
 			SysThemesEnum sysThemesEnum = null;
 			if(StringUtil.isEmpty(cssTheme)||"null".equals(cssTheme)){
 				sysThemesEnum = SysThemesUtil.getSysTheme((HttpServletRequest) super.pageContext.getRequest());
@@ -186,12 +204,7 @@ public class FormValidationTag extends TagSupport {
 			sb.append(StringUtil.replace("<script type=\"text/javascript\" src=\"plug-in/Validform/js/Validform_v5.3.1_min_{0}.js\"></script>", "{0}", lang));
 			sb.append(StringUtil.replace("<script type=\"text/javascript\" src=\"plug-in/Validform/js/Validform_Datatype_{0}.js\"></script>", "{0}", lang));
 			sb.append(StringUtil.replace("<script type=\"text/javascript\" src=\"plug-in/Validform/js/datatype_{0}.js\"></script>", "{0}", lang));
-
-			if("6".equals(tiptype)){
-				sb.append("<link rel=\"stylesheet\" href=\"plug-in/Validform/css/tiptype.css\" type=\"text/css\"/>");
-				sb.append("<script type=\"text/javascript\" src=\"plug-in/Validform/js/tiptype.js\"></script>");
-			}
-
+			
 			if (usePlugin != null) {
 				if (usePlugin.indexOf("jqtransform") >= 0) {
 					sb.append("<SCRIPT type=\"text/javascript\" src=\"plug-in/Validform/plugin/jqtransform/jquery.jqtransform.js\"></SCRIPT>");
@@ -226,16 +239,6 @@ public class FormValidationTag extends TagSupport {
 
 					sb.append("})");
 					sb.append("}},");
-
-				}else if("6".equals(tiptype)){
-					sb.append("tiptype:function(msg,o,cssctl){");
-					sb.append("if(o.type==3){");
-					sb.append(" ValidationMessage(o.obj,msg);");
-					sb.append("}else{");
-					sb.append("removeMessage(o.obj);");
-					sb.append("}");
-					sb.append("},");
-
 				}else{
 					sb.append("tiptype:"+this.getTiptype()+",");
 				}
@@ -375,24 +378,23 @@ public class FormValidationTag extends TagSupport {
 				}
 				sb.append("</div></div>");
 			}
+
+			this.putTagCache("doEndTag"+"_"+lang+"_"+toString(), sb);
+
 			out.print(sb.toString());
 			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{
 			try {
+
+//				sb.setLength(0);
+//				sb = null;
+
 				out.clearBuffer();
-				if(sb!=null){
-					sb.setLength(0); 
-					sb=null;
-				}
 			} catch (Exception e2) {
 			}
 		}
-		
-		//long end = System.currentTimeMillis();
-		//logger.debug("==============Form=====doEndTag=================结束时间:" + sdf.format(new Date()) + "==============================");
-		//logger.debug("===============Form=====doEndTag=================耗时:" + (end - start) + "ms==============================");
 		return EVAL_PAGE;
 	}
 

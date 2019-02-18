@@ -16,8 +16,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Property;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
 import org.jeecgframework.core.common.model.json.AjaxJson;
@@ -30,11 +30,9 @@ import org.jeecgframework.core.util.NumberComparator;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.core.util.oConvertUtils;
-import org.jeecgframework.minidao.pojo.MiniDaoPage;
-import org.jeecgframework.p3.core.page.SystemTools;
+import org.jeecgframework.p3.core.utils.common.StringUtils;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.tag.vo.easyui.ComboTreeModel;
-import org.jeecgframework.web.system.dao.DepartAuthGroupDao;
 import org.jeecgframework.web.system.pojo.base.TSDataRule;
 import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.pojo.base.TSDepartAuthGroupEntity;
@@ -47,11 +45,11 @@ import org.jeecgframework.web.system.pojo.base.TSRoleFunction;
 import org.jeecgframework.web.system.pojo.base.TSRoleUser;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.pojo.base.TSUserOrg;
-import org.jeecgframework.web.system.service.DepartAuthGroupService;
 import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.web.system.util.OrgConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -73,10 +71,6 @@ public class DepartAuthGroupController extends BaseController {
 	
 	@Autowired
 	private SystemService systemService;
-	@Autowired
-	private DepartAuthGroupService departAuthGroupService;
-	@Autowired
-	private DepartAuthGroupDao departAuthGroupDao;
 	
 	/**
 	 * 部门管理员设置页面跳转
@@ -285,7 +279,6 @@ public class DepartAuthGroupController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(params="getMainTreeData",method ={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public AjaxJson getMainTreeData(TSDepartAuthGroupEntity departAuthGroup,HttpServletResponse response,HttpServletRequest request ){
@@ -294,20 +287,21 @@ public class DepartAuthGroupController extends BaseController {
 			List<Map<String,Object>> departAuthGroupList = new ArrayList<Map<String,Object>>();
 			//获取当前登录用户账号
 			String userName = ResourceUtil.getSessionUser().getUserName();
+			String sql = "";
 			List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 			List<Map<String,Object>> chkDepartAuthGroupList = new ArrayList<Map<String,Object>>();
 			//超级用户可查看全部
 			if(userName.equals("admin")) {
-
-				MiniDaoPage<Map<String,Object>> list = this.departAuthGroupService.getDepartAuthGroupList(0, 50);
-				departAuthGroupList= SystemTools.convertPaginatedList(list);
-				chkDepartAuthGroupList = this.departAuthGroupService.chkDepartAuthGroupList(userName);
+				sql = "select * from t_s_depart_auth_group fg LIMIT 0,50";
+				departAuthGroupList = this.systemService.findForJdbc(sql);
+				String chkSql = "select dag.* from t_s_depart_auth_group as dag join t_s_depart_authg_manager as dam on dam.group_id=dag.id where user_id = ?";
+				chkDepartAuthGroupList = this.systemService.findForJdbc(chkSql,userName);
 				recursiveGroup(dataList, departAuthGroupList,chkDepartAuthGroupList,"0");
 			} else {
-				MiniDaoPage<Map<String,Object>> list = this.departAuthGroupService.getDepartAuthGroupByUserId(0, 50, userName);
-				departAuthGroupList = SystemTools.convertPaginatedList(list);
-				chkDepartAuthGroupList = this.departAuthGroupService.chkDepartAuthGroupList(userName);
-
+				sql = "select dag.* from t_s_depart_auth_group as dag join t_s_depart_authg_manager as dam on dam.group_id=dag.id where user_id = ? LIMIT 0,50";
+				departAuthGroupList = this.systemService.findForJdbc(sql,userName);
+				String chkSql = "select dag.* from t_s_depart_auth_group as dag join t_s_depart_authg_manager as dam on dam.group_id=dag.id where user_id = ?";
+				chkDepartAuthGroupList = this.systemService.findForJdbc(chkSql,userName);
 				recursiveGroup(dataList, departAuthGroupList,chkDepartAuthGroupList,"0");
 			}
 			j.setObj(dataList);
@@ -324,7 +318,6 @@ public class DepartAuthGroupController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(params="getDepartRoleTree",method ={RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public AjaxJson getDepartRoleTree(TSDepartAuthGroupEntity departAuthGroup,HttpServletResponse response,HttpServletRequest request ){
@@ -333,21 +326,21 @@ public class DepartAuthGroupController extends BaseController {
 			List<Map<String,Object>> departAuthGroupList = new ArrayList<Map<String,Object>>();
 			//获取当前登录用户账号
 			String userName = ResourceUtil.getSessionUser().getUserName();
+			String sql = "";
 			List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
 			List<Map<String,Object>> chkDepartAuthGroupList = new ArrayList<Map<String,Object>>();
 			//超级用户可查看全部
 			if(userName.equals("admin")) {
-
-				MiniDaoPage<Map<String,Object>> list = this.departAuthGroupService.getDepartAuthGroupList(0, 50);
-				departAuthGroupList = SystemTools.convertPaginatedList(list);
+				sql = "select * from t_s_depart_auth_group dag LIMIT 0,50";
+				departAuthGroupList = this.systemService.findForJdbc(sql);
 				String chkSql = "select r.* from t_s_depart_auth_group dag,t_s_role r where dag.id = r.depart_ag_id";
 				chkDepartAuthGroupList = this.systemService.findForJdbc(chkSql);
 				recursiveGroup(dataList, departAuthGroupList,chkDepartAuthGroupList,"1");
 			} else {
-				MiniDaoPage<Map<String,Object>> list = this.departAuthGroupService.getDepartAuthRole(0, 50, userName);
-				departAuthGroupList = SystemTools.convertPaginatedList(list);
-				chkDepartAuthGroupList = this.departAuthGroupService.chkDepartAuthRole();
-
+				sql = "select dag.* from t_s_depart_auth_group dag,t_s_depart_authg_manager dam where dag.id=dam.group_id and dam.user_id=? GROUP BY dag.id LIMIT 0,50";
+				departAuthGroupList = this.systemService.findForJdbc(sql,userName);
+				String chkSql = "select dag.*,r.id,r.rolecode,r.rolename,r.depart_ag_id,r.role_type from t_s_depart_auth_group dag,t_s_role r where dag.id = r.depart_ag_id";
+				chkDepartAuthGroupList = this.systemService.findForJdbc(chkSql);
 				recursiveGroup(dataList, departAuthGroupList,chkDepartAuthGroupList,"1");
 			}
 			j.setObj(dataList);
@@ -373,7 +366,8 @@ public class DepartAuthGroupController extends BaseController {
 			List<Map<String, Object>> chkDepartAuthGroupList = new ArrayList<Map<String, Object>>();
 			String userId = request.getParameter("userId");
 			String departId = request.getParameter("departId");
-			String sql = "SELECT r.id,r.rolecode,r.rolename FROM t_s_depart_auth_group dag,t_s_role r WHERE dag.id = r.depart_ag_id AND dag.dept_id =?";
+			String sql = "SELECT r.id,r.rolecode,r.rolename " 
+				+ "FROM t_s_depart_auth_group dag,t_s_role r WHERE dag.id = r.depart_ag_id AND dag.dept_id =?";
 			departAuthGroupList = this.systemService.findForJdbc(sql, departId);// 全部角色
 			String chkSql = "SELECT ru.roleid FROM t_s_depart_auth_group dag,t_s_role r,t_s_role_user ru" +
 					" WHERE dag.id = r.depart_ag_id AND r.ID = ru.roleid AND ru.userid = ? AND dag.dept_id = ?";
@@ -453,9 +447,7 @@ public class DepartAuthGroupController extends BaseController {
 			map.put("click", true);
 			map.put("id", m.get("id"));
 			String deptName = m.get("dept_name").toString();
-
-			map.put("name", deptName + "管理组 (" + m.get("group_name") + ")");
-
+			map.put("name", deptName + "管理组");
 			map.put("nocheck", false);
 			map.put("struct", "TREE");
 			map.put("title", m.get("group_name"));
@@ -515,20 +507,12 @@ public class DepartAuthGroupController extends BaseController {
 			if(oConvertUtils.isEmpty(userName) || "admin".equals(userName)) {
 				hql.append(" and TSPDepart is null ");
 				//企业用户注册时不显示供应商节点
-
-				if(isRegister.equals("1")){
-					hql.append(" and orgCode!=?");
-					tSDeparts = this.systemService.findHql(hql.toString(),OrgConstants.SUPPLIER_ORG_CODE);
-				}else{
-					tSDeparts = this.systemService.findHql(hql.toString());
-				}
-
+				if(isRegister.equals("1"))hql.append(" and orgCode!='"+OrgConstants.SUPPLIER_ORG_CODE+"'");
+				tSDeparts = this.systemService.findHql(hql.toString());
 			} else {
 				//当其他用户登陆的时候查询用户关联的管理员组的组织机构
-
-				hql.append(" and id in (select deptId from TSDepartAuthGroupEntity where id in (select groupId from TSDepartAuthgManagerEntity where userId = ?))");
-				tSDeparts = this.systemService.findHql(hql.toString(),userName);
-
+				hql.append(" and id in (select deptId from TSDepartAuthGroupEntity where id in (select groupId from TSDepartAuthgManagerEntity where userId = '"+userName+"'))");
+				tSDeparts = this.systemService.findHql(hql.toString());
 			}
 		}
 		
@@ -599,18 +583,14 @@ public class DepartAuthGroupController extends BaseController {
 			String deptId = request.getParameter("deptId");
 			String curId = request.getParameter("curId");
 			if(StringUtils.isNotEmpty(curId)) {
-
-				String sql = "select dept_id from t_s_depart_auth_group where id= ?";
-				List<Map<String,Object>> deptIdMaps = systemService.findForJdbc(sql,curId);
-
+				String sql = "select dept_id from t_s_depart_auth_group where id='"+curId+"'";
+				List<Map<String,Object>> deptIdMaps = systemService.findForJdbc(sql);
 				if(deptIdMaps.get(0).get("dept_id").equals(deptId)) {
 					j.setSuccess(true);
 				}
 			}else {
-
-				String sql = "select count(0) as count,group_name,dept_name from t_s_depart_auth_group where dept_id = ? group by group_name";
-				List<Map<String,Object>> deptMaps = systemService.findForJdbc(sql,deptId);
-
+				String sql = "select count(0) as count,group_name,dept_name from t_s_depart_auth_group where dept_id='"+deptId+"' group by group_name";
+				List<Map<String,Object>> deptMaps = systemService.findForJdbc(sql);
 				if(deptMaps.size() > 0) {
 					j.setMsg(deptMaps.get(0).get("dept_name")+"已设置管理员组,请勿重复设置");
 					j.setSuccess(false);
@@ -810,7 +790,7 @@ public class DepartAuthGroupController extends BaseController {
 		cq.add();
 		List<TSOperation> operationList = this.systemService
 				.getListByCriteriaQuery(cq, false);
-		Set<String> operationCodes = systemService.getDepartAuthGroupOperationSet(gid, functionId,OrgConstants.GROUP_DEPART_ROLE_AUTH);
+		Set<String> operationCodes = systemService.getDepartAuthGroupDataRuleSet(gid, functionId,OrgConstants.GROUP_DEPART_ROLE_AUTH);
 		request.setAttribute("operationList", operationList);
 		request.setAttribute("operationcodes", operationCodes);
 		request.setAttribute("functionId", functionId);
@@ -833,7 +813,7 @@ public class DepartAuthGroupController extends BaseController {
 		cq.in("id", null);
 		cq.add();
 		List<TSDataRule> dataRuleList = this.systemService.getListByCriteriaQuery(cq, false);
-		Set<String> dataRulecodes = systemService.getDepartAuthGroupDataRuleSet(gid, functionId,OrgConstants.GROUP_DEPART_ROLE_AUTH);
+		Set<String> dataRulecodes = systemService.getDepartAuthGroupOperationSet(gid, functionId,OrgConstants.GROUP_DEPART_ROLE_AUTH);
 		request.setAttribute("dataRuleList", dataRuleList);
 		request.setAttribute("dataRulecodes", dataRulecodes);
 		request.setAttribute("functionId", functionId);
@@ -1303,17 +1283,13 @@ public class DepartAuthGroupController extends BaseController {
 			if (pFunction.size() > 0) {
 				for (TSDepartAuthgFunctionRelEntity departGroupRel : pFunction) {
 					TSFunction function = (TSFunction) departGroupRel.getTsFunction();
-
-					if(function!=null){
-						// 获取上级所有选中的ID
-						selectChild.add(function.getId());
-						for (TSFunction ts : functionList) {
-							if (ts.getId().equals(function.getId())) {
-								lists.add(ts);
-							}
+					// 获取上级所有选中的ID
+					selectChild.add(function.getId());
+					for (TSFunction ts : functionList) {
+						if (ts.getId().equals(function.getId())) {
+							lists.add(ts);
 						}
 					}
-
 				}
 				functionList = lists;
 			} else {
@@ -1360,11 +1336,9 @@ public class DepartAuthGroupController extends BaseController {
 		if (role != null) {
 			if (oConvertUtils.isNotEmpty(role.getDepartAgId())) {
 				String pid = role.getDepartAgId();
-
-				String groupSql = "select * from t_s_depart_authg_function_rel where group_id = ? and auth_id = ?";
+				String groupSql = "select * from t_s_depart_authg_function_rel where group_id = ?";
 				// 查询部门组记录赋值给pOperationArray
-				pGroup = this.systemService.findForJdbc(groupSql, pid, functionId);
-
+				pGroup = this.systemService.findForJdbc(groupSql, pid);
 			}
 		}
 		String[] pOperationArray = null;
@@ -1385,7 +1359,7 @@ public class DepartAuthGroupController extends BaseController {
 		cq.in("id", pOperationArray);
 		cq.add();
 		List<TSOperation> operationList = this.systemService.getListByCriteriaQuery(cq, false);
-		Set<String> operationCodes = systemService.getDepartAuthGroupOperationSet(gid, functionId, OrgConstants.GROUP_DEPART_ROLE);
+		Set<String> operationCodes = systemService.getDepartAuthGroupDataRuleSet(gid, functionId, OrgConstants.GROUP_DEPART_ROLE);
 		request.setAttribute("operationList", operationList);
 		request.setAttribute("operationcodes", operationCodes);
 		request.setAttribute("functionId", functionId);
@@ -1407,11 +1381,9 @@ public class DepartAuthGroupController extends BaseController {
 		if (role != null) {
 			if (oConvertUtils.isNotEmpty(role.getDepartAgId())) {
 				String pid = role.getDepartAgId();
-
-				String groupSql = "select * from t_s_depart_authg_function_rel where group_id = ? and auth_id = ?";
+				String groupSql = "select * from t_s_depart_authg_function_rel where group_id = ?";
 				// 查询部门组记录赋值给pDataRuleArray
-				pGroup = this.systemService.findForJdbc(groupSql, pid, functionId);
-
+				pGroup = this.systemService.findForJdbc(groupSql, pid);
 			}
 		}
 		String[] pDataRuleArray = null;
@@ -1431,7 +1403,7 @@ public class DepartAuthGroupController extends BaseController {
 		cq.in("id", pDataRuleArray);
 		cq.add();
 		List<TSDataRule> dataRuleList = this.systemService.getListByCriteriaQuery(cq, false);
-		Set<String> dataRulecodes = systemService.getDepartAuthGroupDataRuleSet(gid, functionId, OrgConstants.GROUP_DEPART_ROLE);
+		Set<String> dataRulecodes = systemService.getDepartAuthGroupOperationSet(gid, functionId, OrgConstants.GROUP_DEPART_ROLE);
 		request.setAttribute("dataRuleList", dataRuleList);
 		request.setAttribute("dataRulecodes", dataRulecodes);
 		request.setAttribute("functionId", functionId);
@@ -1584,36 +1556,81 @@ public class DepartAuthGroupController extends BaseController {
 	@RequestMapping(params = "departRoleUserDataGrid", method = RequestMethod.POST)
 	@ResponseBody
 	public void departRoleUserDataGrid(TSUser user, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
-		Map<String, Map<String, Object>> extMap = new HashMap<String, Map<String, Object>>();
-		String departid = request.getParameter("orgIds");
-		if(oConvertUtils.isNotEmpty(departid)) {
-			//手工转换minidao查询规则
-			if(oConvertUtils.isNotEmpty(user.getUserName())){
-				user.setUserName(user.getUserName().replace("*","%"));
-			}
-			if(oConvertUtils.isNotEmpty(user.getRealName())){
-				user.setRealName(user.getRealName().replace("*","%"));
+		CriteriaQuery cq = new CriteriaQuery(TSUser.class, dataGrid);
+		String userName = ResourceUtil.getSessionUser().getUserName();
+		String orgIds = request.getParameter("orgIds");
+		if(oConvertUtils.isNotEmpty(orgIds)) {
+			// 查询条件组装器
+			org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, user);
+			Short[] userstate = new Short[] { Globals.User_Normal, Globals.User_ADMIN, Globals.User_Forbidden };
+			cq.in("status", userstate);
+			cq.eq("deleteFlag", Globals.Delete_Normal);
+			// 判断用户名登陆显示信息
+			if (!userName.equals("admin")) {
+				StringBuffer hql = new StringBuffer(" from TSDepart t where 1=1 ");
+				hql.append(" and id in (select deptId from TSDepartAuthGroupEntity where id in (select groupId from TSDepartAuthgManagerEntity where userId = ?))");
+				List<TSDepart> deptList = this.systemService.findHql(hql.toString(), userName);
+				List<String> userLists = new ArrayList<String>();
+				// 根据获取的部门id查询userid
+				for (TSDepart dept : deptList) {
+					// 查询用户信息不查子节点。查询子节点用 dept.getOrgCode()%
+					String orgCodeHql = " from TSDepart where orgCode like '" + dept.getOrgCode() + "'";
+					List<TSDepart> orgCode = this.systemService.findHql(orgCodeHql);
+					for (TSDepart code : orgCode) {
+						TSDepart tsDept = this.systemService.getEntity(TSDepart.class, code.getId());
+						String deptHql = new String(" from TSUserOrg where tsDepart = ?");
+						List<TSUserOrg> userList = this.systemService.findHql(deptHql, tsDept);
+						if (userList != null && userList.size() > 0) {
+							for (TSUserOrg u : userList) {
+								if (u.getTsUser() != null) {
+									if (StringUtils.isNotEmpty(u.getTsUser().getId())) {
+										userLists.add(u.getTsUser().getId());
+									}
+								}
+							}
+						}
+					}
+				}
+				String[] userArrays = new String[userLists.size()];
+				userLists.toArray(userArrays);
+				if (userArrays != null && userArrays.length > 0) {
+					cq.in("id", userArrays);
+				}
 			}
 			
-			if(oConvertUtils.isNotEmpty(departid)){
-				TSDepart tsdepart = this.systemService.get(TSDepart.class,departid);
-				MiniDaoPage<TSUser> list = departAuthGroupDao.getUserByDepartCode(dataGrid.getPage(), dataGrid.getRows(),tsdepart.getOrgCode(),user);
-				dataGrid.setTotal(list.getTotal());
-				dataGrid.setResults(list.getResults());
-				
-				//获取用户的部门名称
-				for (TSUser u : list.getResults()) {
-					if (oConvertUtils.isNotEmpty(u.getId())) {
-						List<String> depNames = departAuthGroupDao.getUserDepartNames(u.getId());
-						// 此为针对原来的行数据，拓展的新字段
-						Map<String,Object> m = new HashMap<String,Object>();
-						m.put("orgNames", depNames != null ? depNames.toArray() : null);
-						extMap.put(u.getId(), m);
+			List<String> orgIdList = extractIdListByComma(orgIds);
+			// 获取 当前组织机构的用户信息
+			if (!CollectionUtils.isEmpty(orgIdList)) {
+				CriteriaQuery subCq = new CriteriaQuery(TSUserOrg.class);
+				subCq.setProjection(Property.forName("tsUser.id"));
+				subCq.in("tsDepart.id", orgIdList.toArray());
+				subCq.add();
+				cq.add(Property.forName("id").in(subCq.getDetachedCriteria()));
+			}
+			if (cq != null) {
+				cq.add();
+			}
+			this.systemService.getDataGridReturn(cq, true);
+			List<TSUser> cfeList = new ArrayList<TSUser>();
+			for (Object o : dataGrid.getResults()) {
+				if (o instanceof TSUser) {
+					TSUser cfe = (TSUser) o;
+					if (cfe.getId() != null && !"".equals(cfe.getId())) {
+						List<TSRoleUser> roleUser = systemService.findByProperty(TSRoleUser.class, "TSUser.id", cfe.getId());
+						if (roleUser.size() > 0) {
+							String roleName = "";
+							for (TSRoleUser ru : roleUser) {
+								roleName += ru.getTSRole().getRoleName() + ",";
+							}
+							roleName = roleName.substring(0, roleName.length() - 1);
+							cfe.setUserKey(roleName);
+						}
 					}
+					cfeList.add(cfe);
 				}
 			}
 		}
-		TagUtil.datagrid(response, dataGrid,extMap);
+		TagUtil.datagrid(response, dataGrid);
 	}
 	
 	/**
@@ -1704,7 +1721,7 @@ public class DepartAuthGroupController extends BaseController {
 	@RequestMapping(params = "selectSupplier",method = RequestMethod.POST)
 	@ResponseBody
 	public List<Map<String,Object>> selectSupplier(String supplier,HttpServletResponse response,HttpServletRequest request) {
-		String sql = "select * from t_s_depart_auth_group where group_name like CONCAT('%',?,'%') or dept_name like CONCAT('%',?,'%') ";
+		String sql = "select * from t_s_depart_auth_group where group_name like CONCAT('%',?,'%') or dept_name like CONCAT('%',?,'%') and dept_code like 'Z%'";
 		List<Map<String,Object>> departAuthGroup = systemService.findForJdbc(sql, supplier,supplier);
 		List<Map<String,Object>> resultMap=new ArrayList<Map<String,Object>>();
 		if(departAuthGroup!=null && !departAuthGroup.isEmpty()){
@@ -1713,10 +1730,8 @@ public class DepartAuthGroupController extends BaseController {
 				map.put("chkDisabled", false);
 				map.put("click", true);
 				map.put("id", m.get("id"));
-
 				String deptName = m.get("dept_name").toString();
-				map.put("name", deptName + "管理组");
-
+				map.put("name", m.get("group_name") + "  (" + deptName + ")");
 				map.put("nocheck", false);
 				map.put("struct", "TREE");
 				map.put("title", m.get("group_name"));

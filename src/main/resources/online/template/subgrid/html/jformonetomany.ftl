@@ -66,12 +66,7 @@
 												<#-- update--end--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 								               <#if subTableField.operationCodesReadOnly?exists> readonly = "readonly"</#if>
 								               <#if subTableField.field_valid_type?if_exists?html != ''>
-								               <#if subTableField.field_valid_type=='only'>
-						       		   				validType="${sub},${subTableField.field_name},${sub}[${subTableData_index}].id"
-						       		   				datatype="*"
-						       					<#else>
-					                   				datatype="${subTableField.field_valid_type?if_exists?html}"
-					               				</#if>
+								               datatype="${subTableField.field_valid_type?if_exists?html}"
 								               <#else>
 								               <#if subTableField.type == 'int'>
 								               datatype="n" 
@@ -275,13 +270,7 @@
 												<#if subTableField.field_must_input?if_exists?html != ''><#if subTableField.field_must_input == 'Y' || subTableField.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif subTableField.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
 												<#-- update--end--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 								                <#if subTableField.field_valid_type?if_exists?html != ''>
-								                <#if subTableField.field_valid_type=='only'>
-						       		   				validType="${sub},${subTableField.field_name},${sub}[0].id"
-						       		   				datatype="*"
-						       					<#else>
-					                   				 datatype="${subTableField.field_valid_type?if_exists?html}"
-					               				</#if>
-								              
+								               datatype="${subTableField.field_valid_type?if_exists?html}"
 								               <#else>
 								               <#if subTableField.type == 'int'>
 								               datatype="n" 

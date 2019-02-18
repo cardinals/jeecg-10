@@ -139,18 +139,7 @@
 	display:inline-block;
 	vertical-align:middle;
 	text-indent: -999px;
-	overflow:hidden;
 	background:url('icons/down.png') no-repeat center center;
-}
-.icon-view{
-	cursor:pointer;
-	width:16px;
-	height:16px;
-	display:inline-block;
-	vertical-align:middle;
-	text-indent: -999px;
-	overflow:hidden;
-	background:url('icons/view.png') no-repeat center center;
 }
 .tempimg{
 	margin-right:5px;
@@ -159,9 +148,8 @@
 }
 .tempIMGdiv{
 	margin-top:5px;
-	line-height:18px;
 }
-.tempIMGdiv ul{list-style: none;padding-left:0;}
+.tempIMGdiv ul{list-style: none;}
 .tempIMGdiv ul li{
 	width: 100px;
     height: 100px;
@@ -222,162 +210,3 @@
 	width:20px;text-align:center;
 }
 .mb20{margin-bottom: 20px;}
-.wait-remove{display:none !important;}
-.virtual-hidden{position: absolute;width:1px;height:1px;display:block;opacity:0.01;}
-
-
-/*进度条-begin-*/
-.progress-bar-ty{
-	 display: none;
-    position: relative;
-    width:210px;
-    height:6px;
-    padding-right: 2px;
-    background-color: #abb2bc;
-    border-radius: 35px;
-    -moz-border-radius: 35px;
-    -webkit-border-radius: 35px;
-    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #b6bcc6), color-stop(1, #9da5b0));
-    background: -moz-linear-gradient(#9da5b0 0%, #b6bcc6 100%);
-    -webkit-box-shadow: inset 0px 1px 2px 0px rgba(0, 0, 0, 0.5), 0px 1px 0px 0px #FFF;
-    -moz-box-shadow: inset 0px 1px 2px 0px rgba(0, 0, 0, 0.5), 0px 1px 0px 0px #FFF;
-    box-shadow: inset 0px 1px 2px 0px rgba(0, 0, 0, 0.5), 0px 1px 0px 0px #FFF;
-}
-.progress-ty {
-  position: relative;
-  display: none;
-  overflow: hidden;
-  height: 4px;/*少2px*/
-  -moz-border-radius: 35px;
-  -webkit-border-radius: 35px;
-  border-radius: 35px;
-  
-  -webkit-background-size: 44px 44px; /* Webkit */
-  background-color: #74d04c;
-  
-  /* Webkit background stripes and gradient */
-  background: -webkit-gradient(linear, 0 0, 44 44,
-    color-stop(0.00, rgba(255,255,255,0.17)),
-    color-stop(0.25, rgba(255,255,255,0.17)),
-    color-stop(0.26, rgba(255,255,255,0)),
-    color-stop(0.50, rgba(255,255,255,0)),
-    color-stop(0.51, rgba(255,255,255,0.17)),
-    color-stop(0.75, rgba(255,255,255,0.17)),
-    color-stop(0.76, rgba(255,255,255,0)),
-    color-stop(1.00, rgba(255,255,255,0))
-  ), -webkit-gradient(linear, left bottom, left top, color-stop(0, #74d04c), color-stop(1, #9bdd62));
-  
-  /* Mozilla (Firefox etc) background stripes */
-  background: -moz-repeating-linear-gradient(top left -30deg, 
-    rgba(255,255,255,0.17), 
-    rgba(255,255,255,0.17) 15px, 
-    rgba(255,255,255,0) 15px, 
-    rgba(255,255,255,0) 30px
-  ), -moz-linear-gradient(#9bdd62 0%, #74d04c 100%);
-  
-  /* Webkit embossing */
-  -webkit-box-shadow: inset 0px 1px 0px 0px #dbf383, inset 0px -1px 1px #58c43a;
-  /* Mozilla embossing */
-  -moz-box-shadow: inset 0px 1px 0px 0px #dbf383, inset 0px -1px 1px #58c43a;
-  /* IE9 and Opera embossing */
-  box-shadow: inset 0px 1px 0px 0px #dbf383, inset 0px -1px 1px #58c43a;
-  border: 1px solid #4c8932;
-  /* Webkit magic */
-  -webkit-animation: animate-stripes 2s linear infinite;
-}
-
-
-.progress-bar-ty.active,.progress-bar-ty.active .progress-ty {display:block;}
-.progress-bar-ty.error .progress-ty{
-	background-color: #ebd4c9;
-	background:#ebd4c9;
-	-webkit-box-shadow: inset 0px 1px 0px 0px #ebd4c9, inset 0px -1px 1px #ebd4c9;
-  	-moz-box-shadow: inset 0px 1px 0px 0px #ebd4c9, inset 0px -1px 1px #ebd4c9;
-  	box-shadow: inset 0px 1px 0px 0px #ebd4c9, inset 0px -1px 1px #ebd4c9;
-  	border: 1px solid #ebd4c9;
-}
-.progress-ty span.upload-label-ty {
-  font-size: 1.2em;
-  position: absolute;
-  right: 0;
-  line-height:4px;
-  padding-right: 12px;
-  color: rgba(0,0,0,0.6);
-  text-shadow: rgba(255,255,255, 0.45) 0 1px 0px;
-  white-space: nowrap;
-}
-/*进度条-end-*/
-
-/*plUpload 新增样式*/
-.uploader-list .viewtd{display:none;}
-.plupload-btn-default{
-    padding: 3px 14px;
-    display: -moz-inline-box; /* FF < 3*/
-	display: inline-block;
-	font: normal 12px sans-serif;
-	text-decoration: none;
-	outline: 0;
-    /* Optional rounded corners for browsers that support it */
-    -moz-border-radius: 10px;
-    -khtml-border-radius:10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    color: #fff;
-    background-color:#1cb495;
-    border-color: #398439;
-}
-.plupload-btn-default:hover,.plupload-btn-default.active,.plupload-btn-default:focus {
-	background-color: #159178;
-	color: #fff;
-	text-decoration: none;
-}
-
-.plupload-btn-uploader{
-     padding: 3px 14px;
-    display: -moz-inline-box; /* FF < 3*/
-	display: inline-block;
-	font: normal 12px sans-serif;
-	text-decoration: none !important;
-	outline: 0;
-    /* Optional rounded corners for browsers that support it */
-    -moz-border-radius: 10px;
-    -khtml-border-radius:10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    color: #fff;
-    background-color: #5bc0de;
-    border-color: #46b8da;
-}
-
-.plupload-btn-uploader:hover,.plupload-btn-uploader.active,.plupload-btn-uploader:focus {
-    color: #fff;
-    background-color: #31b0d5;
-    border-color: #269abc;
-}
-.plupload_disabled, a.plupload_disabled:hover {
-    color: #737373;
-    border-color: #c5c5c5;
-    background-color: #c0c0c0;
-	cursor: default;
-}
-/*plUpload 新增样式*/
-
-
-/*plUpload 新增viewModel=thumb*/
-ul,li{list-style: none;padding:0;margin:0}
- .photo_upload_box_outside{position: absolute;left:0;top:0;z-index: 800;display: none}
- .photo_upload_box{padding: 16px 0 10px 16px; width: 268px;background-color: #FFF; border: 1px solid #ccc; border-radius: 3px; box-shadow: 0 4px 20px 1px rgba(0, 0, 0, 0.2); position: relative}
- .photo_upload_box h1{font-size: 14px;font-weight: 700;}
- .photo_upload_box .upload_num{margin:10px 0}
- .photo_upload_box .arrow_layer .arrow_top_area{left:20px}
- .ul_pics li{float:left;width:80px;height:80px;margin:0 8px 8px 0;position: relative}
- .ul_pics li img{width:100%;height: 100%}
- .ul_pics li:hover .picbg{background: #4A4A4A; opacity: 0.6; filter:alpha(opacity=60); display: block; height: 100%; position: absolute; top: 0; width: 100%;}
-
- .progress{position:relative;padding: 1px; border-radius:3px; margin:30px 0 0 0;}
- .bar{background-color: green; display:block; width:0%; height:20px; border-radius:3px;}
- .percent{position:absolute; height:20px; display:inline-block;top:3px; left:2%; color:#fff}
- .pic_close{background:url("icons/ico_layer.png") no-repeat scroll -25px -25px; display: none; height: 20px; width: 20px; position: absolute;right:0;top:0;z-index: 990}
- .ul_pics li:hover .pic_close{display: block}
- .photo_upload_close{background:url("icons/local_upload_close.png") no-repeat scroll 0 0; display: block; height: 11px; width: 11px; position: absolute;right:7px;top:8px}
-/*plUpload 新增viewModel=thumb*/ 

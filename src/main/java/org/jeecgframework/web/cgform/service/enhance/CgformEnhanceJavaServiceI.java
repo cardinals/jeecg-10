@@ -43,15 +43,6 @@ public interface CgformEnhanceJavaServiceI extends CommonService{
 			String buttonCode, String formId);
 
 	/**
- 	 * 
- 	 * @param buttonCode
- 	 * @param formId
- 	 * @return
- 	 */
-	public CgformEnhanceJavaEntity getCgformEnhanceJavaEntityByCodeFormId(
-			String buttonCode, String formId, String event);
-
-	/**
 	 * 判断按纽编码是否存在
 	 * @param cgformEnhanceJavaEntity
 	 * @return

@@ -1,8 +1,4 @@
 <#setting number_format="0.#####################">
-<#-- update-begin-author:taoyan date:20180705 for:宏封装 -->
-<#include "online/template/ui/tag.ftl"/>
-<#include "online/template/ui/basetag.ftl"/>
-<#-- update-end-author:taoyan date:20180705 for: 宏封装 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -12,7 +8,39 @@
   <title>表单信息</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <@basetag webRoot=basePath hasFile=true lang=lang/>
+  <link rel="stylesheet" href="${basePath}/online/template/ledefault/css/vendor.css">
+  <link rel="stylesheet" href="${basePath}/online/template/ledefault/css/bootstrap-theme.css">
+  <link rel="stylesheet" href="${basePath}/online/template/ledefault/css/bootstrap.css">
+  <link rel="stylesheet" href="${basePath}/online/template/ledefault/css/app.css">
+  
+  <link rel="stylesheet" href="${basePath}/plug-in/Validform/css/metrole/style.css" type="text/css"/>
+  <link rel="stylesheet" href="${basePath}/plug-in/Validform/css/metrole/tablefrom.css" type="text/css"/>
+  <link rel="stylesheet" href="${basePath}/plug-in/easyui/themes/metrole/easyui.css" type="text/css">
+  <link rel="stylesheet" href="${basePath}/plug-in/easyui/themes/metrole/main.css" type="text/css">
+  <link rel="stylesheet" href="${basePath}/plug-in/easyui/themes/metrole/icon.css" type="text/css">
+  
+  <script type="text/javascript" src="${basePath}/plug-in/jquery/jquery-1.8.3.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/tools/dataformat.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/easyui/jquery.easyui.min.1.3.2.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/easyui/locale/zh-cn.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/tools/syUtil.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/My97DatePicker/WdatePicker.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/lhgDialog/lhgdialog.min.js"></script>
+  <#--update--begin--author:scott Date:20170304 for:替换layer风格提示框-->
+  <script type="text/javascript" src="${basePath}/plug-in/layer/layer.js"></script>
+  <#--update--end--author:scott Date:20170304 for:替换layer风格提示框-->
+  <script type="text/javascript" src="${basePath}/plug-in/tools/curdtools_zh-cn.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/tools/easyuiextend.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/Validform/js/Validform_v5.3.1_min_zh-cn.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/Validform/js/Validform_Datatype_zh-cn.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/Validform/js/datatype_zh-cn.js"></script>
+  <script type="text/javascript" src="${basePath}/plug-in/Validform/plugin/passwordStrength/passwordStrength-min.js"></script>
+  <link rel="stylesheet" href="${basePath}/plug-in/uploadify/css/uploadify.css" type="text/css"></link>
+  <script type="text/javascript" src="${basePath}/plug-in/uploadify/jquery.uploadify-3.1.js"></script>
+  <script type="text/javascript"  charset="utf-8" src="${basePath}/plug-in/ueditor/ueditor.config.js"></script>
+  <script type="text/javascript"  charset="utf-8" src="${basePath}/plug-in/ueditor/ueditor.all.min.js"></script>
+								
+  
   <style type="text/css">
   	.combo_self{height: 30px !important;}
   	.layout-header .btn {
@@ -70,13 +98,7 @@
                                       <div class="col-xs-3 text-center">
                                           <b><@mutiLang langKey="${po.content}"/>：</b>
                                       </div>
-                                      <#if po.show_type=='file' || po.show_type=='image'>
-                                      <#-- update--begin--author:jiaqiankun Date:20180627 for:TASK #2849 【样式】online开发所有的老的上传，控件高宽改小些 -->
-                                      	<div class="col-xs-6"  style="padding-top:5px">
-                                      <#-- update--end--author:jiaqiankun Date:20180627 for:TASK #2849 【样式】online开发所有的老的上传，控件高宽改小些  -->
-                                      <#else>
                                       <div class="col-xs-3">
-                                      </#if>
 										  <#if head.isTree=='Y' && head.treeParentIdFieldName==po.field_name>
                                               <!--如果为树形菜单，父id输入框设置为select-->
                                               <input id="${po.field_name}" ${po.extend_json?if_exists} name="${po.field_name}" type="text"
@@ -136,14 +158,7 @@
 											  <#-- update--begin--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 												  <#if po.field_must_input??><#if po.field_must_input == 'Y' || po.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif po.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
 												  <#if po.field_valid_type?if_exists?html != ''>
-                                                    <#-- update--begin--author:Yandong Date:20180327 for:TASK #2547 【校验提示问题】校验提示问题 -->
-                                                    <#if po.field_valid_type=='only'>
-						       		  					 validType="${tableName},${po.field_name},id"
-						       		  					 datatype="*"
-						       						<#else>
-					                   					 datatype="${po.field_valid_type?if_exists?html}"
-					               					</#if>
-					               					<#-- update--end--author:Yandong Date:20180327 for:TASK #2547 【校验提示问题】校验提示问题 -->
+                                                     datatype="${po.field_valid_type?if_exists?html}"
 												  <#else>
 													  <#if po.type == 'int'>
                                                      datatype="n"
@@ -212,9 +227,7 @@
 
 										  <#elseif po.show_type=='list'>
 											  <@DictData name="${po.dict_field?if_exists?html}" text="${po.dict_text?if_exists?html}" tablename="${po.dict_table?if_exists?html}" var="dataList">
-                                                  <#--update--begin--author:gj_shaojc date:20180402 for:TASK #2606 【代码生成器】树形列表生成，多选处理 (改变select框的宽度)-->
-                                                  <select id="${po.field_name}" ${po.extend_json?if_exists} class="form-control" style="width:158px;" name="${po.field_name}" <#if po.operationCodesReadOnly?if_exists>onfocus="this.defOpt=this.selectedIndex" onchange="this.selectedIndex=this.defOpt;"</#if>
-												  <#--update--end--author:gj_shaojc date:20180402 for:TASK #2606 【代码生成器】树形列表生成，多选处理 (改变select框的宽度)-->
+                                                  <select id="${po.field_name}" ${po.extend_json?if_exists} class="form-control" name="${po.field_name}" <#if po.operationCodesReadOnly?if_exists>onfocus="this.defOpt=this.selectedIndex" onchange="this.selectedIndex=this.defOpt;"</#if>
 												  <#-- update--begin--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 													  <#if po.field_must_input??><#if po.field_must_input == 'Y' || po.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif po.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
 												  <#-- update--end--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
@@ -236,7 +249,7 @@
 
 										  <#elseif po.show_type=='date'>
                                               <input id="${po.field_name}" ${po.extend_json?if_exists} name="${po.field_name}" type="text" value="<#if data['${tableName}']['${po.field_name}']??>${data['${tableName}']['${po.field_name}']?if_exists?string("yyyy-MM-dd")}</#if>"
-                                                     style="background: url('${basePath}/plug-in/ace/images/datetime.png') no-repeat scroll right center transparent;" class="form-control" onClick="WdatePicker({<#if po.operationCodesReadOnly?if_exists> readonly = true</#if>})"
+                                                     style="background: url('${basePath}/plug-in/ace/images/datetime.png') no-repeat scroll right center transparent;" class="form-control Wdate" onClick="WdatePicker({<#if po.operationCodesReadOnly?if_exists> readonly = true</#if>})"
 												  <#if po.operationCodesReadOnly?exists> readonly = "readonly"</#if>
 											  <#-- update--begin--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 												  <#if po.field_must_input??><#if po.field_must_input == 'Y' || po.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif po.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
@@ -249,7 +262,7 @@
 
 										  <#elseif po.show_type=='datetime'>
                                               <input id="${po.field_name}" ${po.extend_json?if_exists} name="${po.field_name}" type="text" value="<#if data['${tableName}']['${po.field_name}']??>${data['${tableName}']['${po.field_name}']?if_exists?string("yyyy-MM-dd HH:mm:ss")}</#if>"
-                                                     style="background: url('${basePath}/plug-in/ace/images/datetime.png') no-repeat scroll right center transparent;" class="form-control" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'<#if po.operationCodesReadOnly?if_exists> ,readonly = true</#if>})"
+                                                     style="background: url('${basePath}/plug-in/ace/images/datetime.png') no-repeat scroll right center transparent;" class="form-control Wdate" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'<#if po.operationCodesReadOnly?if_exists> ,readonly = true</#if>})"
 												  <#if po.operationCodesReadOnly?exists> readonly = "readonly"</#if>
 											  <#-- update--begin--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
 												  <#if po.field_must_input??><#if po.field_must_input == 'Y' || po.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif po.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
@@ -278,13 +291,101 @@
 												  </#if>>
 										  <#--update-end--Author:gengjiajia  Date:20160802 for：TASK #1175 批量添加数据的时popup多值的传递-->
 
-										  <#-- update--begin--author:taoyan date:20180427 for:TASK #2671 【Online表单】Online表单ACE 风格上传空间、树控件 宏封装 -->
-											<#elseif po.show_type=='file' || po.show_type=='image'>
-												<@uploadtag po = po />
-											<#elseif po.show_type=='tree'>
-												 <@treetag po = po formStyle="ace"/>
-										    <#else>
-										  <#-- update--end--author:taoyan date:20180427 for:TASK #2671 【Online表单】Online表单ACE 风格上传空间、树控件 宏封装 -->
+										  <#elseif po.show_type=='file'>
+                                              <table>
+											  <#-- update--begin--author:zhangjiaqiang date:20170519 for:修订资源预览关联错误 -->
+												  <#list filesList as fileB>
+													  <#if fileB['field'] == po.field_name>
+                                                          <tr style="height:34px;">
+                                                              <td>${fileB['title']}</td>
+                                                              <td><a href="${basePath}/commonController.do?viewFile&fileid=${fileB['fileKey']}&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity" title="下载">下载</a></td>
+                                                              <td><a href="javascript:void(0);" onclick="openwindow('预览','${basePath}/commonController.do?openViewFile&fileid=${fileB['fileKey']}&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity','fList',700,500)">预览</a></td>
+                                                              <td><a href="javascript:void(0)" class="jeecgDetail" onclick="del('${basePath}/cgUploadController.do?delFile&id=${fileB['fileKey']}',this)">删除</a></td>
+                                                          </tr>
+													  </#if>
+												  </#list>
+											  <#-- update--end--author:zhangjiaqiang date:20170519 for:修订资源预览关联错误 -->
+                                              </table>
+											  <#if !(po.operationCodesReadOnly ??)>
+                                                  <div class="form jeecgDetail">
+                                                      <script type="text/javascript">
+                                                          var serverMsg="";
+                                                          var m = new Map();
+                                                          $(function(){$('#${po.field_name}').uploadify(
+                                                                  {buttonText:'添加文件',
+                                                                      auto:false,
+                                                                      progressData:'speed',
+                                                                      multi:true,
+                                                                      height:25,
+                                                                      overrideEvents:['onDialogClose'],
+                                                                      fileTypeDesc:'文件格式:',
+                                                                      queueID:'filediv_${po.field_name}',
+																  <#-- fileTypeExts:'*.rar;*.zip;*.doc;*.docx;*.txt;*.ppt;*.xls;*.xlsx;*.html;*.htm;*.pdf;*.jpg;*.gif;*.png',   页面弹出很慢解决 20170317 scott -->
+                                                                      fileSizeLimit:'15MB',swf:'${basePath}/plug-in/uploadify/uploadify.swf',
+                                                                      uploader:'${basePath}/cgUploadController.do?saveFiles&jsessionid='+$("#sessionUID").val()+'',
+                                                                      onUploadStart : function(file) {
+                                                                          var cgFormId=$("input[name='id']").val();
+                                                                          $('#${po.field_name}').uploadify("settings", "formData", {'cgFormId':cgFormId,'cgFormName':'${tableName?if_exists?html}','cgFormField':'${po.field_name}'});} ,
+                                                                      onQueueComplete : function(queueData) {
+                                                                          var win = frameElement.api.opener;
+                                                                          win.reloadTable();
+                                                                          win.tip(serverMsg);
+                                                                          frameElement.api.close();},
+                                                                      onUploadSuccess : function(file, data, response) {var d=$.parseJSON(data);if(d.success){var win = frameElement.api.opener;serverMsg = d.msg;}},onFallback : function(){tip("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试")},onSelectError : function(file, errorCode, errorMsg){switch(errorCode) {case -100:tip("上传的文件数量已经超出系统限制的"+$('#${po.field_name}').uploadify('settings','queueSizeLimit')+"个文件！");break;case -110:tip("文件 ["+file.name+"] 大小超出系统限制的"+$('#${po.field_name}').uploadify('settings','fileSizeLimit')+"大小！");break;case -120:tip("文件 ["+file.name+"] 大小异常！");break;case -130:tip("文件 ["+file.name+"] 类型不正确！");break;}},
+                                                                      onUploadProgress : function(file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) { }});});
+
+                                                      </script><span id="file_uploadspan"><input type="file" name="${po.field_name}" id="${po.field_name}" /></span>
+                                                  </div>
+                                                  <div class="form" id="filediv_${po.field_name}"> </div>
+											  </#if>
+										  <#--update-start--Author: jg_huangxg  Date:20160113 for：TASK #824 【online开发】控件类型扩展增加一个图片类型 image -->
+										  <#elseif po.show_type=='image'>
+                                              <table>
+												  <#list imageList as imageB>
+													  <#if imageB['field'] == po.field_name>
+                                                          <tr style="height:34px;">
+                                                              <td>${imageB['title']}</td>
+                                                              <td><a href="${basePath}/commonController.do?viewFile&fileid=${imageB['fileKey']}&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity" title="下载">下载</a></td>
+                                                              <td><a href="javascript:void(0);" onclick="openwindow('预览','${basePath}/commonController.do?openViewFile&fileid=${imageB['fileKey']}&subclassname=org.jeecgframework.web.cgform.entity.upload.CgUploadEntity','fList',700,500)">预览</a></td>
+                                                              <td><a href="javascript:void(0)" class="jeecgDetail" onclick="del('${basePath}/cgUploadController.do?delFile&id=${imageB['fileKey']}',this)">删除</a></td>
+                                                          </tr>
+													  </#if>
+												  </#list>
+                                              </table>
+											  <#if !(po.operationCodesReadOnly ??)>
+                                                  <div class="form jeecgDetail">
+                                                      <script type="text/javascript">
+                                                          var serverMsg="";
+                                                          var m = new Map();
+                                                          $(function(){$('#${po.field_name}').uploadify(
+                                                                  {buttonText:'添加图片',
+                                                                      auto:false,
+                                                                      progressData:'speed',
+                                                                      multi:true,
+                                                                      height:25,
+                                                                      overrideEvents:['onDialogClose'],
+                                                                      fileTypeDesc:'图片格式:',
+                                                                      queueID:'imagediv_${po.field_name}',
+                                                                      fileTypeExts:'*.jpg;*.jpeg;*.gif;*.png;*.bmp',
+                                                                      fileSizeLimit:'15MB',swf:'${basePath}/plug-in/uploadify/uploadify.swf',
+                                                                      uploader:'${basePath}/cgUploadController.do?saveFiles&jsessionid='+$("#sessionUID").val()+'',
+                                                                      onUploadStart : function(file) {
+                                                                          var cgFormId=$("input[name='id']").val();
+                                                                          $('#${po.field_name}').uploadify("settings", "formData", {'cgFormId':cgFormId,'cgFormName':'${tableName?if_exists?html}','cgFormField':'${po.field_name}'});} ,
+                                                                      onQueueComplete : function(queueData) {
+                                                                          var win = frameElement.api.opener;
+                                                                          win.reloadTable();
+                                                                          win.tip(serverMsg);
+                                                                          frameElement.api.close();},
+                                                                      onUploadSuccess : function(file, data, response) {var d=$.parseJSON(data);if(d.success){var win = frameElement.api.opener;serverMsg = d.msg;}},onFallback : function(){tip("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试")},onSelectError : function(file, errorCode, errorMsg){switch(errorCode) {case -100:tip("上传的文件数量已经超出系统限制的"+$('#${po.field_name}').uploadify('settings','queueSizeLimit')+"个文件！");break;case -110:tip("文件 ["+file.name+"] 大小超出系统限制的"+$('#${po.field_name}').uploadify('settings','fileSizeLimit')+"大小！");break;case -120:tip("文件 ["+file.name+"] 大小异常！");break;case -130:tip("文件 ["+file.name+"] 类型不正确！");break;}},
+                                                                      onUploadProgress : function(file, bytesUploaded, bytesTotal, totalBytesUploaded, totalBytesTotal) { }});});
+
+                                                      </script><span id="image_uploadspan"><input type="file" name="${po.field_name}" id="${po.field_name}" /></span>
+                                                  </div>
+                                                  <div class="form" id="imagediv_${po.field_name}"> </div>
+											  </#if>
+										  <#--update-end--Author: jg_huangxg  Date:20160113 for：TASK #824 【online开发】控件类型扩展增加一个图片类型 image -->
+										  <#else>
                                               <input id="${po.field_name}" ${po.extend_json?if_exists} name="${po.field_name}" type="text"
                                                      class="form-control" value="${data['${tableName}']['${po.field_name}']?if_exists?html}"
 											  <#-- update--begin--author:zhangjiaqiang Date:20170417 for:增加校验必填项 -->
@@ -303,11 +404,7 @@
 												  </#if>>
 
 										  </#if>
-										  
-										  <#-- update--begin--author:jiaqiankun Date:20180628 for:TASK #2849 【样式】online开发所有的老的上传，控件高宽改小些 -->
-												<span class="Validform_checktip" style="float:left;height:0px;"></span>
-										  <#-- update--end--author:jiaqiankun Date:20180628 for:TASK #2849 【样式】online开发所有的老的上传，控件高宽改小些  -->
-										  
+                                          <span class="Validform_checktip" style="float:left;height:0px;"></span>
                                           <label class="Validform_label" style="display: none"><@mutiLang langKey="${po.content?if_exists?html}"/></label>
                                       </div>
 									  <#if (columns?size>10)>
@@ -348,36 +445,6 @@
 			 </div>
 	  </#if>
   </#list>
-    <#--update--begin--author:taoyan Date:20181022 for:ace分组表单布局无textarea控件显示-->
-    <#list columnsarea as po>
-	<div class="tab-wrapper">
-	    <!-- tab -->
-	    <ul class="nav nav-tabs">
-	      <li role="presentation" class="active"><a href="javascript:void(0);">表单信息管理</a></li>
-	    </ul>
-    	<!-- tab内容 -->
-	    <div class="con-wrapper" style="display: block;">
-	      <div class="row form-wrapper">
-	      	<div class="row show-grid">
-	            <div class="col-xs-3 text-center">
-	            	<b><@mutiLang langKey="${po.content}"/>：</b>
-	            </div>
-	            <div class="col-xs-3">
-	            	<textarea id="${po.field_name}" class="form-control" ${po.extend_json?if_exists} name="${po.field_name}"  rows="3" style="width:162px;margin:3px 0;"
-						<#if po.field_must_input??><#if po.field_must_input == 'Y' || po.is_null != 'Y'>ignore="checked"<#else>ignore="ignore"</#if><#elseif po.is_null != 'Y'> ignore="checked"<#else>ignore="ignore"</#if>
-						<#if po.operationCodesReadOnly?if_exists> readonly = "readonly"</#if>
-		                <#if po.field_valid_type?if_exists?html != ''>
-		                datatype="${po.field_valid_type?if_exists?html}"
-		                <#else>
-		                <#if po.is_null != 'Y'>datatype="*"</#if> 
-		                </#if>>${data['${tableName}']['${po.field_name}']?if_exists?html}</textarea>
-	            </div>
-	         </div>
-	       </div>
-	    </div>
-	  </div>
-	</#list>
-	<#--update--end--author:taoyan Date:20181022 for:ace分组表单布局无textarea控件显示-->
 	</form>
 <#--update--begin--author:scott Date:20170304 for:替换layer风格提示框-->
 <script type="text/javascript">$(function(){$("#formobj").Validform({tiptype:function(msg,o,cssctl){if(o.type == 3){layer.open({title:'提示信息',content:msg,icon:5,shift:6,btn:false,shade:false,time:5000,cancel:function(index){o.obj.focus();layer.close(index);},yes:function(index){o.obj.focus();layer.close(index);},})}},btnSubmit:"#btn_sub",btnReset:"#btn_reset",ajaxPost:true,usePlugin:{passwordstrength:{minLen:6,maxLen:18,trigger:function(obj,error){if(error){obj.parent().next().find(".Validform_checktip").show();obj.find(".passwordStrength").hide();}else{$(".passwordStrength").show();obj.parent().next().find(".Validform_checktip").hide();}}}},callback:function(data){if(data.success==true){uploadFile(data);}else{if(data.responseText==''||data.responseText==undefined){$.messager.alert('错误', data.msg);$.Hidemsg();}else{try{var emsg = data.responseText.substring(data.responseText.indexOf('错误描述'),data.responseText.indexOf('错误信息')); $.messager.alert('错误',emsg);$.Hidemsg();}catch(ex){$.messager.alert('错误',data.responseText+'');}} return false;}if(!neibuClickFlag){var win = frameElement.api.opener; win.reloadTable();}}});});</script>
@@ -446,10 +513,8 @@
   			}
   		}
   	}
-	//update-begin-author：taoYan date:20180519 for:弹出层z-index不足被遮住--
+	$.dialog.setting.zIndex =9999;
 	function del(url,obj){
-		$.dialog.setting.zIndex = getzIndex();
-	//update-end-author：taoYan date:20180519 for:弹出层z-index不足被遮住--
 		$.dialog.confirm("确认删除该条记录?", function(){
 		  	$.ajax({
 				async : false,

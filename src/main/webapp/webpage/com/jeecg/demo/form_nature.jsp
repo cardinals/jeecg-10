@@ -36,7 +36,6 @@
 </head>
 <body>
 <t:formvalid layout="div" formid="dd" dialog="" >
-
  <fieldset>
  <legend>文件上传</legend>
 	<div id="uploader" class="wu-example">
@@ -47,16 +46,6 @@
 	    </div>
 	</div>
  </fieldset>
-
-<fieldset>
- <legend>组合输入框</legend>
-	<div class="form" style="display:table;">
-	    <label class="Validform_label" style="width:90px;text-align: right;"> 金额: </label> 
-	    <input type="text" class="groupinput" name="nodeTimeout" value="100" datatype="n1-11" ignore="ignore"/>
-	    <span class="groupspan">元</span>
-	</div>
- </fieldset>
- 
  <fieldset>
  <legend>select2</legend>
   <table>
@@ -138,7 +127,6 @@
 </fieldset>
  
 </t:formvalid>
-
 <script type="text/javascript">
 function printobj(obj){
 	var str='[';
@@ -253,7 +241,9 @@ $(function() {
         $("#userNameAuto").val(row['userName']);
     });
 	/*-------------------------------------------自动补全----------------------------------------------*/
+
 	$("div.webuploader-container").css("width","78px");
+
 	var select2Data = new Array();
 	$.ajax({
 		url:'jeecgFormDemoController.do?regionSelect&pid=1',
@@ -276,7 +266,10 @@ $(function() {
 			});
 		}
 	});
+
+	
 });
 </script>
 </body>
 </html>
+<!-- update-end--Author:taoYan  Date:20170803 for：代码格式修改 -->

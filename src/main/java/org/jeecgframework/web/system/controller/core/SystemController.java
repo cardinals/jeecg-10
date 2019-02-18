@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,8 +40,6 @@ import org.jeecgframework.core.enums.StoreUploadFilePathEnum;
 import org.jeecgframework.core.extend.hqlsearch.parse.ObjectParseUtil;
 import org.jeecgframework.core.extend.hqlsearch.parse.PageValueConvertRuleEnum;
 import org.jeecgframework.core.extend.hqlsearch.parse.vo.HqlRuleEnum;
-import org.jeecgframework.core.extend.swftools.SwfToolsUtil;
-import org.jeecgframework.core.util.FileUtils;
 import org.jeecgframework.core.util.JSONHelper;
 import org.jeecgframework.core.util.ListUtils;
 import org.jeecgframework.core.util.MutiLangSqlCriteriaUtil;
@@ -51,7 +48,6 @@ import org.jeecgframework.core.util.PropertiesUtil;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.SetListSort;
 import org.jeecgframework.core.util.StringUtil;
-import org.jeecgframework.core.util.UrlCheckUtil;
 import org.jeecgframework.core.util.YouBianCodeUtil;
 import org.jeecgframework.core.util.oConvertUtils;
 import org.jeecgframework.tag.core.easyui.TagUtil;
@@ -63,7 +59,6 @@ import org.jeecgframework.web.system.manager.ClientManager;
 import org.jeecgframework.web.system.manager.ClientSort;
 import org.jeecgframework.web.system.pojo.base.Client;
 import org.jeecgframework.web.system.pojo.base.DataLogDiff;
-import org.jeecgframework.web.system.pojo.base.DictEntity;
 import org.jeecgframework.web.system.pojo.base.TSDatalogEntity;
 import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.pojo.base.TSFunction;
@@ -91,10 +86,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * 系统控制器
+ * 类型字段处理类
+ *
  * @author 张代浩
  *
  */
+//@Scope("prototype")
 @Controller
 @RequestMapping("/systemController")
 public class SystemController extends BaseController {
@@ -102,8 +99,6 @@ public class SystemController extends BaseController {
 	private UserService userService;
 	private SystemService systemService;
 	private MutiLangServiceI mutiLangService;
-	@Resource
-	private ClientManager clientManager;
 
 
 	@Autowired
@@ -131,45 +126,21 @@ public class SystemController extends BaseController {
 
 	@RequestMapping(params = "typeListJson")
 	@ResponseBody
-	public AjaxJson typeListJson(@RequestParam(required=true)String typeGroupName,HttpServletRequest request) {
+	public AjaxJson typeListJson(@RequestParam(required=true)String typeGroupName) {
 		AjaxJson ajaxJson = new AjaxJson();
-		JSONArray typeArray = new JSONArray();
 		try {
-			String dicTable = request.getParameter("dicTable");
-			if(oConvertUtils.isEmpty(dicTable)){
-				List<TSType> typeList = ResourceUtil.getCacheTypes(typeGroupName.toLowerCase());
-				JSONObject headJson = new JSONObject();
-				headJson.put("typecode", "");
-				headJson.put("typename", "");
-				typeArray.add(headJson);
-				if(typeList != null && !typeList.isEmpty()){
-					for (TSType type : typeList) {
-						JSONObject typeJson = new JSONObject();
-						typeJson.put("typecode", type.getTypecode());
-
-						String typename = type.getTypename();
-						if(MutiLangUtil.existLangKey(typename)){
-							typename = MutiLangUtil.doMutiLang(typename,"");
-						}
-						typeJson.put("typename",typename );
-
-						typeArray.add(typeJson);
-					}
-				}
-			}else{
-				String dicText = request.getParameter("dicText");
-				List<DictEntity> list = systemService.queryDict(dicTable, typeGroupName, dicText);
-				if(list!=null && list.size()>0){
-					for (DictEntity type : list) {
-						JSONObject typeJson = new JSONObject();
-						typeJson.put("typecode", type.getTypecode());
-						String typename = type.getTypename();
-						if(MutiLangUtil.existLangKey(typename)){
-							typename = MutiLangUtil.doMutiLang(typename,"");
-						}
-						typeJson.put("typename",typename );
-						typeArray.add(typeJson);
-					}
+			List<TSType> typeList = ResourceUtil.allTypes.get(typeGroupName.toLowerCase());
+			JSONArray typeArray = new JSONArray();
+			JSONObject headJson = new JSONObject();
+			headJson.put("typecode", "");
+			headJson.put("typename", "--请选择--");
+			typeArray.add(headJson);
+			if(typeList != null && !typeList.isEmpty()){
+				for (TSType type : typeList) {
+					JSONObject typeJson = new JSONObject();
+					typeJson.put("typecode", type.getTypecode());
+					typeJson.put("typename", type.getTypename());
+					typeArray.add(typeJson);
 				}
 			}
 			ajaxJson.setObj(typeArray);
@@ -258,10 +229,10 @@ public class SystemController extends BaseController {
 	@ResponseBody
 	public List<ComboTree> formTree(HttpServletRequest request,final ComboTree rootCombotree) {
 		String typegroupCode = request.getParameter("typegroupCode");
-		TSTypegroup group = ResourceUtil.getCacheTypeGroup(typegroupCode.toLowerCase());
+		TSTypegroup group = ResourceUtil.allTypeGroups.get(typegroupCode.toLowerCase());
 		List<ComboTree> comboTrees = new ArrayList<ComboTree>();
 
-		for(TSType tsType : ResourceUtil.getCacheTypes(typegroupCode.toLowerCase())){
+		for(TSType tsType : ResourceUtil.allTypes.get(typegroupCode.toLowerCase())){
 			ComboTree combotree = new ComboTree();
 			combotree.setId(tsType.getTypecode());
 			combotree.setText(tsType.getTypename());
@@ -292,7 +263,7 @@ public class SystemController extends BaseController {
 		cq.eq("TSTypegroup.id", typegroupid);
 		cq.like("typename", typename);
 
-		cq.addOrder("orderNum", SortDirection.asc);
+		cq.addOrder("createDate", SortDirection.desc);
 
 		cq.add();
 		this.systemService.getDataGridReturn(cq, true);
@@ -587,18 +558,14 @@ public class SystemController extends BaseController {
 		String code=oConvertUtils.getString(request.getParameter("code"));
 		String typeGroupCode=oConvertUtils.getString(request.getParameter("typeGroupCode"));
 		StringBuilder hql = new StringBuilder("FROM ").append(TSType.class.getName()).append(" AS entity WHERE 1=1 ");
-
-		hql.append(" AND entity.TSTypegroup.typegroupcode =  ?");
-		hql.append(" AND entity.typecode =  ?");
-//		List<Object> types = this.systemService.findByQueryString(hql.toString());
-		List<Object> types = this.systemService.findHql(hql.toString(),typeGroupCode,typecode);
-
-		if(types.size()>0&&(code==null||!code.equals(typecode)))
+		hql.append(" AND entity.TSTypegroup.typegroupcode =  '").append(typeGroupCode).append("'");
+		hql.append(" AND entity.typecode =  '").append(typecode).append("'");
+		List<Object> types = this.systemService.findByQueryString(hql.toString());
+		if(types.size()>0&&!code.equals(typecode))
 		{
 			v.setInfo("类型已存在");
 			v.setStatus("n");
 		}
-
 		return v;
 	}
 	/**
@@ -654,9 +621,6 @@ public class SystemController extends BaseController {
 		req.setAttribute("typegroupid", typegroupid);
         TSTypegroup typegroup = systemService.findUniqueByProperty(TSTypegroup.class, "id", typegroupid);
         String typegroupname = typegroup.getTypegroupname();
-
-        req.setAttribute("typegroup", typegroup);
-
         req.setAttribute("typegroupname", mutiLangService.getLang(typegroupname));
 		if (StringUtil.isNotEmpty(type.getId())) {
 			type = systemService.getEntity(TSType.class, type.getId());
@@ -774,7 +738,7 @@ public class SystemController extends BaseController {
 			sb.append(" and  org_code like '").append(parentCode).append("%'");
 		} else {
 
-			//sb.append(" and LEFT(org_code,1)='A'");
+			sb.append(" and LEFT(org_code,1)='A'");
 
 		}
 
@@ -1125,7 +1089,7 @@ public class SystemController extends BaseController {
 	public void datagridOnline(Client tSOnline,HttpServletRequest request,
 			HttpServletResponse response, DataGrid dataGrid) {
 		List<Client> onlines = new ArrayList<Client>();
-		onlines.addAll(clientManager.getAllClient());
+		onlines.addAll(ClientManager.getInstance().getAllClient());
 		dataGrid.setTotal(onlines.size());
 		dataGrid.setResults(getClinetList(onlines,dataGrid));
 		TagUtil.datagrid(response, dataGrid);
@@ -1216,9 +1180,11 @@ public class SystemController extends BaseController {
 
 	@RequestMapping(params = "diffDataVersion")
 	public ModelAndView diffDataVersion(HttpServletRequest request, @RequestParam String id1, @RequestParam String id2) throws ParseException {
+		String hql1 = "from TSDatalogEntity where id = '" + id1 + "'";
+		TSDatalogEntity datalogEntity1 = this.systemService.singleResult(hql1);
 
-		TSDatalogEntity datalogEntity1 = this.systemService.getEntity(TSDatalogEntity.class, id1);
-		TSDatalogEntity datalogEntity2 = this.systemService.getEntity(TSDatalogEntity.class, id2);
+		String hql2 = "from TSDatalogEntity where id = '" + id2 + "'";
+		TSDatalogEntity datalogEntity2 = this.systemService.singleResult(hql2);
 
 		if (datalogEntity1 != null && datalogEntity2 != null) {
 			//正则用于去掉头尾的[]字符(如存在)
@@ -1475,7 +1441,7 @@ public class SystemController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="showOrDownByurlFTP",method = RequestMethod.GET)
-	public void showOrDownByurlFTP(HttpServletResponse response,HttpServletRequest request) throws Exception{
+	public void getImgByurlFTP(HttpServletResponse response,HttpServletRequest request) throws Exception{
 		String flag=request.getParameter("down");//是否下载否则展示图片
 		String dbpath = request.getParameter("dbPath");
 		if("1".equals(flag)){
@@ -1553,6 +1519,7 @@ public class SystemController extends BaseController {
 		return success;
 	}
 
+	
 	/**
 	 * WebUploader
 	 * 文件上传处理/删除处理
@@ -1564,88 +1531,45 @@ public class SystemController extends BaseController {
         String msg="啥都没干-没传参数吧！";
         String upFlag=request.getParameter("isup");
         String delFlag=request.getParameter("isdel");
-        String swfTransform=request.getParameter("swfTransform");//是否将文件转换成swf
         //String ctxPath = request.getSession().getServletContext().getRealPath("");
         String ctxPath=ResourceUtil.getConfigByName("webUploadpath");//demo中设置为D://upFiles,实际项目应因事制宜
-
-        //默认上传文件是否转换为swf，实现在线预览功能开关
-		String globalSwfTransformFlag = ResourceUtil.getConfigByName("swf.transform.flag");
-
-		
-        logger.debug("----ctxPath-----"+ctxPath);
         try {
 	        //如果是上传操作
 	        if("1".equals(upFlag)){
 	        	String fileName = null;
 	        	String bizType=request.getParameter("bizType");//上传业务名称
-	        	logger.debug("---bizType----"+bizType);
 	        	String bizPath=StoreUploadFilePathEnum.getPath(bizType);//根据业务名称判断上传路径
 	        	String nowday=new SimpleDateFormat("yyyyMMdd").format(new Date());
-	        	logger.debug("---nowday----"+nowday);
 	    		File file = new File(ctxPath+File.separator+bizPath+File.separator+nowday);
 	    		if (!file.exists()) {
 	    			file.mkdirs();// 创建文件根目录
 	    		}
 	            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 	            MultipartFile mf=multipartRequest.getFile("file");// 获取上传文件对象
-
-	            String orgName = mf.getOriginalFilename();// 获取文件名
-	    		fileName = orgName.substring(0,orgName.lastIndexOf("."))+"_"+System.currentTimeMillis()+orgName.substring(orgName.indexOf("."));
-
+	    		fileName = mf.getOriginalFilename();// 获取文件名
 	    		String savePath = file.getPath() + File.separator + fileName;
-	    		String fileExt = FileUtils.getExtend(fileName);
-	    		if("txt".equals(fileExt)){
-	    			FileUtils.uploadTxtFile(mf, savePath);
-	    		}else{
-	    			File savefile = new File(savePath);
-		    		FileCopyUtils.copy(mf.getBytes(), savefile);
-	    		}
+	    		File savefile = new File(savePath);
+	    		FileCopyUtils.copy(mf.getBytes(), savefile);
 				msg="上传成功";
 				j.setMsg(msg);
 				String dbpath=bizPath+File.separator+nowday+File.separator+fileName;
-				logger.debug("---dbpath----"+dbpath);
-				if(dbpath.contains("\\")){
-					dbpath = dbpath.replace("\\","/");
-				}
 				j.setObj(dbpath);
 				//1、将文件路径赋值给obj,前台可获取之,随表单提交,然后数据库中存储该路径
 				//2、demo这里用的是AjaxJson对象,开发者可自定义返回对象,但是用t标签的时候路径属性名需为  obj或 filePath 或自己在标签内指定若在标签内指定则action返回路径的名称应保持一致
-				if("true".equals(globalSwfTransformFlag) && "true".equals(swfTransform)){
-					//转换swf
-					SwfToolsUtil.convert2SWF(savePath);
-				}
-			//如果是删除操作
+	          //如果是删除操作
 	        }else if("1".equals(delFlag)){
 	        	String path=request.getParameter("path");
 	        	String delpath=ctxPath+File.separator+path;
 	        	File fileDelete = new File(delpath);
 	    		if (!fileDelete.exists() || !fileDelete.isFile()) {
 	    			msg="警告: " + delpath + "不存在!";
-	    			logger.info(msg);
 	    			j.setSuccess(true);//不存在前台也给他删除
 	    		}else{
 	    			if(fileDelete.delete()){
 	    				msg="--------成功删除文件---------"+delpath;
-	    				logger.info(msg);
-	    				//删除swf/pdf文件
-	    				if("true".equals(globalSwfTransformFlag) && "true".equals(swfTransform)){
-	    					try {
-	    						String swfPath = FileUtils.getSwfPath(delpath);
-	    						new File(swfPath).delete();
-	    						logger.info("--------成功删除swf文件---------"+swfPath);
-	    						if(!delpath.endsWith("pdf")){
-	    							String pdfPath = delpath.substring(0, delpath.lastIndexOf(".")+1)+"pdf";
-	    							new File(pdfPath).delete();
-		    						logger.info("--------成功删除pdf文件---------"+pdfPath);
-	    						}
-							} catch (Exception e) {
-								logger.info("swf文件ORpdf文件未删除成功");
-							}
-	    				}
 	    			}else{
 	    				j.setSuccess(false);
 	    				msg="没删除成功--jdk的问题还是你文件的问题请重新试试";
-	    				logger.info(msg);
 	    			}
 	    		}
 	        }else{
@@ -1658,122 +1582,42 @@ public class SystemController extends BaseController {
 			j.setSuccess(false);
 			logger.info(b.getMessage());
 		}
-    	logger.debug("-----systemController/filedeal.do------------"+msg);
+    	logger.info("-----systemController/filedeal.do------------"+msg);
 		j.setMsg(msg);
         return j;
     }
-	
-	/**
-	 * 预览图片/word/excel/PDF文件
-	 * @author taoYan
-	 * @since 2018年7月26日
-	 */
-	@RequestMapping(params = "openViewFile")
-	public ModelAndView openViewFile(HttpServletRequest request) {
-		String inputFile = request.getParameter("path");
-		String extend=FileUtils.getExtend(inputFile);
-		if (FileUtils.isPicture(extend)) {
-			request.setAttribute("realpath", "img/server/"+inputFile);
-			return new ModelAndView("common/upload/imageView");
-		}else{
-			String swfPath = FileUtils.getSwfPath(inputFile);
-			request.setAttribute("swfpath", "img/server/"+swfPath+"?down=true");
-			return new ModelAndView("common/upload/swfView");
-		}
-	}
-
-//	/**
-//	 * 获取图片流/获取文件用于下载
-//	 * @param response
-//	 * @param request
-//	 * @throws Exception
-//	 */
-//	@RequestMapping(value="showOrDownByurl",method = RequestMethod.GET)
-//	public void showOrDownByurl(HttpServletResponse response,HttpServletRequest request) throws Exception{
-//		String flag=request.getParameter("down");//是否下载否则展示图片
-//		String dbpath = request.getParameter("dbPath");
-
-//		if(oConvertUtils.isNotEmpty(dbpath)&&dbpath.endsWith(",")){
-//			dbpath = dbpath.substring(0, dbpath.length()-1);
-//		}
-
-//		if("1".equals(flag)){
-//			response.setContentType("application/x-msdownload;charset=utf-8");
-//			String fileName=dbpath.substring(dbpath.lastIndexOf(File.separator)+1);
-
-//			String userAgent = request.getHeader("user-agent").toLowerCase();
-//			if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {
-//				fileName = URLEncoder.encode(fileName, "UTF-8");
-//			}else {  
-//				fileName = new String(fileName.getBytes("UTF-8"), "iso-8859-1");  
-//			} 
-//			response.setHeader("Content-disposition", "attachment; filename="+ fileName);
-
-//		}else{
-//			response.setContentType("image/jpeg;charset=utf-8");
-//		}
-//	
-////		//TODO 缓存设置有效时间为一小时，IE有效，chrome无效
-////        response.setHeader("Cache-Control", "max-age=3600, must-revalidate");
-////        response.setHeader("Pragma", "Pragma");
-////        response.setHeader("cache-directive", "public");
-//
-//        
-//		InputStream inputStream = null;
-//		OutputStream outputStream=null;
-//		try {
-//			String localPath=ResourceUtil.getConfigByName("webUploadpath");
-//			String imgurl = localPath+File.separator+dbpath;
-//			inputStream = new BufferedInputStream(new FileInputStream(imgurl));
-//			outputStream = response.getOutputStream();
-//			byte[] buf = new byte[1024];
-//	        int len;
-//	        while ((len = inputStream.read(buf)) > 0) {
-//	            outputStream.write(buf, 0, len);
-//	        }
-//	        response.flushBuffer();
-//		} catch (Exception e) {
-//			logger.info("--通过流的方式获取文件异常--"+e.getMessage());
-//		}finally{
-//			if(inputStream!=null){
-//				inputStream.close();
-//			}
-//			if(outputStream!=null){
-//				outputStream.close();
-//			}
-//		}
-//	}
-
-	
 	/**
 	 * 获取图片流/获取文件用于下载
 	 * @param response
 	 * @param request
 	 * @throws Exception
 	 */
-	@RequestMapping(value="downloadFile",method = RequestMethod.GET)
-	public void downloadFile(HttpServletResponse response,HttpServletRequest request) throws Exception{
-		String ctxPath = request.getSession().getServletContext().getRealPath("/");
-		String dbpath = request.getParameter("filePath");
-		String downLoadPath = ctxPath + dbpath;
+	@RequestMapping(value="showOrDownByurl",method = RequestMethod.GET)
+	public void getImgByurl(HttpServletResponse response,HttpServletRequest request) throws Exception{
+		String flag=request.getParameter("down");//是否下载否则展示图片
+		String dbpath = request.getParameter("dbPath");
+		if("1".equals(flag)){
+			response.setContentType("application/x-msdownload;charset=utf-8");
+			String fileName=dbpath.substring(dbpath.lastIndexOf(File.separator)+1);
 
-		if(UrlCheckUtil.checkUrl(downLoadPath)){
-			return;
+			String userAgent = request.getHeader("user-agent").toLowerCase();
+			if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {
+				fileName = URLEncoder.encode(fileName, "UTF-8");
+			}else {  
+				fileName = new String(fileName.getBytes("UTF-8"), "iso-8859-1");  
+			} 
+			response.setHeader("Content-disposition", "attachment; filename="+ fileName);
+
+		}else{
+			response.setContentType("image/jpeg;charset=utf-8");
 		}
-
-		response.setContentType("application/x-msdownload;charset=utf-8");
-		String fileName=dbpath.substring(dbpath.lastIndexOf("/")+1);
-		String userAgent = request.getHeader("user-agent").toLowerCase();
-		if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {
-			fileName = URLEncoder.encode(fileName, "UTF-8");
-		}else {  
-			fileName = new String(fileName.getBytes("UTF-8"), "iso-8859-1");  
-		} 
-		response.setHeader("Content-disposition", "attachment; filename="+ fileName);
+	
 		InputStream inputStream = null;
 		OutputStream outputStream=null;
 		try {
-			inputStream = new BufferedInputStream(new FileInputStream(downLoadPath));
+			String localPath=ResourceUtil.getConfigByName("webUploadpath");
+			String imgurl = localPath+File.separator+dbpath;
+			inputStream = new BufferedInputStream(new FileInputStream(imgurl));
 			outputStream = response.getOutputStream();
 			byte[] buf = new byte[1024];
 	        int len;
@@ -1792,5 +1636,5 @@ public class SystemController extends BaseController {
 			}
 		}
 	}
-
+	
 }

@@ -4,11 +4,20 @@
 <html>
 <head>
     <title>Online表单风格</title>
-    <t:base type="jquery,easyui,tools,DatePicker,uploadify"></t:base>
+    <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 </head>
 <body>
 <t:formvalid formid="formobj" dialog="true"   usePlugin="password" layout="table" action="cgformTemplateController.do?doAdd">
     <input id="id" name="id" type="hidden" value="${cgformTemplatePage.id }">
+    <input id="createName" name="createName" type="hidden" value="${cgformTemplatePage.createName }">
+    <input id="createBy" name="createBy" type="hidden" value="${cgformTemplatePage.createBy }">
+    <input id="createDate" name="createDate" type="hidden" value="${cgformTemplatePage.createDate }">
+    <input id="updateName" name="updateName" type="hidden" value="${cgformTemplatePage.updateName }">
+    <input id="updateBy" name="updateBy" type="hidden" value="${cgformTemplatePage.updateBy }">
+    <input id="updateDate" name="updateDate" type="hidden" value="${cgformTemplatePage.updateDate }">
+    <input id="sysOrgCode" name="sysOrgCode" type="hidden" value="${cgformTemplatePage.sysOrgCode }">
+    <input id="sysCompanyCode" name="sysCompanyCode" type="hidden" value="${cgformTemplatePage.sysCompanyCode }">
+
     <div style="float: left;height: 99%;width: 30%;margin-top: 20px;">
         <img id="prePic" src="" style="background-color: rgba(68, 111, 128, 0.67)"  width="98%" height="200px" />
 <!--         <a class="easyui-linkbutton" href="javascript:void(0)" onclick="uploadPic()">上传</a> -->
@@ -88,10 +97,12 @@
                      	   预览图：
                     </label>
                 </td>
-                <td class="value" style="padding-top:1em">
+                <td class="value" >
+                    <span id="templatePicspan"><input type="file" name="templatePic_u" id="templatePic_u" /></span>
                     <input type="hidden" id="templatePic" name="templatePic" />
-					<t:upload queueID="hiddenArea" auto="true" dialog="false" outhtml="false" onUploadSuccess="viewPicUploadSuccess" id="templatePic_u" uploader="cgformTemplateController.do?uploadPic&sessionId=${pageContext.session.id}" extend="pic" name="templatePic_u"></t:upload>
-                    <div id = "hiddenArea" style="display:none"></div>
+
+                    <span class="Validform_checktip"></span>
+                    <label class="Validform_label" style="display: none;">预览图</label>
                 </td>
             </tr>
 
@@ -102,7 +113,7 @@
                     </label>
                 </td>
                 <td class="value" >
-                    <t:upload id="templateZip" onFilesRemoved="zipFilesRemoved" onFileAdded="zipFileAdded" queueID= "filediv" dialog="false" outhtml="false"  onUploadSuccess="zipUploadSuccess" buttonText="浏览文件" multi="false" name="templateZip" uploader="cgformTemplateController.do?uploadZip&sessionId=${pageContext.session.id}" extend="*.zip;*.rar"></t:upload>
+                    <t:upload id="templateZip"   buttonText="上传文件" multi="false" name="templateZip" uploader="cgformTemplateController.do?uploadZip" onUploadSuccess="uploadZipSuccess" extend="*.zip;*.rar"></t:upload>
                     <div class="form" id="filediv" ></div>
                     <span class="Validform_checktip"></span>
                     <label class="Validform_label" style="display: none;">风格模板</label>
@@ -186,32 +197,12 @@
 <script>
     var hasZipFile=0;
 
-    function viewPicUploadSuccess(d){
-    	if(d.success){
-            $("#prePic").attr("src","img-online/server/temp/"+ d.obj);
-            $("#templatePic").val(d.obj);
-        }
-    }
-    function zipUploadSuccess(d){
-    	if(d.success){
-            $("#templateZipName").val(d.obj);
-            $("#formobj").submit();
-        }
-    }
-    function zipFileAdded(){
-    	hasZipFile++;
-    }
-    
-    function zipFilesRemoved(){
-    	hasZipFile--;
-    }
     $(function () {
-        $("#prePic").attr("src","img-online/server/default/images/default.jpg");
-        /* $('#templatePic_u').uploadify({buttonText:'浏览',
+        $("#prePic").attr("src","cgformTemplateController.do?showPic");
+        $('#templatePic_u').uploadify({buttonText:'浏览',
             progressData:'speed',
             multi:false,
-            height:18,
-            width:80,
+            height:25,
             overrideEvents:['onDialogClose'],
             fileTypeDesc:'文件格式:',
             fileTypeExts:'*.jpg;*,jpeg;*.png;*.gif;*.bmp;*.ico;*.tif',
@@ -225,19 +216,18 @@
                 if(data){
                     var d=$.parseJSON(data);
                     if(d.success){
-                        $("#prePic").attr("src","img-online/server/temp/"+ d.obj);
+                        $("#prePic").attr("src","cgformTemplateController.do?showPic&path="+ d.obj);
                         $("#templatePic").val(d.obj);
                     }
                 }
 
             }
-        }); 
+        });
 
         $('#templateZip').uploadify({buttonText:'浏览文件',
             progressData:'speed',
             multi:false,
-            height:18,
-            width:80,
+            height:25,
             overrideEvents:['onDialogClose'],
             fileTypeDesc:'文件格式:',
             //author:scott -- date:20170317 -- for:配置rar或者zip的时候,点击上传按钮之后要过10多秒才弹出文件选择框，采用方案不做上传类型限制--
@@ -262,9 +252,8 @@
                 }
 
             }
-        });*/
+        });
     });
-
     //验证编码唯一性
     function checkCode(){
         var tCode=$("#templateCode").val();

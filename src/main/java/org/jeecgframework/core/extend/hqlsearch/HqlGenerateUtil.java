@@ -31,7 +31,7 @@ import org.jeecgframework.core.util.JeecgDataAutorUtils;
 import org.jeecgframework.core.util.LogUtil;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
-import org.jeecgframework.core.util.oConvertUtils;
+import org.jeecgframework.p3.core.util.oConvertUtils;
 import org.jeecgframework.web.system.pojo.base.TSDataRule;
 import org.springframework.util.NumberUtils;
 
@@ -216,13 +216,6 @@ public class HqlGenerateUtil {
 								beginValue_ = Float.parseFloat(beginValue);
 							if(!"".equals(endValue)&&null!=endValue)
 								endValue_ =Float.parseFloat(endValue);
-
-						}else if ("class java.lang.Double".equals(type)) {
-							if(!"".equals(beginValue)&&null!=beginValue)
-								beginValue_ = Double.parseDouble(beginValue);
-							if(!"".equals(endValue)&&null!=endValue)
-								endValue_ =Double.parseDouble(endValue);
-
 						}else{
 							 beginValue_ = beginValue;
 							 endValue_ = endValue;
@@ -446,11 +439,6 @@ public class HqlGenerateUtil {
 	 * @return
 	 */
 	public static String getSql(List<QueryCondition> list,String tab,Class claszz){
-
-		if(list==null || list.size()==0){
-			return "";
-		}
-
 		StringBuffer sb=new StringBuffer();
 
 		if(list.get(0).getRelation().equals("or")) {

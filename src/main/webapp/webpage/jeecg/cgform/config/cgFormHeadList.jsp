@@ -13,9 +13,6 @@
 					loadFormByType(node.id);
 				} else {
 					$('#formtree').tree('expand', node.target);
-
-					loadFormByType("");
-
 				}
 			}
 		});
@@ -35,7 +32,7 @@
 	</div>
 </div>
 <div region="center" style="padding:0px;border:0px">
-<t:datagrid sortName="createDate" sortOrder="desc" name="tablePropertyList" title="smart.form.config" fitColumns="true" actionUrl="cgFormHeadController.do?datagrid" idField="id" fit="true" 
+<t:datagrid superQuery="true" sortName="createDate" sortOrder="desc" name="tablePropertyList" title="smart.form.config" fitColumns="true" actionUrl="cgFormHeadController.do?datagrid" idField="id" fit="true" 
             queryMode="group" checkbox="true" btnCls="bootstrap">
 	<t:dgCol title="common.id" field="id" hidden="true"></t:dgCol>
 	<t:dgCol title="hasPeizhi" field="hasPeizhi" hidden="true"></t:dgCol>
@@ -59,14 +56,14 @@
 	<%-- 
 	<t:dgFunOpt funname="importFields(id,content)" title="导入字段" urlclass="ace_button"  urlfont="fa-download"></t:dgFunOpt>
 	--%>
-	<t:dgFunOpt exp="isDbSynch#eq#N"  title="sync.db" funname="doDbsynch(id,content)" urlclass="ace_button"  urlfont="fa-database"/>
-	<t:dgFunOpt exp="isDbSynch#eq#Y&&jformType#ne#3"   funname="addbytab(id,content)" title="form.template" urlclass="ace_button"  urlfont="fa-cog"></t:dgFunOpt>
+	<t:dgFunOpt exp="isDbSynch#eq#N" title="sync.db" funname="doDbsynch(id,content)" urlclass="ace_button"  urlfont="fa-database"/>
+	<t:dgFunOpt exp="isDbSynch#eq#Y&&jformType#ne#3" funname="addbytab(id,content)" title="form.template" urlclass="ace_button" urlStyle="background-color:#5F9EA0" urlfont="fa-cog"></t:dgFunOpt>
 	<t:dgFunOpt exp="isDbSynch#eq#Y&&jformType#ne#3" funname="addlisttab(tableName,content)" title="function.test" urlStyle="background-color:#18a689;" urlclass="ace_button"  urlfont="fa-gavel"></t:dgFunOpt>
 	<t:dgFunOpt exp="isDbSynch#eq#Y&&jformType#ne#3" funname="popMenuLink(tableName,content)" title="config.place" urlStyle="background-color:#1a7bb9;" urlclass="ace_button"  urlfont="fa-cog" ></t:dgFunOpt>
 	<t:dgFunOpt funname="copyOnline(id)" title="复制表单" operationCode="copyOnlineTable"  urlclass="ace_button"  urlfont="fa-copy"></t:dgFunOpt>
 	<t:dgFunOpt exp="hasPeizhi#ne#0" funname="propertyTable(id)" title="配置表"  urlclass="ace_button"  urlfont="fa-cog"></t:dgFunOpt>
-	<t:dgToolBar title="create.form" icon="fa fa-plus" width="100%" height="100%" url="cgFormHeadController.do?addorupdate" funname="addForm"></t:dgToolBar>
-	<t:dgToolBar title="edit.form" icon="fa fa-edit" width="100%" height="100%" url="cgFormHeadController.do?addorupdate" funname="updateForm"></t:dgToolBar>
+	<t:dgToolBar title="create.form" icon="fa fa-plus" width="1200" height="600" url="cgFormHeadController.do?addorupdate" funname="addForm"></t:dgToolBar>
+	<t:dgToolBar title="edit.form" icon="fa fa-edit" width="1200" height="600" url="cgFormHeadController.do?addorupdate" funname="updateForm"></t:dgToolBar>
 	<t:dgToolBar title="custom.button" icon="fa fa-bars" url="cgformButtonController.do?cgformButton" funname="cgFormButton"></t:dgToolBar>
 	<t:dgToolBar title="js.enhance" icon="fa fa-strikethrough" url="cgformEnhanceJsController.do?addorupdate" funname="enhanceJs"></t:dgToolBar>
 	<t:dgToolBar title="sql.enhance" icon="fa fa-filter" url="cgformButtonSqlController.do?addorupdate" operationCode="sql_enhance" funname="cgFormButtonSql"></t:dgToolBar>
@@ -100,12 +97,10 @@
 		});
 	}
 	function delCgForm(id,name){
-
-		$.dialog.confirm('<t:mutiLang langKey="confirm.online.delete.record"/>', function(){
+		$.dialog.confirm('<t:mutiLang langKey="confirm.delete.record"/>', function(){
 			checkIsExit(id,name);
 		}, function(){
 		}).zindex();
-
 	}
 	//检查这个表是否已经存在了
 	function checkIsExit(id,name){
@@ -353,7 +348,7 @@
 			lock : true,
 			title: '<t:mutiLang langKey="code.generate"/>' + " ["+rowsData[0].content+"]",
 			opacity : 0.3,
-			width:1250,
+			width:1200,
 			zIndex: getzIndex(),
 			height:500,
 			cache:false,
@@ -431,9 +426,6 @@
 					var d = $.parseJSON(data);
 					if (d.success) {
 						tip(d.msg);
-
-						reloadTable();
-
 					}else{
 						tip(d.msg);
 					}

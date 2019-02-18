@@ -89,30 +89,30 @@
   background: url('images/panel_tools.png') no-repeat -16px 0px;
 }
 .panel-tool-min {
-/*update-begin--Author:LiShaoQing Date:20170919 for：TASK#2340:【UI美化】高级查询右上角图标位置移动-------- */
+/*update-begin--Author:LiShaoQing Date:20170919 for锛歍ASK#2340:銆怳I缇庡寲銆戦珮绾ф煡璇㈠彸涓婅鍥炬爣浣嶇疆绉诲姩-------- */
   position: absolute;
   right: 55px;
   top: 7px;
-/*update-end--Author:LiShaoQing Date:20170919 for：TASK#2340:【UI美化】高级查询右上角图标位置移动-------- */
+/*update-end--Author:LiShaoQing Date:20170919 for锛歍ASK#2340:銆怳I缇庡寲銆戦珮绾ф煡璇㈠彸涓婅鍥炬爣浣嶇疆绉诲姩-------- */
   background: url('images/panel_tools.png') no-repeat 0px 0px;
 }
 .panel-tool-max {
-/*update-begin--Author:LiShaoQing Date:20170919 for：TASK#2340:【UI美化】高级查询右上角图标位置移动-------- */
+/*update-begin--Author:LiShaoQing Date:20170919 for锛歍ASK#2340:銆怳I缇庡寲銆戦珮绾ф煡璇㈠彸涓婅鍥炬爣浣嶇疆绉诲姩-------- */
   position: absolute;
   right: 33px;
   top: 7px;
-/*update-end--Author:LiShaoQing Date:20170919 for：TASK#2340:【UI美化】高级查询右上角图标位置移动-------- */
+/*update-end--Author:LiShaoQing Date:20170919 for锛歍ASK#2340:銆怳I缇庡寲銆戦珮绾ф煡璇㈠彸涓婅鍥炬爣浣嶇疆绉诲姩-------- */
   background: url('images/panel_tools.png') no-repeat 0px -16px;
 }
 .panel-tool-restore {
   background: url('images/panel_tools.png') no-repeat -16px -16px;
 }
 .panel-tool-collapse {
-/*update-begin--Author:LiShaoQing Date:20170919 for：TASK#2340:【UI美化】高级查询右上角图标位置移动-------- */
+/*update-begin--Author:LiShaoQing Date:20170919 for锛歍ASK#2340:銆怳I缇庡寲銆戦珮绾ф煡璇㈠彸涓婅鍥炬爣浣嶇疆绉诲姩-------- */
   position: absolute;
   right: 78px;
   top: 7px;
-/*update-end--Author:LiShaoQing Date:20170919 for：TASK#2340:【UI美化】高级查询右上角图标位置移动-------- */
+/*update-end--Author:LiShaoQing Date:20170919 for锛歍ASK#2340:銆怳I缇庡寲銆戦珮绾ф煡璇㈠彸涓婅鍥炬爣浣嶇疆绉诲姩-------- */
   background: url('images/panel_tools.png') no-repeat -32px 0;
 }
 .panel-tool-expand {
@@ -122,24 +122,21 @@
 .panel-body {
   border-color: #ddd;
 }
-/*update-begin--Author:xuelin  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
-/*update--begin--author:zhangjiaqiang date:20170622 for:增加一个样式引用*/
+/*update-begin--Author:xuelin  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
+/*update--begin--author:zhangjiaqiang date:20170622 for:澧炲姞涓�涓牱寮忓紩鐢�*/
 .north-header,
-/*update--end--author:zhangjiaqiang date:20170622 for:增加一个样式引用*/
+/*update--end--author:zhangjiaqiang date:20170622 for:澧炲姞涓�涓牱寮忓紩鐢�*/
 .panel-header {
   background-color: #F9F9F9; 
   background-repeat: repeat-x;
   height: 30px;
   line-height: 30px;
   padding: 0 15px;
-  /*update--begin--author:scott date:20180811 for:自定义表单设计器上面无边框*/
-  border-top: 1px solid #e7eaec !important;
-  /*update--end--author:scott date:20180811 for:自定义表单设计器上面无边框*/
   border-bottom: 1px solid #e7eaec !important;
   border-top-right-radius: 3px;
   border-top-left-radius: 3px;
 }
-/*update-end--Author:xuelin  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰--------------------	*/
+/*update-end--Author:xuelin  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�--------------------	*/
 .panel-body {
   background-color: #fff;
   color: #444;
@@ -151,7 +148,7 @@
   line-height: 30px;
   color: #444;
   font-weight: bold;
-  font-family: 微软雅黑,microsoft Yahei","Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 寰蒋闆呴粦,microsoft Yahei","Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
 }
 .accordion {
@@ -185,7 +182,7 @@
   background: #fff;
   border-color: #ddd;
 }
-/* update-begin-author:tanyan date:20171031 for:折叠样式修改 */
+/* update-begin-author:tanyan date:20171031 for:鎶樺彔鏍峰紡淇敼 */
 .accordion .accordion-header {
   /* background: #ffffff; */
   filter: none;
@@ -193,7 +190,7 @@
 .accordion .accordion-header-selected {
   /* background: #CCE6FF; */
 }
-/* update-end-author:tanyan date:20171031 for:折叠样式修改 */
+/* update-end-author:tanyan date:20171031 for:鎶樺彔鏍峰紡淇敼 */
 .accordion .accordion-header-selected .panel-title {
   color: #000;
 }
@@ -269,11 +266,11 @@
 .window .window-body {
   border-color: #ddd;
 }
-/* update-begin--Author:xuelin  Date:20170527 for：TASK #2022 【UI美化】高级查询弹出查询页面，界面美化 ------------------- */
+/* update-begin--Author:xuelin  Date:20170527 for锛歍ASK #2022 銆怳I缇庡寲銆戦珮绾ф煡璇㈠脊鍑烘煡璇㈤〉闈紝鐣岄潰缇庡寲 ------------------- */
 .window {
   background-color: transparent;
 }
-/* update-end--Author:xuelin  Date:20170527 for：TASK #2022 【UI美化】高级查询弹出查询页面，界面美化 -------------------- */	
+/* update-end--Author:xuelin  Date:20170527 for锛歍ASK #2022 銆怳I缇庡寲銆戦珮绾ф煡璇㈠脊鍑烘煡璇㈤〉闈紝鐣岄潰缇庡寲 -------------------- */	
 .window-proxy {
   border: 1px dashed #ddd;
 }
@@ -324,8 +321,8 @@
 .combo .combo-text {
   font-size: 12px;
   border: 0px;
-  line-height: 20px;
-  height: 20px !important;
+  line-height: 25px;
+  height: 26px !important;
   margin: 0;
   padding: 0px 2px;
   *margin-top: -1px;
@@ -364,7 +361,7 @@
   background-color: #fff;
   border-radius: 3px;
   padding: 4px 0 4px 5px;
-  height: 20px !important;
+  height: 26px !important;
 }
 .combo-arrow {
   background-color: #ffffff;
@@ -545,8 +542,8 @@
   opacity: 0.3;
   filter: alpha(opacity=30);
 }
-/* update-begin--Author:xuelin  Date:20170428 for：#1755 【美化】用户分析报表，多tab格式，是否可以美化  修改需要改底层-------------------- */
-/* update-begin--Author:xuelin  Date:20170520 for：TASK #2007 【样式改进】多tab，没有靠左，间隙过大-------------------- */
+/* update-begin--Author:xuelin  Date:20170428 for锛�#1755 銆愮編鍖栥�戠敤鎴峰垎鏋愭姤琛紝澶歵ab鏍煎紡锛屾槸鍚﹀彲浠ョ編鍖�  淇敼闇�瑕佹敼搴曞眰-------------------- */
+/* update-begin--Author:xuelin  Date:20170520 for锛歍ASK #2007 銆愭牱寮忔敼杩涖�戝tab锛屾病鏈夐潬宸︼紝闂撮殭杩囧ぇ-------------------- */
 .tabs {
   list-style-type: none;
   height: 26px;
@@ -557,8 +554,8 @@
   border-style: solid;
   border-width: 0 0 1px 0;
 }
-/* update-end--Author:xuelin  Date:20170520 for：TASK #2007 【样式改进】多tab，没有靠左，间隙过大-------------------- */
-/* update-end--Author:xuelin  Date:20170428 for：#1755 【美化】用户分析报表，多tab格式，是否可以美化  修改需要改底层-------------------- */
+/* update-end--Author:xuelin  Date:20170520 for锛歍ASK #2007 銆愭牱寮忔敼杩涖�戝tab锛屾病鏈夐潬宸︼紝闂撮殭杩囧ぇ-------------------- */
+/* update-end--Author:xuelin  Date:20170428 for锛�#1755 銆愮編鍖栥�戠敤鎴峰垎鏋愭姤琛紝澶歵ab鏍煎紡锛屾槸鍚﹀彲浠ョ編鍖�  淇敼闇�瑕佹敼搴曞眰-------------------- */
 .tabs li {
   float: left;
   display: inline-block;
@@ -567,7 +564,7 @@
   position: relative;
   border: 0;
 }
-/* update-begin--Author:xuelin  Date:20170428 for：#1755 【美化】用户分析报表，多tab格式，是否可以美化  修改需要改底层-------------------- */
+/* update-begin--Author:xuelin  Date:20170428 for锛�#1755 銆愮編鍖栥�戠敤鎴峰垎鏋愭姤琛紝澶歵ab鏍煎紡锛屾槸鍚﹀彲浠ョ編鍖�  淇敼闇�瑕佹敼搴曞眰-------------------- */
 .tabs li a.tabs-inner {
   display: inline-block;
   text-decoration: none;
@@ -582,9 +579,9 @@
   -moz-border-radius: 5px 5px 0 0;
   -webkit-border-radius: 5px 5px 0 0;
   border-radius: 5px 5px 0 0;
-  -webkit-border-radius: 5px 5px 0 0;/* scott 20160229 TAB 边框圆润*/
+  -webkit-border-radius: 5px 5px 0 0;/* scott 20160229 TAB 杈规鍦嗘鼎*/
 }
-/* update-end--Author:xuelin  Date:20170428 for：#1755 【美化】用户分析报表，多tab格式，是否可以美化  修改需要改底层-------------------- */
+/* update-end--Author:xuelin  Date:20170428 for锛�#1755 銆愮編鍖栥�戠敤鎴峰垎鏋愭姤琛紝澶歵ab鏍煎紡锛屾槸鍚﹀彲浠ョ編鍖�  淇敼闇�瑕佹敼搴曞眰-------------------- */
 .tabs li.tabs-selected a.tabs-inner {
   font-weight: bold;
   outline: none;
@@ -764,13 +761,13 @@
   color: #444;
   filter: none;
 }
-/* update-begin--Author:xuelin  Date:20170428 for：#1755 【美化】用户分析报表，多tab格式，是否可以美化  修改需要改底层-------------------- */
+/* update-begin--Author:xuelin  Date:20170428 for锛�#1755 銆愮編鍖栥�戠敤鎴峰垎鏋愭姤琛紝澶歵ab鏍煎紡锛屾槸鍚﹀彲浠ョ編鍖�  淇敼闇�瑕佹敼搴曞眰-------------------- */
 .tabs li.tabs-selected a.tabs-inner {
   background: #ffffff;
   background-color: #ffffff;
   color: #444;
 }
-/* update-end--Author:xuelin  Date:20170428 for：#1755 【美化】用户分析报表，多tab格式，是否可以美化  修改需要改底层-------------------- */
+/* update-end--Author:xuelin  Date:20170428 for锛�#1755 銆愮編鍖栥�戠敤鎴峰垎鏋愭姤琛紝澶歵ab鏍煎紡锛屾槸鍚﹀彲浠ョ編鍖�  淇敼闇�瑕佹敼搴曞眰-------------------- */
 .tabs li a.tabs-inner {
   /*color: #777;*/
   background-color: #ffffff;
@@ -837,7 +834,7 @@ a.l-btn-disabled {
   filter: alpha(opacity=50);
   cursor: default;
 }
-/*update-begin--Author:xuelin  Date:20170328 for：[#1820]统计报表->图形报表  按钮（查询、重置）内部图标及文字不居中--------------------*/
+/*update-begin--Author:xuelin  Date:20170328 for锛歔#1820]缁熻鎶ヨ〃->鍥惧舰鎶ヨ〃  鎸夐挳锛堟煡璇€�侀噸缃級鍐呴儴鍥炬爣鍙婃枃瀛椾笉灞呬腑--------------------*/
 a.l-btn span.l-btn-left {
   display: inline-block;
   background-position: 0 -48px;
@@ -845,7 +842,7 @@ a.l-btn span.l-btn-left {
   line-height: 16px;
   height: 16px;
 }
-/*update-end--Author:xuelin  Date:20170328 for：[#1820]统计报表->图形报表  按钮（查询、重置）内部图标及文字不居中----------------------*/
+/*update-end--Author:xuelin  Date:20170328 for锛歔#1820]缁熻鎶ヨ〃->鍥惧舰鎶ヨ〃  鎸夐挳锛堟煡璇€�侀噸缃級鍐呴儴鍥炬爣鍙婃枃瀛椾笉灞呬腑----------------------*/
 a.l-btn-plain span.l-btn-left {
   padding-left: 5px;
 }
@@ -857,27 +854,27 @@ a.l-btn-plain span.l-btn-left {
   line-height: 16px;
   padding: 0;
 } */
-/* update-begin--Author:xuelin  Date:20170523 for：TASK #2004 【UI优化】单选按钮模式，查询条件格式美化------------------- */
+/* update-begin--Author:xuelin  Date:20170523 for锛歍ASK #2004 銆怳I浼樺寲銆戝崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏍煎紡缇庡寲------------------- */
 a.l-btn span span.l-btn-text {
   display: inline-block;
   vertical-align: baseline;
   width: auto;
-/* update-begin--Author:scott  Date:20170615 for：单选按钮模式，查询条件文字居中------------------- */
+/* update-begin--Author:scott  Date:20170615 for锛氬崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏂囧瓧灞呬腑------------------- */
    /*height: 16px;*/
    /*line-height: 16px;*/
   padding: 0;
  /* margin: 2.5;*/
   margin:1px 1px 1px 1px;
-  /* update-end--Author:scott  Date:20170615 for：单选按钮模式，查询条件文字居中------------------- */
+  /* update-end--Author:scott  Date:20170615 for锛氬崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏂囧瓧灞呬腑------------------- */
 }
-/* update-end--Author:xuelin  Date:20170523 for：TASK #2004 【UI优化】单选按钮模式，查询条件格式美化-------------------- */	
+/* update-end--Author:xuelin  Date:20170523 for锛歍ASK #2004 銆怳I浼樺寲銆戝崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏍煎紡缇庡寲-------------------- */	
 
-/* update-begin--Author:xuelin  Date:20170622 for：TASK #2162 【样式优化】老的button样式修改，上下居中-------------------- */
+/* update-begin--Author:xuelin  Date:20170622 for锛歍ASK #2162 銆愭牱寮忎紭鍖栥�戣�佺殑button鏍峰紡淇敼锛屼笂涓嬪眳涓�-------------------- */
 a.l-btn span span.l-btn-icon-left {
   padding: 0 6px 0 20px;
   background-position: left center;
 }
-/* update-end--Author:xuelin  Date:20170622 for：TASK #2162 【样式优化】老的button样式修改，上下居中---------------------- */
+/* update-end--Author:xuelin  Date:20170622 for锛歍ASK #2162 銆愭牱寮忎紭鍖栥�戣�佺殑button鏍峰紡淇敼锛屼笂涓嬪眳涓�---------------------- */
 
 a.l-btn span span.l-btn-icon-right {
   padding: 0 20px 0 0;
@@ -885,9 +882,9 @@ a.l-btn span span.l-btn-icon-right {
 }
 a.l-btn span span span.l-btn-empty {
   display: inline-block;
-  /* update-begin--Author:scott  Date:20171113 for：分页图标上下间距调整，兼容按钮样式------------------- */
+  /* update-begin--Author:scott  Date:20171113 for锛氬垎椤靛浘鏍囦笂涓嬮棿璺濊皟鏁达紝鍏煎鎸夐挳鏍峰紡------------------- */
   margin: 2px;
-  /* update-end--Author:scott  Date:20171113 for：分页图标上下间距调整，兼容按钮样式------------------- */
+  /* update-end--Author:scott  Date:20171113 for锛氬垎椤靛浘鏍囦笂涓嬮棿璺濊皟鏁达紝鍏煎鎸夐挳鏍峰紡------------------- */
   padding: 0;
   width: 16px;
 }
@@ -900,12 +897,12 @@ a:hover.l-btn span.l-btn-left {
   background-position: 0 bottom;
 }
 a:hover.l-btn-plain {
-  /*update-start--Author: scott  Date:20171110 for:列表上方按钮间距调整回默认*/
+  /*update-start--Author: scott  Date:20171110 for:鍒楄〃涓婃柟鎸夐挳闂磋窛璋冩暣鍥為粯璁�*/
   padding: 0 5px 0 0;
-  /*update-start--Author: os_renjie  Date:20160529 for:TASK #1044 【通用样式修改】让按钮别晃动*/
+  /*update-start--Author: os_renjie  Date:20160529 for:TASK #1044 銆愰�氱敤鏍峰紡淇敼銆戣鎸夐挳鍒檭鍔�*/
   /*padding: 1px 6px 1px 1px;*/
-  /*update-start--Author: os_renjie  Date:20160529 for:TASK #1044 【通用样式修改】让按钮别晃动*/
-  /*update-start--Author: scott  Date:20171110 for:列表上方按钮间距调整回默认*/
+  /*update-start--Author: os_renjie  Date:20160529 for:TASK #1044 銆愰�氱敤鏍峰紡淇敼銆戣鎸夐挳鍒檭鍔�*/
+  /*update-start--Author: scott  Date:20171110 for:鍒楄〃涓婃柟鎸夐挳闂磋窛璋冩暣鍥為粯璁�*/
 
 }
 a:hover.l-btn-disabled {
@@ -917,26 +914,26 @@ a:hover.l-btn-disabled span.l-btn-left {
 a.l-btn .l-btn-focus {
   outline: #e9e9e9 solid 0;
 }
-/*update-begin--Author:xuelin  Date:20170608 for：TASK #2094 【按钮样式】原来的按钮间距有点大--- 兼容处理 */
+/*update-begin--Author:xuelin  Date:20170608 for锛歍ASK #2094 銆愭寜閽牱寮忋�戝師鏉ョ殑鎸夐挳闂磋窛鏈夌偣澶�--- 鍏煎澶勭悊 */
 a.easyui-linkbutton{
-    /*update-start--Author: scott  Date:20171110 for:列表上方按钮间距调整回默认*/
+    /*update-start--Author: scott  Date:20171110 for:鍒楄〃涓婃柟鎸夐挳闂磋窛璋冩暣鍥為粯璁�*/
 	padding: 0 5px 0 0;
-	/*update-start--Author: scott  Date:20171110 for:列表上方按钮间距调整回默认*/
+	/*update-start--Author: scott  Date:20171110 for:鍒楄〃涓婃柟鎸夐挳闂磋窛璋冩暣鍥為粯璁�*/
 }
-/*update-end--Author:xuelin  Date:20170608 for：TASK #2094 【按钮样式】原来的按钮间距有点大--- 兼容处理  */
+/*update-end--Author:xuelin  Date:20170608 for锛歍ASK #2094 銆愭寜閽牱寮忋�戝師鏉ョ殑鎸夐挳闂磋窛鏈夌偣澶�--- 鍏煎澶勭悊  */
 a.l-btn {
   color: #777;
-  /*update-begin--Author:xuelin  Date:20170608 for：TASK #2094 【按钮样式】原来的按钮间距有点大--- 此处原为单选查询按钮美化，已做兼容处理 */
+  /*update-begin--Author:xuelin  Date:20170608 for锛歍ASK #2094 銆愭寜閽牱寮忋�戝師鏉ョ殑鎸夐挳闂磋窛鏈夌偣澶�--- 姝ゅ鍘熶负鍗曢�夋煡璇㈡寜閽編鍖栵紝宸插仛鍏煎澶勭悊 */
   /*padding: 1px 6px 1px 1px;*/
-  /* update-begin--Author:scott  Date:20171113 for：分页图标晃动问题修改，兼容按钮样式------------------- */
+  /* update-begin--Author:scott  Date:20171113 for锛氬垎椤靛浘鏍囨檭鍔ㄩ棶棰樹慨鏀癸紝鍏煎鎸夐挳鏍峰紡------------------- */
   padding: 0 5px 0 0;
-  /* update-begin--Author:scott  Date:20171113 for：分页图标晃动问题修改，兼容按钮样式------------------- */
-  /*update-end--Author:xuelin  Date:20170608 for：TASK #2094 【按钮样式】原来的按钮间距有点大--- 此处原为单选查询按钮美化，已做兼容处理  */
+  /* update-begin--Author:scott  Date:20171113 for锛氬垎椤靛浘鏍囨檭鍔ㄩ棶棰樹慨鏀癸紝鍏煎鎸夐挳鏍峰紡------------------- */
+  /*update-end--Author:xuelin  Date:20170608 for锛歍ASK #2094 銆愭寜閽牱寮忋�戝師鏉ョ殑鎸夐挳闂磋窛鏈夌偣澶�--- 姝ゅ鍘熶负鍗曢�夋煡璇㈡寜閽編鍖栵紝宸插仛鍏煎澶勭悊  */
 /*   background-image: url('images/linkbutton_bg.png');
   background-repeat: no-repeat;
   background: #e9e9e9;
   background-repeat: repeat-x;
-  border: 1px solid #e9e9e9; 解决自定义表单布局样式问题
+  border: 1px solid #e9e9e9; 瑙ｅ喅鑷畾涔夎〃鍗曞竷灞�鏍峰紡闂
   background: -webkit-linear-gradient(top,#e9e9e9 0,#e9e9e9 100%);
   background: -moz-linear-gradient(top,#e9e9e9 0,#e9e9e9 100%);
   background: -o-linear-gradient(top,#e9e9e9 0,#e9e9e9 100%);
@@ -1036,7 +1033,7 @@ a:hover.l-btn-disabled {
 .datagrid-sort-icon {
   padding: 0;
 }
-/*update-begin author:xuelin date:20171101 for:TASK #2403 【bug】【UI】fineui效果改进和参考*/
+/*update-begin author:xuelin date:20171101 for:TASK #2403 銆恇ug銆戙�怳I銆慺ineui鏁堟灉鏀硅繘鍜屽弬鑰�*/
 .datagrid-toolbar {
   height: auto;
   padding: 2px 2px 2px 2px;
@@ -1046,7 +1043,7 @@ a:hover.l-btn-disabled {
 .datagrid-toolbar .datagrid-toolbar {
 	border-width: 0 0 0 0;
 }
-/*update-end author:xuelin date:20171101 for:TASK #2403 【bug】【UI】fineui效果改进和参考*/
+/*update-end author:xuelin date:20171101 for:TASK #2403 銆恇ug銆戙�怳I銆慺ineui鏁堟灉鏀硅繘鍜屽弬鑰�*/
 .datagrid-btn-separator {
   float: left;
   height: 24px;
@@ -1072,15 +1069,13 @@ a:hover.l-btn-disabled {
   float: left;
   width: 10000px;
 }
-/*update-begin--Author:xuelin  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
+/*update-begin--Author:xuelin  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
 .datagrid-header-row{
   font-weight: bold;
-  /*update-begin author:zhoujf date:20180412 for:列表样式优化*/
-  height: 31px;
-  /*update-end author:zhoujf date:20180412 for:列表样式优化*/
+  height: 25px;
   background-color:#F9F9F9;
 }
-/*update-end--Author:xuelin  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
+/*update-end--Author:xuelin  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
 .datagrid-row {
   height: 25px;
 }
@@ -1102,7 +1097,7 @@ a:hover.l-btn-disabled {
   overflow: hidden;
 }
 
-/*update-begin--Author:xuelin  Date:20170613 for：TASK #2100 【列表样式美化】【样式专题】Jeecg平台任务 ---4列表页面，按钮和列表的字体 参考jqgrid-------------------- */
+/*update-begin--Author:xuelin  Date:20170613 for锛歍ASK #2100 銆愬垪琛ㄦ牱寮忕編鍖栥�戙�愭牱寮忎笓棰樸�慗eecg骞冲彴浠诲姟 ---4鍒楄〃椤甸潰锛屾寜閽拰鍒楄〃鐨勫瓧浣� 鍙傝�僯qgrid-------------------- */
 .datagrid-cell,
 .datagrid-cell-group,
 .datagrid-header-rownumber,
@@ -1117,7 +1112,7 @@ a:hover.l-btn-disabled {
   /*font-weight: normal; */
   text-overflow: ellipsis;
 }
-/*update-end--Author:xuelin  Date:20170613 for：TASK #2100 【列表样式美化】【样式专题】Jeecg平台任务 ---4列表页面，按钮和列表的字体 参考jqgrid---------------------- */
+/*update-end--Author:xuelin  Date:20170613 for锛歍ASK #2100 銆愬垪琛ㄦ牱寮忕編鍖栥�戙�愭牱寮忎笓棰樸�慗eecg骞冲彴浠诲姟 ---4鍒楄〃椤甸潰锛屾寜閽拰鍒楄〃鐨勫瓧浣� 鍙傝�僯qgrid---------------------- */
 .datagrid-cell-group {
   text-align: center;
 }
@@ -1168,8 +1163,8 @@ a:hover.l-btn-disabled {
   width: 15px;
   height: 18px;
 }
-/*update-begin--Author:xuelin  Date:20171108 for：[#2404]【平台UI改造】UI样式改造点--Checkbox 选中样式参考fineui效果--*/
-/*update-begin--Author:xuelin  Date:20171113 for：[#2414]【bug】发现一个bug,check样式改后，选中不准/对号不居中，有点偏下了/外观偏大*/
+/*update-begin--Author:xuelin  Date:20171108 for锛歔#2404]銆愬钩鍙癠I鏀归�犮�慤I鏍峰紡鏀归�犵偣--Checkbox 閫変腑鏍峰紡鍙傝�僨ineui鏁堟灉--*/
+/*update-begin--Author:xuelin  Date:20171113 for锛歔#2414]銆恇ug銆戝彂鐜颁竴涓猙ug,check鏍峰紡鏀瑰悗锛岄�変腑涓嶅噯/瀵瑰彿涓嶅眳涓紝鏈夌偣鍋忎笅浜�/澶栬鍋忓ぇ*/
 input[type=checkbox]{
 		width:14px;
 		height:14px;
@@ -1182,9 +1177,9 @@ input[type=checkbox]{
         cursor: pointer;
         box-shadow: none !important;
         drop-shadow: none !important;
-        /*update-begin--Author:xuelin  Date:20171222 for：[#2458] 【样式问题】online表单，ace风格下checkbox 样式问题--*/
+        /*update-begin--Author:xuelin  Date:20171222 for锛歔#2458] 銆愭牱寮忛棶棰樸�憃nline琛ㄥ崟锛宎ce椋庢牸涓媍heckbox 鏍峰紡闂--*/
         vertical-align: middle;
-        /*update-end--Author:xuelin  Date:20171222 for：[#2458] 【样式问题】online表单，ace风格下checkbox 样式问题--*/
+        /*update-end--Author:xuelin  Date:20171222 for锛歔#2458] 銆愭牱寮忛棶棰樸�憃nline琛ㄥ崟锛宎ce椋庢牸涓媍heckbox 鏍峰紡闂--*/
 }
 input[type=checkbox]:active{
 }       
@@ -1220,8 +1215,8 @@ input[type=checkbox]::after{
 	height:14px;
 	content: url(images/checkbox.png);*/ 
 }
-/*update-end--Author:xuelin  Date:20171113 for：[#2414]【bug】发现一个bug,check样式改后，选中不准/对号不居中，有点偏下了/外观偏大*/
-/*update-end--Author:xuelin  Date:20171108 for：[#2404]【平台UI改造】UI样式改造点--Checkbox 选中样式参考fineui效果--*/
+/*update-end--Author:xuelin  Date:20171113 for锛歔#2414]銆恇ug銆戝彂鐜颁竴涓猙ug,check鏍峰紡鏀瑰悗锛岄�変腑涓嶅噯/瀵瑰彿涓嶅眳涓紝鏈夌偣鍋忎笅浜�/澶栬鍋忓ぇ*/
+/*update-end--Author:xuelin  Date:20171108 for锛歔#2404]銆愬钩鍙癠I鏀归�犮�慤I鏍峰紡鏀归�犵偣--Checkbox 閫変腑鏍峰紡鍙傝�僨ineui鏁堟灉--*/
 .datagrid-resize-proxy {
   position: absolute;
   width: 1px;
@@ -1284,32 +1279,32 @@ input[type=checkbox]::after{
 .datagrid-mask-msg {
   border-color: #ddd;
 }
-/*update-begin--Author:xuelin  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
-/*update-begin--Author:xuelin  Date:20170607 for：TASK #2083 【样式】JEECG样式专项工作  问题2 查询区域底色改成白色-------------------- */
+/*update-begin--Author:xuelin  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
+/*update-begin--Author:xuelin  Date:20170607 for锛歍ASK #2083 銆愭牱寮忋�慗EECG鏍峰紡涓撻」宸ヤ綔  闂2 鏌ヨ鍖哄煙搴曡壊鏀规垚鐧借壊-------------------- */
 .datagrid-toolbar{
    background: #FFF; 
 }
-/* update-begin--Author:xuelin  Date:20170608 for：TASK #2090 【样式】分页样式改造，参考 jqgrid风格-------------------- */	
+/* update-begin--Author:xuelin  Date:20170608 for锛歍ASK #2090 銆愭牱寮忋�戝垎椤垫牱寮忔敼閫狅紝鍙傝�� jqgrid椋庢牸-------------------- */	
 .datagrid-pager {
    /*background: #FAFAFA; */
 }
-/* update-end--Author:xuelin  Date:20170608 for：TASK #2090 【样式】分页样式改造，参考 jqgrid风格-------------------- */	
-/*update-end--Author:xuelin  Date:20170607 for：TASK #2083 【样式】JEECG样式专项工作  问题2 查询区域底色改成白色---------------------- */
-/*update-end--Author:xuelin  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
-/* update-begin--Author:xuelin  Date:20170523 for：TASK #2004 【UI优化】单选按钮模式，查询条件格式美化------------------- */
+/* update-end--Author:xuelin  Date:20170608 for锛歍ASK #2090 銆愭牱寮忋�戝垎椤垫牱寮忔敼閫狅紝鍙傝�� jqgrid椋庢牸-------------------- */	
+/*update-end--Author:xuelin  Date:20170607 for锛歍ASK #2083 銆愭牱寮忋�慗EECG鏍峰紡涓撻」宸ヤ綔  闂2 鏌ヨ鍖哄煙搴曡壊鏀规垚鐧借壊---------------------- */
+/*update-end--Author:xuelin  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
+/* update-begin--Author:xuelin  Date:20170523 for锛歍ASK #2004 銆怳I浼樺寲銆戝崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏍煎紡缇庡寲------------------- */
 .datagrid-toolbar .datagrid-toolbar{
-/*update-begin--Author:xuelin-scott  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
+/*update-begin--Author:xuelin-scott  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
   /*border-top:1px solid #d8d8d8;
   border-left:1px solid #d8d8d8;
   border-right:1px solid #d8d8d8;*/
-  /*update-end--Author:xuelin-scott  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
-  /*update-begin--Author:xuelin Date:20170523 for：TASK #2002 【UI优化】列表上方button样式改造方案   升级bootstrap到3.3.7后兼容性 --*/
+  /*update-end--Author:xuelin-scott  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
+  /*update-begin--Author:xuelin Date:20170523 for锛歍ASK #2002 銆怳I浼樺寲銆戝垪琛ㄤ笂鏂筨utton鏍峰紡鏀归�犳柟妗�   鍗囩骇bootstrap鍒�3.3.7鍚庡吋瀹规�� --*/
   height:27px;
-  /*update-begin--Author:xuelin Date:20170523 for：TASK #2002 【UI优化】列表上方button样式改造方案   升级bootstrap到3.3.7后兼容性 --*/
+  /*update-begin--Author:xuelin Date:20170523 for锛歍ASK #2002 銆怳I浼樺寲銆戝垪琛ㄤ笂鏂筨utton鏍峰紡鏀归�犳柟妗�   鍗囩骇bootstrap鍒�3.3.7鍚庡吋瀹规�� --*/
   /*line-height:34px;*/
   margin-top: 3px;
  }
-/* update-end--Author:xuelin  Date:20170523 for：TASK #2004 【UI优化】单选按钮模式，查询条件格式美化-------------------- */	
+/* update-end--Author:xuelin  Date:20170523 for锛歍ASK #2004 銆怳I浼樺寲銆戝崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏍煎紡缇庡寲-------------------- */	
 
 .datagrid-header,
 .datagrid-toolbar,
@@ -1317,14 +1312,14 @@ input[type=checkbox]::after{
 .datagrid-footer-inner {
   border-color: #ddd;
 }
-/*update-begin--Author:xuelin  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
-/*update-begin--Author:xuelin  Date:20170613 for：TASK #2100 【列表样式美化】【样式专题】Jeecg平台任务 ---4列表页面，按钮和列表的字体 参考jqgrid---------------------- */
+/*update-begin--Author:xuelin  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
+/*update-begin--Author:xuelin  Date:20170613 for锛歍ASK #2100 銆愬垪琛ㄦ牱寮忕編鍖栥�戙�愭牱寮忎笓棰樸�慗eecg骞冲彴浠诲姟 ---4鍒楄〃椤甸潰锛屾寜閽拰鍒楄〃鐨勫瓧浣� 鍙傝�僯qgrid---------------------- */
 .datagrid-header td{
    font-weight:normal;
    border-color: #e7e7e7;
    font-family: "open sans","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
-/*update-end--Author:xuelin  Date:20170613 for：TASK #2100 【列表样式美化】【样式专题】Jeecg平台任务 ---4列表页面，按钮和列表的字体 参考jqgrid---------------------- */
+/*update-end--Author:xuelin  Date:20170613 for锛歍ASK #2100 銆愬垪琛ㄦ牱寮忕編鍖栥�戙�愭牱寮忎笓棰樸�慗eecg骞冲彴浠诲姟 ---4鍒楄〃椤甸潰锛屾寜閽拰鍒楄〃鐨勫瓧浣� 鍙傝�僯qgrid---------------------- */
 .datagrid-body td,
 .datagrid-footer td {
   border-color: #e7e7e7;
@@ -1343,7 +1338,7 @@ input[type=checkbox]::after{
   cursor: default;
   font-weight: normal;
 }
-/*update-end--Author:xuelin  Date:20170517 for：TASK#1969::【UI美化】h+风格下，列表整体风格有点灰------------------- */
+/*update-end--Author:xuelin  Date:20170517 for锛歍ASK#1969::銆怳I缇庡寲銆慼+椋庢牸涓嬶紝鍒楄〃鏁翠綋椋庢牸鏈夌偣鐏�------------------- */
 .datagrid-header td.datagrid-header-over {
   background: #f3f3f3;
   color: #444;
@@ -1418,10 +1413,6 @@ input[type=checkbox]::after{
   height: auto;
   border-width: 1px;
   border-style: solid;
-  /* update-begin--Author:scott  Date:20180626 for：select下拉背景图美化-------------------- */	
-  background: no-repeat;
-  -webkit-appearance: menulist !important;
-  /* update-end--Author:scott  Date:20180626 for：select下拉背景图美化-------------------- */	
 }
 .pagination-info {
   float: right;
@@ -1452,13 +1443,13 @@ input[type=checkbox]::after{
 .pagination-loading {
   background: url('images/loading.gif') no-repeat;
 }
-/* update-begin--Author:xuelin  Date:20170608 for：TASK #2090 【样式】分页样式改造，参考 jqgrid风格-------------------- */	
+/* update-begin--Author:xuelin  Date:20170608 for锛歍ASK #2090 銆愭牱寮忋�戝垎椤垫牱寮忔敼閫狅紝鍙傝�� jqgrid椋庢牸-------------------- */	
 .pagination-page-list,
 .pagination .pagination-num {
   border-color: #ddd;
   border-radius: 0;
 }
-/* update-end--Author:xuelin  Date:20170608 for：TASK #2090 【样式】分页样式改造，参考 jqgrid风格-------------------- */	
+/* update-end--Author:xuelin  Date:20170608 for锛歍ASK #2090 銆愭牱寮忋�戝垎椤垫牱寮忔敼閫狅紝鍙傝�� jqgrid椋庢牸-------------------- */	
 .calendar {
   border-width: 1px;
   border-style: solid;
@@ -1825,17 +1816,17 @@ input[type=checkbox]::after{
   opacity: 1.0;
   filter: alpha(opacity=60);
 }
-/*update-begin--Author:xuelin  Date:20170603 for：TASK #2032 【美化】边角圆润些，看看好看些-------------------- */
-/*update-begin--Author:xuelin  Date:20170607 for：TASK #2083 【样式】JEECG样式专项工作  问题6 边角圆润些，看看好看些-------------------- */
+/*update-begin--Author:xuelin  Date:20170603 for锛歍ASK #2032 銆愮編鍖栥�戣竟瑙掑渾娑︿簺锛岀湅鐪嬪ソ鐪嬩簺-------------------- */
+/*update-begin--Author:xuelin  Date:20170607 for锛歍ASK #2083 銆愭牱寮忋�慗EECG鏍峰紡涓撻」宸ヤ綔  闂6 杈硅鍦嗘鼎浜涳紝鐪嬬湅濂界湅浜�-------------------- */
 .searchbox a.l-btn .l-btn-left {
    padding: 0px 0 6px 0px;
    height: 18px !important;
    /*border-radius: 3px !important;*/
    border:0;
 }
-/*update-end--Author:xuelin  Date:20170607 for：TASK #2083 【样式】JEECG样式专项工作  问题6 边角圆润些，看看好看些---------------------- */
-/*update-end--Author:xuelin  Date:20170603 for：TASK #2032 【美化】边角圆润些，看看好看些---------------------- */
-/* update-begin--Author:xuelin  Date:20170523 for：TASK #2004 【UI优化】单选按钮模式，查询条件格式美化------------------- */
+/*update-end--Author:xuelin  Date:20170607 for锛歍ASK #2083 銆愭牱寮忋�慗EECG鏍峰紡涓撻」宸ヤ綔  闂6 杈硅鍦嗘鼎浜涳紝鐪嬬湅濂界湅浜�---------------------- */
+/*update-end--Author:xuelin  Date:20170603 for锛歍ASK #2032 銆愮編鍖栥�戣竟瑙掑渾娑︿簺锛岀湅鐪嬪ソ鐪嬩簺---------------------- */
+/* update-begin--Author:xuelin  Date:20170523 for锛歍ASK #2004 銆怳I浼樺寲銆戝崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏍煎紡缇庡寲------------------- */
 .searchbox a.l-btn-plain:hover {
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
@@ -1859,7 +1850,7 @@ input[type=checkbox]::after{
     border-bottom-color: #21B9BB !important;
     letter-spacing: 3px;
 }
-/* update-end--Author:xuelin  Date:20170523 for：TASK #2004 【UI优化】单选按钮模式，查询条件格式美化------------------- */
+/* update-end--Author:xuelin  Date:20170523 for锛歍ASK #2004 銆怳I浼樺寲銆戝崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏍煎紡缇庡寲------------------- */
 .searchbox-button {
   background: url('images/searchbox_button.png') no-repeat center center;
 }
@@ -1868,10 +1859,10 @@ input[type=checkbox]::after{
   background-color: #fff;
   width: 255px !important;
   height: 24px !important;
-  /*update-begin--Author:xuelin  Date:20170603 for：TASK #2032 【美化】边角圆润些，看看好看些-------------------- */
+  /*update-begin--Author:xuelin  Date:20170603 for锛歍ASK #2032 銆愮編鍖栥�戣竟瑙掑渾娑︿簺锛岀湅鐪嬪ソ鐪嬩簺-------------------- */
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  /*update-end--Author:xuelin  Date:20170603 for：TASK #2032 【美化】边角圆润些，看看好看些-------------------- */
+  /*update-end--Author:xuelin  Date:20170603 for锛歍ASK #2032 銆愮編鍖栥�戣竟瑙掑渾娑︿簺锛岀湅鐪嬪ソ鐪嬩簺-------------------- */
   }
 }
 .searchbox a.l-btn-plain {
@@ -2109,13 +2100,13 @@ a.m-btn-plain-active {
 .m-btn-downarrow {
   background: url('images/menu_arrows.png') no-repeat 2px center;
 }
-/* update-begin--Author:xuelin  Date:20170523 for：TASK #2004 【UI优化】单选按钮模式，查询条件格式美化------------------- */
+/* update-begin--Author:xuelin  Date:20170523 for锛歍ASK #2004 銆怳I浼樺寲銆戝崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏍煎紡缇庡寲------------------- */
 a.m-btn-plain-active {
   border-color: #ddd;
   background-color: #FFFFFF;
   color: #444;
 }
-/* update-end--Author:xuelin  Date:20170523 for：TASK #2004 【UI优化】单选按钮模式，查询条件格式美化------------------- */
+/* update-end--Author:xuelin  Date:20170523 for锛歍ASK #2004 銆怳I浼樺寲銆戝崟閫夋寜閽ā寮忥紝鏌ヨ鏉′欢鏍煎紡缇庡寲------------------- */
 .s-btn-downarrow {
   display: inline-block;
   margin: 0 0 0 4px;
@@ -2158,7 +2149,7 @@ a.s-btn-plain-active {
   background-color: #E6E6E6;
   color: #444;
 }
-/*update-begin--Author:xuelin  Date:20170607 for：TASK #2083 【样式】JEECG样式专项工作  问题7 断网后，点击下一页提示风格-------------------- */
+/*update-begin--Author:xuelin  Date:20170607 for锛歍ASK #2083 銆愭牱寮忋�慗EECG鏍峰紡涓撻」宸ヤ綔  闂7 鏂綉鍚庯紝鐐瑰嚮涓嬩竴椤垫彁绀洪鏍�-------------------- */
 .messager-window{
 	color: #7d8289;
     font: 12px/1.5 tahoma, arial, \5b8b\4f53, sans-serif;
@@ -2273,7 +2264,7 @@ a.s-btn-plain-active {
     background-color: #26C3C5;
     text-decoration: none;
 }
-/*update-end--Author:xuelin  Date:20170607 for：TASK #2083 【样式】JEECG样式专项工作  问题7 断网后，点击下一页提示风格-------------------- */
+/*update-end--Author:xuelin  Date:20170607 for锛歍ASK #2083 銆愭牱寮忋�慗EECG鏍峰紡涓撻」宸ヤ綔  闂7 鏂綉鍚庯紝鐐瑰嚮涓嬩竴椤垫彁绀洪鏍�-------------------- */
 .messager-icon {
   float: left;
   width: 32px;
@@ -2379,12 +2370,12 @@ a.s-btn-plain-active {
 .tree-folder-open {
   background: url('images/tree_icons.png') no-repeat -224px 0;
 }
-/*update-begin--Author:xuelin  Date:20171108 for：[#2404]【平台UI改造】UI样式改造点--树节点图标不好看--*/
+/*update-begin--Author:xuelin  Date:20171108 for锛歔#2404]銆愬钩鍙癠I鏀归�犮�慤I鏍峰紡鏀归�犵偣--鏍戣妭鐐瑰浘鏍囦笉濂界湅--*/
 .tree-file {
   /*background: url('images/tree_icons.png') no-repeat -240px 0;*/
   background: url('images/tag.png')
 }
-/*update-end--Author:xuelin  Date:20171108 for：[#2404]【平台UI改造】UI样式改造点--树节点图标不好看--*/
+/*update-end--Author:xuelin  Date:20171108 for锛歔#2404]銆愬钩鍙癠I鏀归�犮�慤I鏍峰紡鏀归�犵偣--鏍戣妭鐐瑰浘鏍囦笉濂界湅--*/
 .tree-loading {
   background: url('images/loading.gif') no-repeat center center;
 }
@@ -2528,19 +2519,19 @@ a.s-btn-plain-active {
 	margin-right: 10px;
 	cursor: pointer;
 }
-/*update-begin--Author:xuelin  Date:20170624 for：TASK #2167 【技术研究】列表表头表头怎么换行-------------------- */
+/*update-begin--Author:xuelin  Date:20170624 for锛歍ASK #2167 銆愭妧鏈爺绌躲�戝垪琛ㄨ〃澶磋〃澶存�庝箞鎹㈣-------------------- */
 .datagrid-header-row td .datagrid-cell{
 	height: inherit;
     line-height: normal;
 }
-/*update-end--Author:xuelin  Date:20170624 for：TASK #2167 【技术研究】列表表头表头怎么换行---------------------- */
+/*update-end--Author:xuelin  Date:20170624 for锛歍ASK #2167 銆愭妧鏈爺绌躲�戝垪琛ㄨ〃澶磋〃澶存�庝箞鎹㈣---------------------- */
 
-/*update-begin author:xuelin date:20171101 for:TASK #2403 【bug】【UI】fineui效果改进和参考*/
-/*update-begin author:xuelin date:20171112 for:TASK #2411 【样式】查询条件样式修改，针对online功能*/
+/*update-begin author:xuelin date:20171101 for:TASK #2403 銆恇ug銆戙�怳I銆慺ineui鏁堟灉鏀硅繘鍜屽弬鑰�*/
+/*update-begin author:xuelin date:20171112 for:TASK #2411 銆愭牱寮忋�戞煡璇㈡潯浠舵牱寮忎慨鏀癸紝閽堝online鍔熻兘*/
 #searchColums,div[name="searchColums"] {border-bottom: 1px solid #D7D7D7; padding: 3px 0 3px 0; }
-/*update-end author:xuelin date:20171112 for:TASK #2411 【样式】查询条件样式修改，针对online功能*/
-/*update-end author:xuelin date:20171101 for:TASK #2403 【bug】【UI】fineui效果改进和参考*/
-/*update-begin author:xuelin date:20171116 for:TASK #2404 【平台UI改造】UI样式改造点  5.参考fineui，做下字段过滤功能效果*/
+/*update-end author:xuelin date:20171112 for:TASK #2411 銆愭牱寮忋�戞煡璇㈡潯浠舵牱寮忎慨鏀癸紝閽堝online鍔熻兘*/
+/*update-end author:xuelin date:20171101 for:TASK #2403 銆恇ug銆戙�怳I銆慺ineui鏁堟灉鏀硅繘鍜屽弬鑰�*/
+/*update-begin author:xuelin date:20171116 for:TASK #2404 銆愬钩鍙癠I鏀归�犮�慤I鏍峰紡鏀归�犵偣  5.鍙傝�僨ineui锛屽仛涓嬪瓧娈佃繃婊ゅ姛鑳芥晥鏋�*/
  #filter{
  	-moz-box-shadow: 0 2px 8px rgba(0,0,0,.3);
     -webkit-box-shadow: 0 2px 8px rgba(0,0,0,.3);
@@ -2579,4 +2570,4 @@ a.s-btn-plain-active {
  	text-align:left;
  	padding:0 0 5px 0 !important;
  }
-/*update-end author:xuelin date:20171116 for:TASK #2404 【平台UI改造】UI样式改造点  5.参考fineui，做下字段过滤功能效果*/
+/*update-end author:xuelin date:20171116 for:TASK #2404 銆愬钩鍙癠I鏀归�犮�慤I鏍峰紡鏀归�犵偣  5.鍙傝�僨ineui锛屽仛涓嬪瓧娈佃繃婊ゅ姛鑳芥晥鏋�*/

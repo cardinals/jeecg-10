@@ -17,7 +17,6 @@ import org.jeecgframework.core.util.DBTypeUtil;
 import org.jeecgframework.core.util.DateUtils;
 import org.jeecgframework.core.util.MyClassLoader;
 import org.jeecgframework.core.util.ResourceUtil;
-import org.jeecgframework.core.util.SqlInjectionUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.core.util.UUIDGenerator;
 import org.jeecgframework.core.util.oConvertUtils;
@@ -72,9 +71,6 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 
 	public void insertTable(String tableName, Map<String, Object> data) throws BusinessException {
 		CgFormHeadEntity cgFormHeadEntity = cgFormFieldService.getCgFormHeadByTableName(tableName);
-
-		executeJavaExtend(cgFormHeadEntity.getId(),"add",data,"start");
-
 		//系统上下文变量赋值
 		fillInsertSysVar(tableName,data);
 		//主键适配器（根据不同的数据库进行生成）
@@ -109,7 +105,7 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 		if(cgFormHeadEntity!=null){
 			executeSqlExtend(cgFormHeadEntity.getId(),"add",data);
 
-			executeJavaExtend(cgFormHeadEntity.getId(),"add",data,"end");
+			executeJavaExtend(cgFormHeadEntity.getId(),"add",data);
 
 		}
 	}
@@ -135,9 +131,6 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 	 * @param data 数据
 	 */
 	private Map<String, Object> dataAdapter(String tableName,Map<String, Object> data) {
-
-		SqlInjectionUtil.filterContent(tableName);
-
 		//step.1 获取表单的字段配置
 		Map<String, CgFormFieldEntity> fieldConfigs =cgFormFieldService.getAllCgFormFieldByTableName(tableName);
 		//step.2 迭代将要持久化的数据
@@ -166,11 +159,6 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 
 						}else if (dateStr.indexOf(":") > 0 && dateStr.indexOf(".0") > 0 && dateStr.length()== 21) {
 							newV =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStr.substring(0, dateStr.indexOf(".0")));
-
-						}else if(dateStr.indexOf(":") != -1){
-							newV =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStr);
-						}else{
-							newV =  new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
 						}
 						
 						/*String dateType = fieldConfig.getShowType();
@@ -242,18 +230,12 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 			}
 		}
 
-//		if(id instanceof java.lang.String){
-//			sqlBuffer.append(" where id='").append(id).append("'");
-//		}else{
-//			sqlBuffer.append(" where id=").append(id);
-//		}
-		sqlBuffer.append(" where id=:id");
-		data.put("id", id);
-
+		if(id instanceof java.lang.String){
+			sqlBuffer.append(" where id='").append(id).append("'");
+		}else{
+			sqlBuffer.append(" where id=").append(id);
+		}
 		CgFormHeadEntity cgFormHeadEntity = cgFormFieldService.getCgFormHeadByTableName(tableName);
-
-		executeJavaExtend(cgFormHeadEntity.getId(),"update",data, "start");
-
 		int num = this.executeSql(sqlBuffer.toString(), data);
 
 		if(cgFormHeadEntity!=null){
@@ -262,7 +244,7 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 
 			executeSqlExtend(cgFormHeadEntity.getId(),"update",data);
 
-			executeJavaExtend(cgFormHeadEntity.getId(),"update",data, "end");
+			executeJavaExtend(cgFormHeadEntity.getId(),"update",data);
 
 		}
 		return num;
@@ -276,9 +258,6 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 	 */
 
 	public Map<String, Object> findOneForJdbc(String tableName, String id) {
-
-		SqlInjectionUtil.filterContent(tableName);
-
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append("select * from ").append(tableName);
 		sqlBuffer.append(" where id= ? ");
@@ -289,7 +268,7 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 	 * sql业务增强
 	 *
 	 */
-	public void executeSqlExtend(String formId,String buttonCode,Map<String, Object> data) throws BusinessException{
+	public void executeSqlExtend(String formId,String buttonCode,Map<String, Object> data){
 		//根据formId和buttonCode获取
 		CgformButtonSqlEntity cgformButtonSqlVo = getCgformButtonSqlByCodeFormId(buttonCode,formId);
 		if(cgformButtonSqlVo!=null){
@@ -331,9 +310,7 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 							try {
 								num = namedParameterJdbcTemplate.update(sql, data);
 							} catch (Throwable e) {
-
-								throw new BusinessException(e.getMessage());
-
+								e.printStackTrace();
 							}
 						}else{
 							num = this.executeSql(sql);
@@ -518,9 +495,7 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 		Map<Object,Map<String, Object>> dataMap = new HashMap<Object, Map<String,Object>>();
 		if(subTableDataList!=null){
 			for(Map<String,Object> map:subTableDataList){
-
-				dataMap.put(map.get("id").toString(), map);
-
+				dataMap.put(map.get("id"), map);
 			}
 		}
 		return dataMap;
@@ -588,9 +563,6 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 	 */
 	private void deleteSubTableDataById(Object subId,String subTableName){
 		StringBuilder sql = new StringBuilder("");
-
-		SqlInjectionUtil.filterContent(subTableName);
-
 		sql.append(" delete from ").append(subTableName).append(" where id = ? ");
 
 		this.executeSql(sql.toString(), subId);
@@ -731,17 +703,10 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 
 			if(StringUtil.isNotEmpty(cgJavaValue)){
 				Object obj = null;
-
-//				try {
+				try {
 					if("class".equals(cgJavaType)){
 						//因新增时已经校验了实例化是否可以成功，所以这块就不需要再做一次判断
-						try {
-							obj = MyClassLoader.getClassByScn(cgJavaValue).newInstance();
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						}
+						obj = MyClassLoader.getClassByScn(cgJavaValue).newInstance();
 					}else if("spring".equals(cgJavaType)){
 						obj = ApplicationContextUtil.getContext().getBean(cgJavaValue);
 					}
@@ -752,12 +717,11 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 						javaInter.execute(head.getTableName(),data);
 
 					}
-//				} catch (Exception e) {
-//					logger.error(e.getMessage());
-//					e.printStackTrace();
-//					throw new BusinessException("执行JAVA增强出现异常！");
-//				} 
-
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+					e.printStackTrace();
+					throw new BusinessException("执行JAVA增强出现异常！");
+				} 
 			}
 
 		}
@@ -766,15 +730,12 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 	public CgformEnhanceJavaEntity getCgformEnhanceJavaEntityByCodeFormId(String buttonCode, String formId) {
 		StringBuilder hql = new StringBuilder("");
 		hql.append(" from CgformEnhanceJavaEntity t");
-
-		hql.append(" where t.formId=?");
-		hql.append(" and  t.buttonCode =?");
+		hql.append(" where t.formId='").append(formId).append("'");
+		hql.append(" and  t.buttonCode ='").append(buttonCode).append("'");
 
 		hql.append(" and  t.activeStatus ='1'");
 
-		hql.append(" and t.event = 'end' ");
-		List<CgformEnhanceJavaEntity> list = this.findHql(hql.toString(),formId,buttonCode);
-
+		List<CgformEnhanceJavaEntity> list = this.findHql(hql.toString());
 		if(list!=null&&list.size()>0){
 			return list.get(0);
 		}
@@ -784,77 +745,10 @@ public class DataBaseServiceImpl extends CommonServiceImpl implements DataBaseSe
 	public List<CgformEnhanceJavaEntity> getCgformEnhanceJavaEntityByFormId( String formId) {
 		StringBuilder hql = new StringBuilder("");
 		hql.append(" from CgformEnhanceJavaEntity t");
-		hql.append(" where t.formId=?");
-		List<CgformEnhanceJavaEntity> list = this.findHql(hql.toString(),formId);
+		hql.append(" where t.formId='").append(formId).append("'");
+		List<CgformEnhanceJavaEntity> list = this.findHql(hql.toString());
 		return list;
 	}
 
-	
-	@Override
-	public void executeJavaExtend(String formId, String buttonCode,
-			Map<String, Object> data, String event) throws BusinessException {
-
-		CgformEnhanceJavaEntity cgformEnhanceJavaEntity = getCgformEnhanceJavaEntityByCodeFormId(buttonCode,formId,event);
-
-		if(cgformEnhanceJavaEntity!=null){
-			String cgJavaType = cgformEnhanceJavaEntity.getCgJavaType();
-			String cgJavaValue = cgformEnhanceJavaEntity.getCgJavaValue();
-
-			if(StringUtil.isNotEmpty(cgJavaValue)){
-				Object obj = null;
-
-//				try {
-					if("class".equals(cgJavaType)){
-						//因新增时已经校验了实例化是否可以成功，所以这块就不需要再做一次判断
-						try {
-							obj = MyClassLoader.getClassByScn(cgJavaValue).newInstance();
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						}
-					}else if("spring".equals(cgJavaType)){
-						obj = ApplicationContextUtil.getContext().getBean(cgJavaValue);
-					}
-					if(obj instanceof CgformEnhanceJavaInter){
-
-						CgFormHeadEntity head = this.get(CgFormHeadEntity.class, formId);
-						CgformEnhanceJavaInter javaInter = (CgformEnhanceJavaInter) obj;
-						javaInter.execute(head.getTableName(),data);
-
-					}
-//				} catch (Exception e) {
-//					logger.error(e.getMessage());
-//					e.printStackTrace();
-//					throw new BusinessException("执行JAVA增强出现异常！");
-//				} 
-
-			}
-
-		}
-	}
-	
-	public CgformEnhanceJavaEntity getCgformEnhanceJavaEntityByCodeFormId(String buttonCode, String formId, String event) {
-		StringBuilder hql = new StringBuilder("");
-		List<CgformEnhanceJavaEntity> list = null;
-		hql.append(" from CgformEnhanceJavaEntity t");
-
-		hql.append(" where t.formId=?");
-		hql.append(" and  t.buttonCode =?");
-
-		hql.append(" and  t.activeStatus ='1'");
-
-		if(oConvertUtils.isNotEmpty(event)) {
-			hql.append(" and t.event = ?");
-			list = this.findHql(hql.toString(),formId,buttonCode,event);
-		} else {
-			list = this.findHql(hql.toString(),formId,buttonCode);
-		}
-
-		if(list!=null&&list.size()>0){
-			return list.get(0);
-		}
-		return null;
-	}
 }
 

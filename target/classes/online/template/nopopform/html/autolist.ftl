@@ -80,14 +80,11 @@ function createDataGrid${config_id}(){
 						 		}else{
 						 			<#-- //update-begin--Author:zhangjiaqiang  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
 						 			<#-- update--begin--author:zhangjiaqiang date:20170628 for: TASK #2194 【online链接样式切换】Online 功能测试的列表链接样式，需要根据浏览器IE进行切换 -->
-						 			<#-- update-begin- author:taoyan date:20181023 for:txt文件下载bug -->
-						 			var value2="systemController/downloadFile.do?filePath="+value
 						 			<#if brower_type?? && brower_type == 'Microsoft%20Internet%20Explorer'>
-						 			href+="[<a href='"+value2+"' style='text-decoration:none;' target=_blank>点击下载</a>]";
+						 			href+="[<a href='"+value+"' style='text-decoration:none;' target=_blank>点击下载</a>]";
 						 			<#else>
-						 			href+="<a href='"+value2+"' class='ace_button' style='text-decoration:none;' target=_blank><u><i class='fa fa-download'></i>点击下载</u></a>";
+						 			href+="<a href='"+value+"' class='ace_button' style='text-decoration:none;' target=_blank><u><i class='fa fa-download'></i>点击下载</u></a>";
 						 			</#if>
-						 			<#-- update-begin- author:taoyan date:20181023 for:txt文件下载bug -->
 						 			<#-- update--end--author:zhangjiaqiang date:20170628 for: TASK #2194 【online链接样式切换】Online 功能测试的列表链接样式，需要根据浏览器IE进行切换 -->
 						 			<#-- //update-begin--Author:zhangjiaqiang  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
 						 		}
@@ -152,11 +149,6 @@ function createDataGrid${config_id}(){
 						</#if>
 						<#list config_buttons as x>
 							<#if x['buttonStyle'] == 'link' && x['buttonStatus']=='1' && config_noliststr?index_of("${x['buttonCode']}")==-1>
-								<#--update-begin--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
-									<#if x['exp'] != '' ||x['exp'] !=null>
-										if(<@exp exp="${ x['exp']}" data="rec" />){
-								 	 </#if>
-								 <#--update-end--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
 								<#-- //update-begin--Author:zhangdaihao  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
 								<#-- update--begin--author:zhangjiaqiang date:20170628 for: TASK #2194 【online链接样式切换】Online 功能测试的列表链接样式，需要根据浏览器IE进行切换 -->
 								<#if brower_type?? && brower_type == 'Microsoft%20Internet%20Explorer'>
@@ -194,11 +186,6 @@ function createDataGrid${config_id}(){
 								</#if>
 								<#-- update--end--author:zhangjiaqiang date:20170628 for: TASK #2194 【online链接样式切换】Online 功能测试的列表链接样式，需要根据浏览器IE进行切换 -->
 								<#-- //update-end--Author:zhangjiaqiang  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
-								<#--update-begin--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
-									<#if x['exp'] != '' ||x['exp'] !=null>
-										}
-								 	 </#if>
-								 <#--update-end--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
 							</#if>
 						</#list>
 						return href;
@@ -479,7 +466,7 @@ function createDataGrid${config_id}(){
 			<#if x['field_isQuery']=="Y">
 				<#if  (x['field_dictlist']?size >0)>
 					<select name = "${x['field_id']}"  style="width: 120px">
-					<option value = ""></option>
+					<option value = "">-- 请选择 --</option>
 					<#list x['field_dictlist']  as xd>
 						<option value = "${xd['typecode']}">${xd['typename']}</option>
 					</#list>
@@ -491,9 +478,7 @@ function createDataGrid${config_id}(){
 					<#else>
 					<input type="text" name="${x['field_id']}"  style="width: 120px" 
 									class="searchbox-inputtext" value="${x['field_value']?if_exists?default('')}"
-							       <#--update--begin--author:gj_shaojc date:20180316 for:TASK #2557 【问题确认】网友问题确认 -->
-							       onClick="popupClick(this,'${x['field_dictText']?if_exists?html}','${x['field_dictField']?if_exists?html}','${x['field_dictTable']?if_exists?html}');" />
-									<#--update--end--author:gj_shaojc date:20180316 for:TASK #2557 【问题确认】网友问题确认 -->
+							       onClick="inputClick(this,'${x['field_dictField']?if_exists?html}','${x['field_dictTable']?if_exists?html}');" />
 					</#if>
 				</#if>
 			<#else>

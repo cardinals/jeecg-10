@@ -76,15 +76,10 @@ public class CgDynamGraphServiceImpl extends CommonServiceImpl implements
 		}
 		
 		@SuppressWarnings("unchecked")
-		public List<Map<String, Object>> queryByCgDynamGraphSql(String sql, Map params,Map<String,Object> paramData) {
+		public List<Map<String, Object>> queryByCgDynamGraphSql(String sql, Map params) {
 			String querySql = getFullSql(sql,params);
 			List<Map<String,Object>> result = null;
-
-			if(paramData!=null&&paramData.size()==0){
-				paramData = null;
-			}
-			result = jdbcDao.findForListMap(querySql, paramData);
-
+			result = jdbcDao.findForJdbc(querySql);
 			return result;
 		}
 		/**
@@ -115,15 +110,10 @@ public class CgDynamGraphServiceImpl extends CommonServiceImpl implements
 		}
 		@SuppressWarnings("unchecked")
 		
-		public long countQueryByCgDynamGraphSql(String sql, Map params,Map<String,Object> paramData) {
+		public long countQueryByCgDynamGraphSql(String sql, Map params) {
 			String querySql = getFullSql(sql,params);
 			querySql = "SELECT COUNT(*) FROM ("+querySql+") t2";
-
-			if(paramData!=null&&paramData.size()==0){
-				paramData = null;
-			}
-			long result = jdbcDao.findForLong(querySql,paramData);
-
+			long result = jdbcDao.findForLong(querySql,new HashMap(0));
 			return result;
 		}
 		@SuppressWarnings( "unchecked" )

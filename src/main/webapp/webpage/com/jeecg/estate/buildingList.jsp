@@ -27,6 +27,7 @@
    <t:dgToolBar title="导入" icon="icon-put" funname="ImportXls"></t:dgToolBar>
    <t:dgToolBar title="导出" icon="icon-putout" funname="ExportXls"></t:dgToolBar>
    <t:dgToolBar title="模板下载" icon="icon-putout" funname="ExportXlsByT"></t:dgToolBar>
+   <t:dgToolBar title="返回" icon="icon-putout" url="buildingController.do?goLastOne&commId=${commId}" funname="goLastOne"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>
@@ -34,7 +35,10 @@
  $(document).ready(function(){
  });
  
-   
+ //返回上一层
+function goLastOne(){
+	window.location.href=basePath+"/buildingController.do?goLastOne&commId=${commId}";
+}   
  
 //导入
 function ImportXls() {

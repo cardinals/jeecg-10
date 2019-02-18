@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
 import org.jeecgframework.core.util.ApplicationContextUtil;
 import org.jeecgframework.core.util.StringUtil;
-import org.jeecgframework.core.util.oConvertUtils;
 import org.jeecgframework.web.cgform.entity.enhance.CgformEnhanceJavaEntity;
 import org.jeecgframework.web.cgform.service.enhance.CgformEnhanceJavaServiceI;
 import org.springframework.stereotype.Service;
@@ -79,15 +78,9 @@ public class CgformEnhanceJavaServiceImpl extends CommonServiceImpl implements C
 			String buttonCode, String formId) {
 		StringBuilder hql = new StringBuilder("");
 		hql.append(" from CgformEnhanceJavaEntity t");
-
-		hql.append(" where t.formId=?");
-		hql.append(" and  t.buttonCode =?");
-
-		hql.append(" and t.event = 'end' ");
-		hql.append(" and t.activeStatus = '1'");
-
-		List<CgformEnhanceJavaEntity> list = this.findHql(hql.toString(),formId,buttonCode);
-
+		hql.append(" where t.formId='").append(formId).append("'");
+		hql.append(" and  t.buttonCode ='").append(buttonCode).append("'");
+		List<CgformEnhanceJavaEntity> list = this.findHql(hql.toString());
 		if(list!=null&&list.size()>0){
 			return list.get(0);
 		}
@@ -99,20 +92,12 @@ public class CgformEnhanceJavaServiceImpl extends CommonServiceImpl implements C
 			CgformEnhanceJavaEntity cgformEnhanceJavaEntity) {
 		StringBuilder hql = new StringBuilder("");
 		hql.append(" from CgformEnhanceJavaEntity t");
-
-		hql.append(" where t.formId=?");
-		hql.append(" and  t.buttonCode =?");
-
-		hql.append(" and t.event = ?");
-		hql.append(" and t.activeStatus = '1'");
-		List<CgformEnhanceJavaEntity> list = null;
+		hql.append(" where t.formId='").append(cgformEnhanceJavaEntity.getFormId()).append("'");
+		hql.append(" and  t.buttonCode ='").append(cgformEnhanceJavaEntity.getButtonCode()).append("'");
 		if(cgformEnhanceJavaEntity.getId()!=null){
-			hql.append(" and t.id !=?");
-			list = this.findHql(hql.toString(),cgformEnhanceJavaEntity.getFormId(),cgformEnhanceJavaEntity.getButtonCode(),cgformEnhanceJavaEntity.getEvent(),cgformEnhanceJavaEntity.getId());
-		}else{
-			list = this.findHql(hql.toString(),cgformEnhanceJavaEntity.getFormId(),cgformEnhanceJavaEntity.getButtonCode(),cgformEnhanceJavaEntity.getEvent());
+			hql.append(" and t.id !='").append(cgformEnhanceJavaEntity.getId()).append("'");
 		}
-
+		List<CgformEnhanceJavaEntity> list = this.findHql(hql.toString());
 		return list;
 	}
 	
@@ -142,29 +127,4 @@ public class CgformEnhanceJavaServiceImpl extends CommonServiceImpl implements C
 
 		return true;
 	}
-
-	@Override
-	public CgformEnhanceJavaEntity getCgformEnhanceJavaEntityByCodeFormId(
-			String buttonCode, String formId, String event) {
-		StringBuilder hql = new StringBuilder("");
-		List<CgformEnhanceJavaEntity> list = null;
-		hql.append(" from CgformEnhanceJavaEntity t");
-
-		hql.append(" where t.formId=?");
-		hql.append(" and  t.buttonCode =?");
-
-		hql.append(" and t.activeStatus = 1");
-		if(oConvertUtils.isNotEmpty(event)) {
-			hql.append(" and t.event = ?");
-			list = this.findHql(hql.toString(),formId,buttonCode,event);
-		} else {
-			list = this.findHql(hql.toString(),formId,buttonCode);
-		}
-
-		if(list!=null&&list.size()>0){
-			return list.get(0);
-		}
-		return null;
-	}
-
 }

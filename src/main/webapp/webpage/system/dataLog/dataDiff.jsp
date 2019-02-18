@@ -23,6 +23,7 @@
 			data = [{}];
 			data.unshift({id: id1,versionNumber: versionNumber1});
 			data.unshift({id: id2,versionNumber: versionNumber2});
+			data.unshift({id: '0',versionNumber: '---请选择---'});
 			$('#versionNumber1').combobox({
 				valueField:'id',
 				textField:'versionNumber',
@@ -63,7 +64,7 @@
 								data = [{}];
 								data.unshift({id: '0',versionNumber: '---无数据---'});
 							}else{
-								data.unshift({id: '0',versionNumber: '--'});
+								data.unshift({id: '0',versionNumber: '---请选择---'});
 							}
 
 							$('#versionNumber1').combobox({
@@ -109,7 +110,7 @@
 								data = [{}];
 								data.unshift({id: '0',versionNumber: '---无数据---'});
 							}else{
-								data.unshift({id: '0',versionNumber: '--'});
+								data.unshift({id: '0',versionNumber: '---请选择---'});
 							}
 
 							$('#versionNumber1').combobox({

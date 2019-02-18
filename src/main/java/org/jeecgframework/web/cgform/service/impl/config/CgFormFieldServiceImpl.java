@@ -12,16 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.jeecgframework.core.annotation.Ehcache;
-import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
-import org.jeecgframework.core.constant.Globals;
-import org.jeecgframework.core.util.ContextHolderUtils;
-import org.jeecgframework.core.util.MyBeanUtils;
-import org.jeecgframework.core.util.SqlInjectionUtil;
-import org.jeecgframework.core.util.StringUtil;
-import org.jeecgframework.core.util.oConvertUtils;
 import org.jeecgframework.web.cgform.common.CgAutoListConstant;
 import org.jeecgframework.web.cgform.dao.config.CgFormFieldDao;
 import org.jeecgframework.web.cgform.dao.config.CgFormVersionDao;
@@ -39,10 +29,21 @@ import org.jeecgframework.web.cgform.service.impl.config.util.DbTableUtil;
 import org.jeecgframework.web.cgform.service.impl.config.util.ExtendJsonConvert;
 import org.jeecgframework.web.cgform.util.PublicUtil;
 import org.jeecgframework.web.system.pojo.base.TSOperation;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.jeecgframework.core.annotation.Ehcache;
+import org.jeecgframework.core.common.service.impl.CommonServiceImpl;
+import org.jeecgframework.core.constant.Globals;
+import org.jeecgframework.core.util.ContextHolderUtils;
+import org.jeecgframework.core.util.MyBeanUtils;
+import org.jeecgframework.core.util.StringUtil;
+import org.jeecgframework.core.util.oConvertUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.sun.star.uno.RuntimeException;
 
 @Service("cgFormFieldService")
 @Transactional
@@ -388,8 +389,6 @@ public class CgFormFieldServiceImpl extends CommonServiceImpl implements
 		List<Map<String, Object>> list = this.findForJdbc(sql1.toString(),
 				subTableName, mainTableName);
 
-		SqlInjectionUtil.filterContent(subTableName);
-
 		StringBuilder sql2 = new StringBuilder("");
 		sql2.append("select sub.* from ").append(subTableName).append(" sub ");
 		sql2.append(", ").append(mainTableName).append(" main ");
@@ -428,25 +427,22 @@ public class CgFormFieldServiceImpl extends CommonServiceImpl implements
 						.valueOf(mainE.getSubTableStr() == null ? "" : mainE
 								.getSubTableStr());
 				// step.5 判断是否已经存在于附表串
-				if(StringUtils.isNotBlank(subTableStr)){
-					String[] str=subTableStr.split(",");
-					if(!oConvertUtils.isIn(thisSubTable, str)){
-						if(!subTableStr.endsWith(",")){
-							subTableStr=subTableStr+",";
-						}
-						subTableStr=subTableStr+thisSubTable;
-					}					
-				}else{
-					subTableStr=thisSubTable;
+				if (!subTableStr.contains(thisSubTable)) {
+					// step.6 追加到附表串
+					if (!StringUtil.isEmpty(subTableStr)) {
+						subTableStr += "," + thisSubTable;
+					} else {
+						subTableStr += thisSubTable;
+					}
+					mainE.setSubTableStr(subTableStr);
+					logger.info("--主表" + mainE.getTableName() + "的附表串："
+							+ mainE.getSubTableStr());
 				}
-				mainE.setSubTableStr(subTableStr);
-				logger.info("--主表" + mainE.getTableName() + "的附表串："
-						+ mainE.getSubTableStr());
 				// step.7 更新主表的表配置
 				this.updateTable(mainE, "sign",false);
 			}
 		}
- 		return true;
+		return true;
 	}
 
 	
@@ -472,26 +468,16 @@ public class CgFormFieldServiceImpl extends CommonServiceImpl implements
 								.getSubTableStr());
 				// step.5 判断是否已经存在于附表串
 				if (subTableStr.contains(thisSubTable)) {
-					String[] str=subTableStr.split(",");
-					for(int i=0;i<str.length;i++){
-						if(str[i].equals(thisSubTable)){
-							str[i]="";
-						}
+					// step.6 剔除主表的附表串
+					if (subTableStr.contains(thisSubTable + ",")) {
+						subTableStr = subTableStr.replace(thisSubTable + ",",
+								"");
+					} else if(subTableStr.contains(","+thisSubTable)){
+						subTableStr = subTableStr.replace("," + thisSubTable,
+								"");
+					} else{
+						subTableStr = subTableStr.replace(thisSubTable,"");
 					}
-					StringBuffer name=new StringBuffer("");
-					for(int i=0;i<str.length;i++){
-						if(!str[i].equals("")){
-							name.append(str[i]);
-							name.append(",");
-						}
-					}
-
-					if(name.length()!=0){
-						subTableStr=name.substring(0, name.length()-1);
-					}else{
-						subTableStr=name.toString();
-					}
-
 					mainE.setSubTableStr(subTableStr);
 					logger.info("--主表" + mainE.getTableName() + "的附表串："
 							+ mainE.getSubTableStr());

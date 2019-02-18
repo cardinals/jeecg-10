@@ -78,9 +78,7 @@
 			<td class="value" colspan="5"><textarea rows="5" cols="150" id="cgrSql" name="cgrSql" datatype="*"></textarea> <span class="Validform_checktip"></span>
 							<p>&nbsp;&nbsp;&nbsp;&nbsp;您可以键入“${abc}”作为一个参数，这里abc是参数的名称。例如：<br/>
 							&nbsp;&nbsp;&nbsp;&nbsp;select * from table where id = <%="${abc}"%>。<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;select * from table where id like concat('%',<%="${abc}"%>,'%')。(mysql模糊查询)<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;select * from table where id like '%'||<%="${abc}"%>||'%'。(oracle模糊查询)<br/>
-							&nbsp;&nbsp;&nbsp;&nbsp;select * from table where id like '%'+<%="${abc}"%>+'%'。(sqlserver模糊查询)<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;select * from table where id = <%="'${abc}'"%>（如果id字段为字符串类型）<br/>
 							&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">注：参数只支持动态报表，popup暂不支持</font><p/>
 			
 			</td>
@@ -127,7 +125,7 @@
 			<td align="left"><t:dictSelect field="cgreportConfigItemList[#index#].SMode"  extendJson="{style:'width:90px'}" type="list" typeGroupCode="searchmode" defaultVal="" hasLabel="false" title="common.query.module"></t:dictSelect></td>
 			<td align="left"><input name="cgreportConfigItemList[#index#].replaceVa" maxlength="36" type="text" class="inputxt" style="width: 120px;"></td>
 			<td align="left"><input name="cgreportConfigItemList[#index#].dictCode" maxlength="36" type="text" class="inputxt" style="width: 120px;"></td>
-			<td align="left"><t:dictSelect field="cgreportConfigItemList[#index#].SFlag"  extendJson="{style:'width:90px'}" type="list" typeGroupCode="yesorno" defaultVal="" hasLabel="false" title="common.isquery"></t:dictSelect></td>
+			<td align="left"><t:dictSelect field="cgreportConfigItemList[#index#].SFlag"  extendJson="{style:'width:60px'}" type="list" typeGroupCode="yesorno" defaultVal="" hasLabel="false" title="common.isquery"></t:dictSelect></td>
 		</tr>
 	</tbody>
 </table>

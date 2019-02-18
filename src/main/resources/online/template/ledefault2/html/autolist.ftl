@@ -4,7 +4,7 @@ ${config_iframe}
 /**
 *表单的高度,表单的宽度
 **/
-<#if tableType=="2">var ${config_id}Fw = 950,${config_id}Fh = 450;<#else>var ${config_id}Fw = 700,${config_id}Fh = 400;</#if>
+var ${config_id}Fw = 700,${config_id}Fh = 400;
 
 $(function(){
 	$.get("cgFormHeadController.do?checkIsExit&checkIsTableCreate&name=${config_id}",
@@ -49,9 +49,6 @@ function createDataGrid${config_id}(){
 	columns:[
 		[	
 			<#if config_istree=="Y">
-			<#--update--begin--author:gj_shaojc date:20180402 for:TASK #2606 【代码生成器】树形列表生成，多选处理 -->
-				<#if config_ischeckbox=="Y">{field:'ck',checkbox:true},</#if>
-			<#--update--end--author:gj_shaojc date:20180402 for:TASK #2606 【代码生成器】树形列表生成，多选处理 -->
 				<#list config_fieldList  as x>  
 					<#if x_index==0>{field:"id", title:"<@mutiLang langKey="${x['field_title']}"/>", hidden:true}, </#if>
 					<#if x_index!=0>{field:"${x['field_id']}", title:"<@mutiLang langKey="${x['field_title']}"/>",<#if x['field_isShow'] == "N" >hidden:true,</#if><#if x['field_href'] != "">formatter:function(value,rec,index){var href='';href+="<a href='javascript:void(0)' onclick=\"addOneTab('字段链接','${x['field_href']}')\" ><u>"+value+"</u></a>";return href;},</#if> width:100}, </#if>
@@ -82,9 +79,7 @@ function createDataGrid${config_id}(){
 						 			<#-- update--begin--author:zhangjiaqiang date:20170606 for:TASK #2056 【上传附件功能】Online 一对多对上传组件支持 -->
 						 		}else{
 						 			<#-- //update-begin--Author:zhangdaihao  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
-						 			<#-- update-begin- author:taoyan date:20181023 for:txt文件下载bug -->
-						 			var value2="systemController/downloadFile.do?filePath="+value
-						 			href+="<a href='"+value2+"' class='ace_button' style='text-decoration:none;' target=_blank><u><i class='fa fa-download'></i>点击下载</u></a>";
+						 			href+="<a href='"+value+"' class='ace_button' style='text-decoration:none;' target=_blank><u><i class='fa fa-download'></i>点击下载</u></a>";
 						 			<#-- //update-end--Author:zhangdaihao  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
 						 		}
 						 		return href;
@@ -141,11 +136,6 @@ function createDataGrid${config_id}(){
 						</#if>
 						<#list config_buttons as x>
 							<#if x['buttonStyle'] == 'link' && x['buttonStatus']=='1' && config_noliststr?index_of("${x['buttonCode']}")==-1>
-								<#--update-begin--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
-									<#if x['exp'] != '' ||x['exp'] !=null>
-										if(<@exp exp="${ x['exp']}" data="rec" />){
-								 	 </#if>
-								<#--update-end--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
 								<#-- //update-begin--Author:zhangdaihao  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
 								href+="<a style='margin-left:5px;' href='javascript:void(0)' class='ace_button' buttonCode='${x['buttonCode']}' formId ='${x['formId']}' ";
 								<#if x['optType'] == 'action'>
@@ -170,11 +160,6 @@ function createDataGrid${config_id}(){
 									href+="<i class='fa fa-wrench'></i>${x['buttonName']}</a>";
 								</#if>
 								<#-- //update-begin--Author:zhangdaihao  Date:20160925 for：TASK #1344 [链接图标] online功能测试的按钮链接图标修改 -->
-								<#--update-begin--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
-									<#if x['exp'] != '' ||x['exp'] !=null>
-										}
-								 	 </#if>
-								 <#--update-end--Author:gj_shaojc  Date:20180606 for：TASK #2753 【论坛问题确认】online 开发，自定义按钮显示表达式问题-->
 							</#if>
 						</#list>
 						return href;
@@ -350,23 +335,12 @@ function createDataGrid${config_id}(){
 		//update-begin--Author:luobaoli  Date:20150705 for：请求URL修改为REST风格
 		//update('<@mutiLang langKey="${config_name}"/>编辑','rest/cgform/form/${config_id}','${config_id}List',${config_id}Fw,${config_id}Fh,true);
 		//update-end--Author:luobaoli  Date:20150705 for：请求URL修改为REST风格
-		<#--update--begin--author:gj_shaojc date:20180402 for:TASK #2606 【代码生成器】树形列表生成，多选处理 -->
-		<#if config_istree=="Y">
-			updatetree('<@mutiLang langKey="${config_name}"/>编辑','cgFormBuildController/ftlForm/${config_id}/goUpdate.do?olstylecode=${_olstylecode}','${config_id}List',${config_id}Fw,${config_id}Fh);
-			<#else>
-			update('<@mutiLang langKey="${config_name}"/>编辑','cgFormBuildController/ftlForm/${config_id}/goUpdate.do?olstylecode=${_olstylecode}','${config_id}List',${config_id}Fw,${config_id}Fh);
-		</#if>
-		<#--update--end--author:gj_shaojc date:20180402 for:TASK #2606 【代码生成器】树形列表生成，多选处理 -->
+		
+		update('<@mutiLang langKey="${config_name}"/>编辑','cgFormBuildController/ftlForm/${config_id}/goUpdate.do?olstylecode=${_olstylecode}','${config_id}List',${config_id}Fw,${config_id}Fh);
 	}
 	//查看
 	function ${config_id}view(){
-		<#--update--begin--author:gj_shaojc date:20180402 for:TASK #2606 【代码生成器】树形列表生成，多选处理 -->
-		<#if config_istree=="Y">
-			detailtree('查看','cgFormBuildController/ftlForm/${config_id}/goDetail.do?olstylecode=${_olstylecode}','${config_id}List',${config_id}Fw,${config_id}Fh);
-			<#else>
-			detail('查看','cgFormBuildController/ftlForm/${config_id}/goDetail.do?olstylecode=${_olstylecode}','${config_id}List',${config_id}Fw,${config_id}Fh);
-		</#if>
-		<#--update--end--author:gj_shaojc date:20180402 for:TASK #2606 【代码生成器】树形列表生成，多选处理 -->	
+		detail('查看','cgFormBuildController/ftlForm/${config_id}/goDetail.do?olstylecode=${_olstylecode}','${config_id}List',${config_id}Fw,${config_id}Fh);
 	}
     //----author:jg_xugj---end----date:20151219-------- for：#813 【online表单】扩展出三个请求：独立的添加、查看、编辑请求，原来的保留
 	
@@ -464,7 +438,7 @@ function createDataGrid${config_id}(){
 			<#if x['field_isQuery']=="Y">
 				<#if  (x['field_dictlist']?size >0)>
 					<select name = "${x['field_id']}"  style="width: 120px">
-					<option value = ""></option>
+					<option value = "">-- 请选择 --</option>
 					<#list x['field_dictlist']  as xd>
 						<option value = "${xd['typecode']}">${xd['typename']}</option>
 					</#list>
@@ -476,9 +450,7 @@ function createDataGrid${config_id}(){
 					<#else>
 					<input type="text" name="${x['field_id']}"  style="width: 120px" 
 									class="searchbox-inputtext" value="${x['field_value']?if_exists?default('')}"
-							       <#--update--begin--author:gj_shaojc date:20180316 for:TASK #2557 【问题确认】网友问题确认 -->
-							       onClick="popupClick(this,'${x['field_dictText']?if_exists?html}','${x['field_dictField']?if_exists?html}','${x['field_dictTable']?if_exists?html}');" />
-									<#--update--end--author:gj_shaojc date:20180316 for:TASK #2557 【问题确认】网友问题确认 -->
+							       onClick="inputClick(this,'${x['field_dictField']?if_exists?html}','${x['field_dictTable']?if_exists?html}');" />
 					</#if>
 				</#if>
 			<#else>

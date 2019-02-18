@@ -27,10 +27,6 @@
 							$('#generateForm').attr("onclick",formOnclick);
 
 							var c = $.parseJSON(data);
-							if(c.success == false){
-								tip(c.msg);
-								return;
-							}
 							var d = "";
 							var e = "";
 							$.each(c.obj, function(key, value) {
